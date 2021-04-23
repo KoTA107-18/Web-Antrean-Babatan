@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:web_antrean_babatan/screen/login.dart';
+import 'package:web_antrean_babatan/screen/mainScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,9 +12,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Website Antrian Babatan',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
       ),
-      home: Login(),
+      home: MainScreen(),
     );
   }
 }

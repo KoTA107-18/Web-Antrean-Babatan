@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:web_antrean_babatan/screen/dashboard.dart';
+import 'package:web_antrean_babatan/screen/mainScreen.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class _LoginState extends State<Login> {
   void authLogin() {
     if (_username.text == "admin" && _password.text == "admin") {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Dashboard()));
+          context, MaterialPageRoute(builder: (context) => MainScreen()));
     }
   }
 
