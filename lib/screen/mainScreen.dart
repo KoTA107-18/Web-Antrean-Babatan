@@ -15,7 +15,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  var currentPage = 0;
+  var currentPage = 1;
   final List page = [
     DashboardScreen(),
     AntreanScreen(),

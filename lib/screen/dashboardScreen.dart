@@ -9,6 +9,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.teal[50],
         appBar: AppBar(
           leading: Icon(Icons.dashboard),
           title: Text("Dashboard"),
@@ -30,7 +31,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
         body: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20),
+          margin: EdgeInsets.all(20.0),
           child: GridView.builder(
             itemCount: 8,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

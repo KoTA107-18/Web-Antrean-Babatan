@@ -8,8 +8,14 @@ class TambahAntreanScreen extends StatefulWidget {
 class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text("Halaman Tambah Antrean (On Going)"),
+    return Scaffold(
+      appBar: AppBar(
+        leading: Icon(Icons.local_hospital),
+        title: Text("Tambah Antrean"),
+      ),
+      body: Container(
+        color: Colors.teal[50],
+      ),
     );
   }
 }
