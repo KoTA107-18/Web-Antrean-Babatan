@@ -15,7 +15,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  var currentPage = 1;
+  var currentPage = 0;
   final List page = [
     DashboardScreen(),
     AntreanScreen(),
@@ -35,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
             child: Container(
               color: Colors.white,
               child: SafeArea(
-                child: Column(
+                child: ListView(
                   children: [
                     Row(
                       children: [
