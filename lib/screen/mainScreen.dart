@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:web_antrean_babatan/screen/akunPerawatScreen.dart';
 import 'package:web_antrean_babatan/screen/antreanScreen.dart';
 import 'package:web_antrean_babatan/screen/loginScreen.dart';
 import 'package:web_antrean_babatan/screen/poliklinikScreen.dart';
 import 'package:web_antrean_babatan/screen/riwayatScreen.dart';
 import 'package:web_antrean_babatan/screen/tambahAntreanScreen.dart';
+import 'package:web_antrean_babatan/session/sharedPref.dart';
+import 'package:web_antrean_babatan/utils/color.dart';
 
 import 'antreanSementaraScreen.dart';
 import 'dashboardScreen.dart';
@@ -153,8 +156,15 @@ class _MainScreenState extends State<MainScreen> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Login()));
+                    SharedPref.deleteSharedPref().then((value){
+                      Fluttertoast.showToast(
+                          gravity: ToastGravity.CENTER,
+                          backgroundColor: ColorTheme.greenDark,
+                          msg: "Logout berhasil!",
+                          toastLength: Toast.LENGTH_SHORT);
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => Login()));
+                    });
                   },
                 ),
                 ElevatedButton(
