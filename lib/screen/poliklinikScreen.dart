@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:web_antrean_babatan/network/api.dart';
+import 'package:web_antrean_babatan/utils/color.dart';
+import 'package:web_antrean_babatan/model/poliklinik.dart';
+import 'package:web_antrean_babatan/utils/textFieldModified.dart';
 
 class PoliklinikScreen extends StatefulWidget {
   @override
@@ -6,6 +10,7 @@ class PoliklinikScreen extends StatefulWidget {
 }
 
 class _PoliklinikScreenState extends State<PoliklinikScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,43 +18,431 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
       appBar: AppBar(
         leading: Icon(Icons.local_hospital),
         title: Text("Daftar Poliklinik"),
+        actions: [
+          Container(
+            padding: EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.white, // background
+                onPrimary: ColorTheme.greenDark, // foreground
+              ),
+              child: Text(
+                'Tambah Data',
+                style: TextStyle(color: ColorTheme.greenDark),
+              ),
+              onPressed: () {
+                addDialog();
+              },
+            ),
+          )
+        ],
       ),
-      body: Container(
-        padding: EdgeInsets.all(20.0),
-        child: ListView(children: <Widget>[
-          DataTable(
-            showBottomBorder: true,
-            columns: [
-              DataColumn(
-                  label: Text('Nama Poliklinik',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold))),
-              DataColumn(
-                  label: Text('Waktu Buka',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold))),
-              DataColumn(
-                  label: Text('Deskripsi Poliklinik',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold))),
-              DataColumn(
-                  label: Text('Aksi',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold))),
-            ],
-            rows: [
-              DataRow(cells: [
-                DataCell(Text('Poliklinik Ibu Anak')),
-                DataCell(Text('Senin - Jumat')),
-                DataCell(Text('Melayani ...')),
-                DataCell(Row(
-                  children: [Icon(Icons.edit), Icon(Icons.delete)],
-                )),
+      body: FutureBuilder(
+        future: RequestApi.getAllPoliklinik(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var resultSnapshot = snapshot.data as List;
+            List<Poliklinik> daftarPoli = resultSnapshot
+                .map((aJson) => Poliklinik.fromJson(aJson))
+                .toList();
+            return Container(
+              padding: EdgeInsets.all(20.0),
+              child: ListView(children: <Widget>[
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3),
+                    color: Colors.teal,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0x29000000),
+                        offset: Offset(0, 3),
+                        blurRadius: 6,
+                      ),
+                    ],
+                  ),
+                  child: DataTable(
+                    showBottomBorder: true,
+                    columns: [
+                      DataColumn(
+                          label: Text('Nama',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white))),
+                      DataColumn(
+                          label: Text('Waktu Buka',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white))),
+                      DataColumn(
+                          label: Text('Deskripsi',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white))),
+                      DataColumn(
+                          label: Text('Aksi',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white))),
+                    ],
+                    rows: daftarPoli.map((poliklinik) => DataRow(
+                        color: MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                              return Colors.white;
+                            }),
+                        cells: [
+                          DataCell(Text(poliklinik.nama_poli)),
+                          DataCell(Text("Belum diatur", style: TextStyle(fontWeight: FontWeight.bold),)),
+                          DataCell(Text(poliklinik.desc_poli.substring(0,50) + " ...")),
+                          DataCell(Row(
+                            children: [
+                              IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    editDialog(poliklinik);
+                                  }),
+                              IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () {
+                                    deleteDialog(poliklinik);
+                                  }),
+                              IconButton(
+                                  icon: Icon(Icons.info),
+                                  onPressed: () {
+                                    infoDialog(poliklinik);
+                                  })
+                            ],
+                          )),
+                        ])).toList(),
+                  ),
+                ),
               ]),
-            ],
-          ),
-        ]),
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
+  }
+
+  addDialog() {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.add_circle),
+              SizedBox(width: 8.0),
+              Text("Tambah Poliklinik"),
+            ],
+          ),
+          content: Container(
+            width: MediaQuery.of(context).size.width / 2,
+            height: MediaQuery.of(context).size.height / 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 8.0),
+                  child: Text('Nama Poliklinik',
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 16.0),
+                  child: textFieldModified(label: "Nama Poliklinik",
+                  hint: "Masukkan nama Poliklinik",
+                  controller: null,),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 8.0),
+                  child: Text('Deskripsi Poliklinik',
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 16.0),
+                  child: textFieldModified(label: "Deskripsi Poliklinik",
+                    hint: "Masukkan deskripsi Poliklinik",
+                    controller: null,),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 8.0),
+                  child: Text('Rata Rata Waktu Pelayanan Poliklinik',
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 16.0),
+                  child: textFieldModified(label: "Rata - Rata Waktu Pelayanan",
+                    hint: "Masukkan perkiraan durasi dalam satuan menit",
+                    controller: null,),
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.teal, // background
+                onPrimary: Colors.white, // foreground
+              ),
+              child: Text(
+                'Tambah',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.grey, // background
+                onPrimary: Colors.white, // foreground
+              ),
+              child: Text(
+                'Tidak',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ));
+  }
+
+  editDialog(Poliklinik poliklinik) {
+    TextEditingController _nama = TextEditingController();
+    TextEditingController _deskripsi = TextEditingController();
+    TextEditingController _ratarata = TextEditingController();
+    _nama.text = poliklinik.nama_poli;
+    _deskripsi.text = poliklinik.desc_poli;
+    _ratarata.text = poliklinik.rerata_waktu_pelayanan.toString();
+
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              title: Row(
+                children: [
+                  Icon(Icons.edit),
+                  SizedBox(width: 8.0),
+                  Text("Edit Poliklinik"),
+                ],
+              ),
+              content: Container(
+                width: MediaQuery.of(context).size.width / 2,
+                height: MediaQuery.of(context).size.height / 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom : 8.0),
+                      child: Text('Nama Poliklinik',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom : 16.0),
+                      child: textFieldModified(label: "Nama Poliklinik",
+                        hint: "Masukkan nama Poliklinik",
+                        controller: _nama,),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom : 8.0),
+                      child: Text('Deskripsi Poliklinik',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom : 16.0),
+                      child: textFieldModified(label: "Deskripsi Poliklinik",
+                        hint: "Masukkan deskripsi Poliklinik",
+                        controller: _deskripsi,),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom : 8.0),
+                      child: Text('Rata Rata Waktu Pelayanan Poliklinik',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom : 16.0),
+                      child: textFieldModified(label: "Rata - Rata Waktu Pelayanan",
+                        hint: "Masukkan perkiraan durasi dalam satuan menit",
+                        controller: _ratarata,),
+                    )
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.teal, // background
+                    onPrimary: Colors.white, // foreground
+                  ),
+                  child: Text(
+                    'Ubah',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.grey, // background
+                    onPrimary: Colors.white, // foreground
+                  ),
+                  child: Text(
+                    'Tidak',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ));
+  }
+
+  deleteDialog(Poliklinik poliklinik) {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              title: Row(
+                children: [
+                  Icon(Icons.delete),
+                  SizedBox(width: 8.0),
+                  Text("Hapus Poliklinik"),
+                ],
+              ),
+              content: Text("Anda yakin ingin menghapus data Poliklinik ini?"),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.red, // background
+                    onPrimary: Colors.white, // foreground
+                  ),
+                  child: Text(
+                    'Hapus',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.grey, // background
+                    onPrimary: Colors.white, // foreground
+                  ),
+                  child: Text(
+                    'Tidak',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ));
+  }
+
+  infoDialog(Poliklinik poliklinik){
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.info),
+              SizedBox(width: 8.0),
+              Text("Info Poliklinik"),
+            ],
+          ),
+          content: Container(
+            width: MediaQuery.of(context).size.width / 2,
+            height: MediaQuery.of(context).size.height / 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 8.0),
+                  child: Text('Kode Poliklinik',
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 16.0),
+                  child: Text(poliklinik.id_poli.toString()),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 8.0),
+                  child: Text('Nama Poliklinik',
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 16.0),
+                  child: Text(poliklinik.nama_poli.toString()),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 8.0),
+                  child: Text('Desc Poliklinik',
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 16.0),
+                  child: Text(poliklinik.desc_poli.toString(), textAlign: TextAlign.justify,),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 8.0),
+                  child: Text('Rerata Waktu Pelayanan Poliklinik',
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 16.0),
+                  child: Text(poliklinik.rerata_waktu_pelayanan.toString() + " Menit"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom : 8.0),
+                  child: Text('Status Poliklinik',
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(bottom : 16.0),
+                    child: Text((poliklinik.id_poli == 1) ? "Aktif" : "Tidak Aktif"),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.teal, // background
+                onPrimary: Colors.white, // foreground
+              ),
+              child: Text(
+                'Tutup',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        ));
   }
 }

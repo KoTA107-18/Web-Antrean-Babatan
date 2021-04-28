@@ -18,7 +18,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  var currentPage = 0;
+  var currentPage = 4;
   final List page = [
     DashboardScreen(),
     AntreanScreen(),
@@ -28,6 +28,7 @@ class _MainScreenState extends State<MainScreen> {
     RiwayatScreen(),
     AkunPerawatScreen()
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,7 +157,7 @@ class _MainScreenState extends State<MainScreen> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    SharedPref.deleteSharedPref().then((value){
+                    SharedPref.deleteSharedPref().then((value) {
                       Fluttertoast.showToast(
                           gravity: ToastGravity.CENTER,
                           backgroundColor: ColorTheme.greenDark,
