@@ -34,90 +34,87 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: Row(
         children: [
-          Expanded(
-            flex: 2,
-            child: Container(
-              color: Colors.white,
-              child: SafeArea(
-                child: ListView(
-                  children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            'asset/LogoPuskesmas.png',
-                            width: 64,
-                          ),
+          Container(
+            width: 280.0,
+            color: Colors.white,
+            child: SafeArea(
+              child: ListView(
+                children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'asset/LogoPuskesmas.png',
+                          width: 64,
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              child: Center(
-                                child: Text('Selamat Datang',
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.teal)),
-                              ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Center(
+                              child: Text('Selamat Datang',
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.teal)),
                             ),
-                            Container(
-                              child: Center(
-                                child: Text('Puskesmas Babatan',
-                                    style: TextStyle(
-                                        fontSize: 14.0, color: Colors.teal)),
-                              ),
+                          ),
+                          Container(
+                            child: Center(
+                              child: Text('Puskesmas Babatan',
+                                  style: TextStyle(
+                                      fontSize: 14.0, color: Colors.teal)),
                             ),
-                          ],
-                        )
-                      ],
-                    ),
-                    listMenu('Dashboard', Icon(Icons.dashboard), () {
-                      setState(() {
-                        currentPage = 0;
-                      });
-                    }),
-                    listMenu('Antrean', Icon(Icons.people), () {
-                      setState(() {
-                        currentPage = 1;
-                      });
-                    }),
-                    listMenu('Antrean Sementara', Icon(Icons.people), () {
-                      setState(() {
-                        currentPage = 2;
-                      });
-                    }),
-                    listMenu('Tambah Antrean', Icon(Icons.person_add), () {
-                      setState(() {
-                        currentPage = 3;
-                      });
-                    }),
-                    listMenu('Poliklinik', Icon(Icons.local_hospital), () {
-                      setState(() {
-                        currentPage = 4;
-                      });
-                    }),
-                    listMenu('Riwayat Kunjungan', Icon(Icons.history), () {
-                      setState(() {
-                        currentPage = 5;
-                      });
-                    }),
-                    listMenu('Akun Perawat', Icon(Icons.switch_account), () {
-                      setState(() {
-                        currentPage = 6;
-                      });
-                    }),
-                    listMenu('Logout', Icon(Icons.logout), () {
-                      _showMaterialDialog();
-                    }),
-                  ],
-                ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  listMenu('Dashboard', Icon(Icons.dashboard), () {
+                    setState(() {
+                      currentPage = 0;
+                    });
+                  }),
+                  listMenu('Antrean', Icon(Icons.people), () {
+                    setState(() {
+                      currentPage = 1;
+                    });
+                  }),
+                  listMenu('Antrean Sementara', Icon(Icons.people), () {
+                    setState(() {
+                      currentPage = 2;
+                    });
+                  }),
+                  listMenu('Tambah Antrean', Icon(Icons.person_add), () {
+                    setState(() {
+                      currentPage = 3;
+                    });
+                  }),
+                  listMenu('Poliklinik', Icon(Icons.local_hospital), () {
+                    setState(() {
+                      currentPage = 4;
+                    });
+                  }),
+                  listMenu('Riwayat Kunjungan', Icon(Icons.history), () {
+                    setState(() {
+                      currentPage = 5;
+                    });
+                  }),
+                  listMenu('Akun Perawat', Icon(Icons.switch_account), () {
+                    setState(() {
+                      currentPage = 6;
+                    });
+                  }),
+                  listMenu('Logout', Icon(Icons.logout), () {
+                    _showMaterialDialog();
+                  }),
+                ],
               ),
             ),
           ),
           Expanded(
-            flex: 10,
             child: page[currentPage],
           )
         ],
