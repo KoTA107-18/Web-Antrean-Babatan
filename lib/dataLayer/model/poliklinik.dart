@@ -22,11 +22,11 @@ class Poliklinik {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id_poli'] = this.idPoli;
-    data['nama_poli'] = this.namaPoli;
-    data['desc_poli'] = this.descPoli;
-    data['status_poli'] = this.statusPoli;
-    data['rerata_waktu_pelayanan'] = this.rerataWaktuPelayanan;
+    data['id_poli'] = this.idPoli.toString();
+    data['nama_poli'] = this.namaPoli.toString();
+    data['desc_poli'] = this.descPoli.toString();
+    data['status_poli'] = this.statusPoli.toString();
+    data['rerata_waktu_pelayanan'] = this.rerataWaktuPelayanan.toString();
     return data;
   }
 }

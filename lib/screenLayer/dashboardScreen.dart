@@ -8,6 +8,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  bool edit = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,15 +149,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: Colors.white),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                        child: ListView(
-                          children: [
-                            Row(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Padding(
@@ -190,31 +187,85 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 )
                               ],
                             ),
-                            for (var i in daftarPoli)
-                              CheckboxListTile(
-                                controlAffinity:
-                                    ListTileControlAffinity.trailing,
-                                title: Text(i.namaPoli),
-                                secondary: const Icon(Icons.local_hospital),
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    (value)
-                                        ? i.statusPoli = 1
-                                        : i.statusPoli = 0;
-                                  });
-                                },
-                                value: (i.statusPoli == 1) ? true : false,
-                              ),
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: ElevatedButton(
-                                  onPressed: () {},
-                                  child: Text("Ubah Status Poli")),
-                            )
-                          ],
-                        ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left : 16.0, right: 16.0),
+                            child: CheckboxListTile(
+                              controlAffinity: ListTileControlAffinity.trailing,
+                              title: Text("Edit"),
+                              secondary: const Icon(Icons.lock),
+                              onChanged: (bool value) {
+                                setState(() {
+                                  edit = value;
+                                });
+                              },
+                              value: edit,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: ElevatedButton(
+                                      onPressed: () {},
+                                      child: Text("Buka Portal")),
+                                ),
+                                SizedBox(width: 8.0),
+                                Expanded(
+                                  flex: 2,
+                                  child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.red, // background
+                                        onPrimary: Colors.white, // foreground
+                                      ),
+                                      onPressed: () {},
+                                      child: Text("Tutup Portal")),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.all(16.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.white),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              child:
+                                  StatefulBuilder(builder: (context, setState) {
+                                return ListView.builder(
+                                    itemCount: daftarPoli.length,
+                                    itemBuilder: (context, index) {
+                                      return CheckboxListTile(
+                                        controlAffinity:
+                                            ListTileControlAffinity.trailing,
+                                        title: Text(daftarPoli[index].namaPoli),
+                                        secondary:
+                                            const Icon(Icons.local_hospital),
+                                        onChanged: (edit) ? (bool value) {
+                                          setState(() {
+                                            (value)
+                                                ? daftarPoli[index].statusPoli =
+                                            1
+                                                : daftarPoli[index].statusPoli =
+                                            0;
+                                          });
+                                        } : null,
+                                        value:
+                                            (daftarPoli[index].statusPoli == 1)
+                                                ? true
+                                                : false,
+                                      );
+                                    });
+                              }),
+                            ),
+                          ),
+                        ],
                       ),
-                    )
+                    ),
                   ],
                 );
               } else {

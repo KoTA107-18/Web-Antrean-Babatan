@@ -94,7 +94,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                         .map((poliklinik) => DataRow(
                                 color: MaterialStateProperty.resolveWith<Color>(
                                     (Set<MaterialState> states) {
-                                  if(poliklinik.statusPoli == 1){
+                                  if (poliklinik.statusPoli == 1) {
                                     return Colors.white;
                                   } else {
                                     return Colors.white70;
@@ -139,9 +139,13 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
   }
 
   addDialog() {
+    bool _setiapHari, _senin, _selasa, _rabu, _kamis, _jumat, _sabtu;
+    _setiapHari = _senin = _selasa = _rabu = _kamis = _jumat = _sabtu = false;
     showDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
               title: Row(
                 children: [
                   Icon(Icons.add_circle),
@@ -196,6 +200,133 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                         hint: "Masukkan perkiraan durasi dalam satuan menit",
                         controller: null,
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Hari Pelayanan Poliklinik',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _setiapHari,
+                          onChanged: (value) {
+                            setState(() {
+                              _setiapHari = value;
+                              _senin = _selasa = _rabu =
+                                  _kamis = _jumat = _sabtu = _setiapHari;
+                            });
+                          },
+                        ),
+                        Text('Setiap Hari'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _senin,
+                              onChanged: (value) {
+                                setState(() {
+                                  _senin = value;
+                                  if(_setiapHari){
+                                    _setiapHari = false;
+                                  }
+                                });
+                              },
+                            ),
+                            Text('Senin'),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _selasa,
+                              onChanged: (value) {
+                                setState(() {
+                                  _selasa = value;
+                                  if(_setiapHari){
+                                    _setiapHari = false;
+                                  }
+                                });
+                              },
+                            ),
+                            Text('Selasa'),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _rabu,
+                              onChanged: (value) {
+                                setState(() {
+                                  _rabu = value;
+                                  if(_setiapHari){
+                                    _setiapHari = false;
+                                  }
+                                });
+                              },
+                            ),
+                            Text('Rabu'),
+                          ],
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _kamis,
+                              onChanged: (value) {
+                                setState(() {
+                                  _kamis = value;
+                                  if(_setiapHari){
+                                    _setiapHari = false;
+                                  }
+                                });
+                              },
+                            ),
+                            Text('Kamis'),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _jumat,
+                              onChanged: (value) {
+                                setState(() {
+                                  _jumat = value;
+                                  if(_setiapHari){
+                                    _setiapHari = false;
+                                  }
+                                });
+                              },
+                            ),
+                            Text('Jumat'),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _sabtu,
+                              onChanged: (value) {
+                                setState(() {
+                                  _sabtu = value;
+                                  if(_setiapHari){
+                                    _setiapHari = false;
+                                  }
+                                });
+                              },
+                            ),
+                            Text('Sabtu'),
+                          ],
+                        )
+                      ],
                     )
                   ],
                 ),
@@ -228,7 +359,9 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                   },
                 ),
               ],
-            ));
+            );
+          });
+        });
   }
 
   editDialog(Poliklinik poliklinik) {
@@ -238,10 +371,14 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
     _nama.text = poliklinik.namaPoli;
     _deskripsi.text = poliklinik.descPoli;
     _ratarata.text = poliklinik.rerataWaktuPelayanan.toString();
+    bool _setiapHari, _senin, _selasa, _rabu, _kamis, _jumat, _sabtu;
+    _setiapHari = _senin = _selasa = _rabu = _kamis = _jumat = _sabtu = true;
 
     showDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
               title: Row(
                 children: [
                   Icon(Icons.edit),
@@ -296,6 +433,133 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                         hint: "Masukkan perkiraan durasi dalam satuan menit",
                         controller: _ratarata,
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Hari Pelayanan Poliklinik',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _setiapHari,
+                          onChanged: (value) {
+                            setState(() {
+                              _setiapHari = value;
+                              _senin = _selasa = _rabu =
+                                  _kamis = _jumat = _sabtu = _setiapHari;
+                            });
+                          },
+                        ),
+                        Text('Setiap Hari'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _senin,
+                              onChanged: (value) {
+                                setState(() {
+                                  _senin = value;
+                                  if(_setiapHari){
+                                    _setiapHari = false;
+                                  }
+                                });
+                              },
+                            ),
+                            Text('Senin'),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _selasa,
+                              onChanged: (value) {
+                                setState(() {
+                                  _selasa = value;
+                                  if(_setiapHari){
+                                    _setiapHari = false;
+                                  }
+                                });
+                              },
+                            ),
+                            Text('Selasa'),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _rabu,
+                              onChanged: (value) {
+                                setState(() {
+                                  _rabu = value;
+                                  if(_setiapHari){
+                                    _setiapHari = false;
+                                  }
+                                });
+                              },
+                            ),
+                            Text('Rabu'),
+                          ],
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _kamis,
+                              onChanged: (value) {
+                                setState(() {
+                                  _kamis = value;
+                                  if(_setiapHari){
+                                    _setiapHari = false;
+                                  }
+                                });
+                              },
+                            ),
+                            Text('Kamis'),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _jumat,
+                              onChanged: (value) {
+                                setState(() {
+                                  _jumat = value;
+                                  if(_setiapHari){
+                                    _setiapHari = false;
+                                  }
+                                });
+                              },
+                            ),
+                            Text('Jumat'),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _sabtu,
+                              onChanged: (value) {
+                                setState(() {
+                                  _sabtu = value;
+                                  if(_setiapHari){
+                                    _setiapHari = false;
+                                  }
+                                });
+                              },
+                            ),
+                            Text('Sabtu'),
+                          ],
+                        )
+                      ],
                     )
                   ],
                 ),
@@ -311,16 +575,15 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    Navigator.pop(context);
                     Poliklinik aPoliklinik = Poliklinik(
                         idPoli: int.parse(poliklinik.idPoli.toString()),
                         namaPoli: _nama.text.toString(),
                         descPoli: _deskripsi.text.toString(),
-                        statusPoli:
-                            int.parse(poliklinik.statusPoli.toString()),
+                        statusPoli: int.parse(poliklinik.statusPoli.toString()),
                         rerataWaktuPelayanan: int.parse(_ratarata.text));
                     loading(context);
                     RequestApi.updatePoliklinik(aPoliklinik).then((value) {
+                      Navigator.pop(context);
                       Navigator.pop(context);
                       if (value) {
                         print("Sukses");
@@ -344,56 +607,19 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                   },
                 ),
               ],
-            ));
-  }
-
-  deleteDialog(Poliklinik poliklinik) {
-    showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              title: Row(
-                children: [
-                  Icon(Icons.delete),
-                  SizedBox(width: 8.0),
-                  Text("Hapus Poliklinik"),
-                ],
-              ),
-              content: Text("Anda yakin ingin menghapus data Poliklinik ini?"),
-              actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.red, // background
-                    onPrimary: Colors.white, // foreground
-                  ),
-                  child: Text(
-                    'Hapus',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey, // background
-                    onPrimary: Colors.white, // foreground
-                  ),
-                  child: Text(
-                    'Tidak',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ));
+            );
+          });
+        });
   }
 
   infoDialog(Poliklinik poliklinik) {
+    bool _setiapHari, _senin, _selasa, _rabu, _kamis, _jumat, _sabtu;
+    _setiapHari = _senin = _selasa = _rabu = _kamis = _jumat = _sabtu = true;
     showDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        builder: (context){
+          return StatefulBuilder(builder: (context,setState){
+            return AlertDialog(
               title: Row(
                 children: [
                   Icon(Icons.info),
@@ -462,6 +688,72 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                       child: Text(
                           (poliklinik.idPoli == 1) ? "Aktif" : "Tidak Aktif"),
                     ),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _setiapHari, onChanged: null,
+                        ),
+                        Text('Setiap Hari'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _senin, onChanged: null,
+                            ),
+                            Text('Senin'),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _selasa, onChanged: null,
+                            ),
+                            Text('Selasa'),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _rabu, onChanged: null,
+                            ),
+                            Text('Rabu'),
+                          ],
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _kamis, onChanged: null,
+                            ),
+                            Text('Kamis'),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _jumat, onChanged: null,
+                            ),
+                            Text('Jumat'),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _sabtu, onChanged: null,
+                            ),
+                            Text('Sabtu'),
+                          ],
+                        )
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -480,6 +772,8 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                   },
                 )
               ],
-            ));
+            );
+          });
+        });
   }
 }
