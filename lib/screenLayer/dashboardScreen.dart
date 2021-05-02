@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
+import 'package:web_antrean_babatan/utils/loading.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -189,7 +190,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left : 16.0, right: 16.0),
+                            padding:
+                                const EdgeInsets.only(left: 16.0, right: 16.0),
                             child: CheckboxListTile(
                               controlAffinity: ListTileControlAffinity.trailing,
                               title: Text("Edit"),
@@ -245,15 +247,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         title: Text(daftarPoli[index].namaPoli),
                                         secondary:
                                             const Icon(Icons.local_hospital),
-                                        onChanged: (edit) ? (bool value) {
-                                          setState(() {
-                                            (value)
-                                                ? daftarPoli[index].statusPoli =
-                                            1
-                                                : daftarPoli[index].statusPoli =
-                                            0;
-                                          });
-                                        } : null,
+                                        onChanged: (edit)
+                                            ? (bool value) {
+                                                setState(() {
+                                                  (value)
+                                                      ? daftarPoli[index]
+                                                          .statusPoli = 1
+                                                      : daftarPoli[index]
+                                                          .statusPoli = 0;
+                                                });
+                                              }
+                                            : null,
                                         value:
                                             (daftarPoli[index].statusPoli == 1)
                                                 ? true

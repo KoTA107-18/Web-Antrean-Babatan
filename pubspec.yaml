@@ -32,6 +32,7 @@ dependencies:
   shared_preferences:
   http:
   fluttertoast:
+  flutter_bloc:
 
 dev_dependencies:
   flutter_test:

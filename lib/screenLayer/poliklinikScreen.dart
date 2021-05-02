@@ -232,7 +232,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _senin = value;
-                                  if(_setiapHari){
+                                  if (_setiapHari) {
                                     _setiapHari = false;
                                   }
                                 });
@@ -248,7 +248,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _selasa = value;
-                                  if(_setiapHari){
+                                  if (_setiapHari) {
                                     _setiapHari = false;
                                   }
                                 });
@@ -264,7 +264,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _rabu = value;
-                                  if(_setiapHari){
+                                  if (_setiapHari) {
                                     _setiapHari = false;
                                   }
                                 });
@@ -285,7 +285,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _kamis = value;
-                                  if(_setiapHari){
+                                  if (_setiapHari) {
                                     _setiapHari = false;
                                   }
                                 });
@@ -301,7 +301,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _jumat = value;
-                                  if(_setiapHari){
+                                  if (_setiapHari) {
                                     _setiapHari = false;
                                   }
                                 });
@@ -317,7 +317,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _sabtu = value;
-                                  if(_setiapHari){
+                                  if (_setiapHari) {
                                     _setiapHari = false;
                                   }
                                 });
@@ -465,7 +465,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _senin = value;
-                                  if(_setiapHari){
+                                  if (_setiapHari) {
                                     _setiapHari = false;
                                   }
                                 });
@@ -481,7 +481,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _selasa = value;
-                                  if(_setiapHari){
+                                  if (_setiapHari) {
                                     _setiapHari = false;
                                   }
                                 });
@@ -497,7 +497,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _rabu = value;
-                                  if(_setiapHari){
+                                  if (_setiapHari) {
                                     _setiapHari = false;
                                   }
                                 });
@@ -518,7 +518,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _kamis = value;
-                                  if(_setiapHari){
+                                  if (_setiapHari) {
                                     _setiapHari = false;
                                   }
                                 });
@@ -534,7 +534,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _jumat = value;
-                                  if(_setiapHari){
+                                  if (_setiapHari) {
                                     _setiapHari = false;
                                   }
                                 });
@@ -550,7 +550,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _sabtu = value;
-                                  if(_setiapHari){
+                                  if (_setiapHari) {
                                     _setiapHari = false;
                                   }
                                 });
@@ -617,8 +617,8 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
     _setiapHari = _senin = _selasa = _rabu = _kamis = _jumat = _sabtu = true;
     showDialog(
         context: context,
-        builder: (context){
-          return StatefulBuilder(builder: (context,setState){
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Row(
                 children: [
@@ -691,7 +691,8 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     Row(
                       children: [
                         Checkbox(
-                          value: _setiapHari, onChanged: null,
+                          value: _setiapHari,
+                          onChanged: null,
                         ),
                         Text('Setiap Hari'),
                       ],
@@ -702,7 +703,8 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                         Row(
                           children: [
                             Checkbox(
-                              value: _senin, onChanged: null,
+                              value: _senin,
+                              onChanged: null,
                             ),
                             Text('Senin'),
                           ],
@@ -710,7 +712,8 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                         Row(
                           children: [
                             Checkbox(
-                              value: _selasa, onChanged: null,
+                              value: _selasa,
+                              onChanged: null,
                             ),
                             Text('Selasa'),
                           ],
@@ -718,7 +721,8 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                         Row(
                           children: [
                             Checkbox(
-                              value: _rabu, onChanged: null,
+                              value: _rabu,
+                              onChanged: null,
                             ),
                             Text('Rabu'),
                           ],
@@ -731,7 +735,8 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                         Row(
                           children: [
                             Checkbox(
-                              value: _kamis, onChanged: null,
+                              value: _kamis,
+                              onChanged: null,
                             ),
                             Text('Kamis'),
                           ],
@@ -739,7 +744,8 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                         Row(
                           children: [
                             Checkbox(
-                              value: _jumat, onChanged: null,
+                              value: _jumat,
+                              onChanged: null,
                             ),
                             Text('Jumat'),
                           ],
@@ -747,7 +753,8 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                         Row(
                           children: [
                             Checkbox(
-                              value: _sabtu, onChanged: null,
+                              value: _sabtu,
+                              onChanged: null,
                             ),
                             Text('Sabtu'),
                           ],

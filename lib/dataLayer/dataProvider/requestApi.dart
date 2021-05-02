@@ -29,8 +29,24 @@ class RequestApi {
 
   static Future<bool> updatePoliklinik(Poliklinik poliklinik) async {
     var uri = Uri.http(apiUrl, 'poliklinik/ubah');
-    print(poliklinik.toJson());
     var result = await http.put(uri, body: poliklinik.toJson());
+    if (result.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> updateStatus(List<Poliklinik> daftarPoliklinik) async {
+    var uri = Uri.http(apiUrl, 'poliklinik/status');
+    List data = [];
+    for (var i in daftarPoliklinik) {
+      data.add({
+        'id_poli': i.idPoli.toString(),
+        'status_poli': i.statusPoli.toString()
+      });
+    }
+    var result = await http.put(uri, body: data);
     if (result.statusCode == 200) {
       return true;
     } else {
