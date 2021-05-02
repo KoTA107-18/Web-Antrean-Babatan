@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:web_antrean_babatan/network/api.dart';
+import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
 import 'package:web_antrean_babatan/utils/color.dart';
-import 'package:web_antrean_babatan/model/poliklinik.dart';
+import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
+import 'package:web_antrean_babatan/utils/loading.dart';
 import 'package:web_antrean_babatan/utils/textFieldModified.dart';
 
 class PoliklinikScreen extends StatefulWidget {
@@ -93,17 +94,21 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                         .map((poliklinik) => DataRow(
                                 color: MaterialStateProperty.resolveWith<Color>(
                                     (Set<MaterialState> states) {
-                                  return Colors.white;
+                                  if(poliklinik.statusPoli == 1){
+                                    return Colors.white;
+                                  } else {
+                                    return Colors.white70;
+                                  }
                                 }),
                                 cells: [
-                                  DataCell(Text(poliklinik.nama_poli)),
+                                  DataCell(Text(poliklinik.namaPoli)),
                                   DataCell(Text(
                                     "Belum diatur",
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   )),
                                   DataCell(Text(
-                                      poliklinik.desc_poli.substring(0, 50) +
+                                      poliklinik.descPoli.substring(0, 50) +
                                           " ...")),
                                   DataCell(Row(
                                     children: [
@@ -230,9 +235,9 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
     TextEditingController _nama = TextEditingController();
     TextEditingController _deskripsi = TextEditingController();
     TextEditingController _ratarata = TextEditingController();
-    _nama.text = poliklinik.nama_poli;
-    _deskripsi.text = poliklinik.desc_poli;
-    _ratarata.text = poliklinik.rerata_waktu_pelayanan.toString();
+    _nama.text = poliklinik.namaPoli;
+    _deskripsi.text = poliklinik.descPoli;
+    _ratarata.text = poliklinik.rerataWaktuPelayanan.toString();
 
     showDialog(
         context: context,
@@ -307,6 +312,22 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                   ),
                   onPressed: () {
                     Navigator.pop(context);
+                    Poliklinik aPoliklinik = Poliklinik(
+                        idPoli: int.parse(poliklinik.idPoli.toString()),
+                        namaPoli: _nama.text.toString(),
+                        descPoli: _deskripsi.text.toString(),
+                        statusPoli:
+                            int.parse(poliklinik.statusPoli.toString()),
+                        rerataWaktuPelayanan: int.parse(_ratarata.text));
+                    loading(context);
+                    RequestApi.updatePoliklinik(aPoliklinik).then((value) {
+                      Navigator.pop(context);
+                      if (value) {
+                        print("Sukses");
+                      } else {
+                        print("Gagal");
+                      }
+                    });
                   },
                 ),
                 ElevatedButton(
@@ -394,7 +415,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Text(poliklinik.id_poli.toString()),
+                      child: Text(poliklinik.idPoli.toString()),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -404,7 +425,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Text(poliklinik.nama_poli.toString()),
+                      child: Text(poliklinik.namaPoli.toString()),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -415,7 +436,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: Text(
-                        poliklinik.desc_poli.toString(),
+                        poliklinik.descPoli.toString(),
                         textAlign: TextAlign.justify,
                       ),
                     ),
@@ -427,7 +448,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Text(poliklinik.rerata_waktu_pelayanan.toString() +
+                      child: Text(poliklinik.rerataWaktuPelayanan.toString() +
                           " Menit"),
                     ),
                     Padding(
@@ -439,7 +460,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: Text(
-                          (poliklinik.id_poli == 1) ? "Aktif" : "Tidak Aktif"),
+                          (poliklinik.idPoli == 1) ? "Aktif" : "Tidak Aktif"),
                     ),
                   ],
                 ),

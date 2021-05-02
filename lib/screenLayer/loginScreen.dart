@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:web_antrean_babatan/network/api.dart';
-import 'package:web_antrean_babatan/screen/mainScreen.dart';
-import 'package:web_antrean_babatan/session/sharedPref.dart';
+import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
+import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
 import 'package:web_antrean_babatan/utils/color.dart';
 import 'package:web_antrean_babatan/utils/loading.dart';
 import 'package:web_antrean_babatan/utils/textFieldModified.dart';
+
+import 'mainScreen.dart';
 
 class Login extends StatefulWidget {
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:web_antrean_babatan/model/poliklinik.dart';
-import 'package:web_antrean_babatan/network/api.dart';
+import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
+import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -86,7 +86,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       padding: EdgeInsets.fromLTRB(
                                           8.0, 0.0, 8.0, 12.0),
                                       child: Text(
-                                        daftarPoli[index].nama_poli,
+                                        daftarPoli[index].namaPoli,
                                         style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
@@ -194,16 +194,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               CheckboxListTile(
                                 controlAffinity:
                                     ListTileControlAffinity.trailing,
-                                title: Text(i.nama_poli),
+                                title: Text(i.namaPoli),
                                 secondary: const Icon(Icons.local_hospital),
                                 onChanged: (bool value) {
                                   setState(() {
                                     (value)
-                                        ? i.status_poli = 1
-                                        : i.status_poli = 0;
+                                        ? i.statusPoli = 1
+                                        : i.statusPoli = 0;
                                   });
                                 },
-                                value: (i.status_poli == 1) ? true : false,
+                                value: (i.statusPoli == 1) ? true : false,
                               ),
                             Padding(
                               padding: const EdgeInsets.all(16.0),

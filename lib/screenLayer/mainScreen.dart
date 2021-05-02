@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:web_antrean_babatan/screen/akunPerawatScreen.dart';
-import 'package:web_antrean_babatan/screen/antreanScreen.dart';
-import 'package:web_antrean_babatan/screen/loginScreen.dart';
-import 'package:web_antrean_babatan/screen/poliklinikScreen.dart';
-import 'package:web_antrean_babatan/screen/riwayatScreen.dart';
-import 'package:web_antrean_babatan/screen/tambahAntreanScreen.dart';
-import 'package:web_antrean_babatan/session/sharedPref.dart';
+import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
 import 'package:web_antrean_babatan/utils/color.dart';
 
+import 'akunPerawatScreen.dart';
+import 'antreanScreen.dart';
 import 'antreanSementaraScreen.dart';
 import 'dashboardScreen.dart';
+import 'loginScreen.dart';
+import 'poliklinikScreen.dart';
+import 'riwayatScreen.dart';
+import 'tambahAntreanScreen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
