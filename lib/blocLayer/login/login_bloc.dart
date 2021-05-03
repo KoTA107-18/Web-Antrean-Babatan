@@ -2,36 +2,39 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  String username;
-  String password;
+  bool isVerified = false;
+  String username, password, result;
   LoginBloc() : super(StateLoginInitial());
 
   @override
   Stream<LoginState> mapEventToState(
     LoginEvent event,
   ) async* {
-    if(event is EventIsiUsername){
+    if(event is EventTapLogin){
       username = event.username;
-      yield StateLoginIsiUsername(username: username);
-    } else if(event is EventIsiPassword){
       password = event.password;
-      yield LoginIsiPasswordState(password: password);
-    } else {
       yield StateLoginLoading();
-      // Eksekusi load.
-      print(username);
-      print(password);
-      Future.delayed(Duration(milliseconds: 500));
-      var hasil = true;
-      if(hasil){
-        yield StateLoginSuccess(message: "Login berhasil");
+      await RequestApi.loginAdministrator(username, password).then((value){
+        if(value){
+          isVerified = true;
+          result = "Login berhasil!";
+        } else {
+          result = "Login gagal, akun tidak dikenali";
+        }
+
+      }).catchError((e){
+        result = "Gagal : " + e.toString();
+      });
+      if(isVerified){
+        yield StateLoginSuccess(message: result);
       } else {
-        yield StateLoginFailed(errorMessage: "Login gagal!");
+        yield StateLoginFailed(errorMessage: result);
       }
     }
   }

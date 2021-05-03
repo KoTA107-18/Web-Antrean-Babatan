@@ -5,14 +5,7 @@ abstract class LoginEvent {
   const LoginEvent();
 }
 
-class EventIsiUsername extends LoginEvent {
-  final String username;
-  EventIsiUsername({@required this.username});
+class EventTapLogin extends LoginEvent {
+  final String username, password;
+  EventTapLogin({@required this.username, @required this.password});
 }
-
-class EventIsiPassword extends LoginEvent {
-  final String password;
-  EventIsiPassword({@required this.password});
-}
-
-class EventTapLogin extends LoginEvent {}
