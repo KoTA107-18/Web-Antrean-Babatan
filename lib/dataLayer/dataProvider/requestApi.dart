@@ -17,7 +17,7 @@ class RequestApi {
     }
   }
 
-  static getAllPoliklinik() async {
+  static Future getAllPoliklinik() async {
     var uri = Uri.http(apiUrl, 'poliklinik');
     var result = await http.get(uri);
     if (result.statusCode == 200) {

@@ -1,0 +1,24 @@
+part of 'dashboard_bloc.dart';
+
+@immutable
+abstract class DashboardState {
+  const DashboardState();
+}
+
+class StateDashboardLoading extends DashboardState {}
+
+class StateDashboardSuccess extends DashboardState {
+  final List<Poliklinik> daftarPoli;
+  StateDashboardSuccess({@required this.daftarPoli});
+}
+
+class StateDashboardFailed extends DashboardState {
+  final String messageFailed;
+  StateDashboardFailed({@required this.messageFailed});
+}
+
+class StateDashboardPortalLoading extends DashboardState {}
+
+class StateDashboardPortalSuccess extends DashboardState {}
+
+class StateDashboardPortalFailed extends DashboardState {}
