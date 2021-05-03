@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
+import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -20,8 +21,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       username = event.username;
       password = event.password;
       yield StateLoginLoading();
-      await RequestApi.loginAdministrator(username, password).then((value){
+      await RequestApi.loginAdministrator(username, password).then((value) async {
         if(value){
+          await SharedPref.saveLogin(username);
           isVerified = true;
           result = "Login berhasil!";
         } else {
