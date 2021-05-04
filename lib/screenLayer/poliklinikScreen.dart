@@ -141,6 +141,10 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
   addDialog() {
     bool _setiapHari, _senin, _selasa, _rabu, _kamis, _jumat, _sabtu;
     _setiapHari = _senin = _selasa = _rabu = _kamis = _jumat = _sabtu = false;
+    validateCheckBox() {
+      _setiapHari = (_senin && _selasa && _rabu && _kamis && _jumat && _sabtu);
+    }
+
     showDialog(
         context: context,
         builder: (context) {
@@ -156,8 +160,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
               content: Container(
                 width: MediaQuery.of(context).size.width / 2,
                 height: MediaQuery.of(context).size.height / 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: ListView(
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -232,9 +235,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _senin = value;
-                                  if (_setiapHari) {
-                                    _setiapHari = false;
-                                  }
+                                  validateCheckBox();
                                 });
                               },
                             ),
@@ -248,9 +249,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _selasa = value;
-                                  if (_setiapHari) {
-                                    _setiapHari = false;
-                                  }
+                                  validateCheckBox();
                                 });
                               },
                             ),
@@ -264,9 +263,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _rabu = value;
-                                  if (_setiapHari) {
-                                    _setiapHari = false;
-                                  }
+                                  validateCheckBox();
                                 });
                               },
                             ),
@@ -285,9 +282,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _kamis = value;
-                                  if (_setiapHari) {
-                                    _setiapHari = false;
-                                  }
+                                  validateCheckBox();
                                 });
                               },
                             ),
@@ -301,9 +296,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _jumat = value;
-                                  if (_setiapHari) {
-                                    _setiapHari = false;
-                                  }
+                                  validateCheckBox();
                                 });
                               },
                             ),
@@ -317,9 +310,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _sabtu = value;
-                                  if (_setiapHari) {
-                                    _setiapHari = false;
-                                  }
+                                  validateCheckBox();
                                 });
                               },
                             ),
