@@ -17,11 +17,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   Stream<DashboardState> mapEventToState(
     DashboardEvent event,
   ) async* {
-    if(event is EventDashboardGetPoli){
+    if (event is EventDashboardGetPoli) {
       yield StateDashboardLoading();
       try {
-        await RequestApi.getAllPoliklinik().then((snapshot){
-          if(snapshot != null){
+        await RequestApi.getAllPoliklinik().then((snapshot) {
+          if (snapshot != null) {
             var resultSnapshot = snapshot as List;
             daftarPoli = resultSnapshot
                 .map((aJson) => Poliklinik.fromJson(aJson))
@@ -29,27 +29,37 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           }
         });
         yield StateDashboardSuccess(daftarPoli: daftarPoli);
-      } catch(e) {
+      } catch (e) {
         yield StateDashboardFailed(messageFailed: e.toString());
       }
     }
 
-    if(event is EventDashboardChangeStatusPoli){
-      if(daftarPoli[event.indexPoli].statusPoli == 1){
+    if (event is EventDashboardChangeStatusPoli) {
+      if (daftarPoli[event.indexPoli].statusPoli == 1) {
         daftarPoli[event.indexPoli].statusPoli = 0;
       } else {
         daftarPoli[event.indexPoli].statusPoli = 1;
       }
     }
 
-    if(event is EventDashboardBukaPortal){
-      for(var i in daftarPoli)
-        print(i.namaPoli + " " + i.statusPoli.toString());
-    }
-
-    if(event is EventDashboardTutupPortal){
-      for(var i in daftarPoli)
-        print(i.namaPoli + " " + i.statusPoli.toString());
+    if ((event is EventDashboardBukaPortal) ||
+        (event is EventDashboardTutupPortal)) {
+      yield StateDashboardLoading();
+      try {
+        await RequestApi.updateStatus(daftarPoli).then((value) {
+          RequestApi.getAllPoliklinik().then((snapshot) {
+            if (snapshot != null) {
+              var resultSnapshot = snapshot as List;
+              daftarPoli = resultSnapshot
+                  .map((aJson) => Poliklinik.fromJson(aJson))
+                  .toList();
+            }
+          });
+        });
+        yield StateDashboardSuccess(daftarPoli: daftarPoli);
+      } catch (e) {
+        yield StateDashboardFailed(messageFailed: e.toString());
+      }
     }
   }
 }

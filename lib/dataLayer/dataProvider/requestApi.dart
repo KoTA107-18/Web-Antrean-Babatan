@@ -41,12 +41,13 @@ class RequestApi {
     var uri = Uri.https(apiUrl, 'poliklinik/status');
     List data = [];
     for (var i in daftarPoliklinik) {
-      data.add({
-        'id_poli': i.idPoli.toString(),
-        'status_poli': i.statusPoli.toString()
-      });
+      data.add({"id_poli": i.idPoli, "status_poli": i.statusPoli});
     }
-    var result = await http.put(uri, body: data);
+    var result = await http.put(uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(data));
     if (result.statusCode == 200) {
       return true;
     } else {

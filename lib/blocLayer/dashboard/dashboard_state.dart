@@ -16,9 +16,3 @@ class StateDashboardFailed extends DashboardState {
   final String messageFailed;
   StateDashboardFailed({@required this.messageFailed});
 }
-
-class StateDashboardPortalLoading extends DashboardState {}
-
-class StateDashboardPortalSuccess extends DashboardState {}
-
-class StateDashboardPortalFailed extends DashboardState {}

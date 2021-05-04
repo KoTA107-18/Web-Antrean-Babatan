@@ -10,7 +10,6 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final DashboardBloc dashboardBloc = DashboardBloc();
-
   @override
   void initState() {
     dashboardBloc.add(EventDashboardGetPoli());
@@ -28,7 +27,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           padding: EdgeInsets.symmetric(horizontal: 18, vertical: 18),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: Colors.white,
+            color: (daftarPoli[index].statusPoli == 1)
+                ? Colors.white
+                : Colors.grey[300],
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(.2),
@@ -108,80 +109,59 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  _openPortalDialog(BuildContext context) {
+  _portalDialog(BuildContext context, bool isOpen) {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: Text("Buka Portal"),
-          content: Text("Anda yakin membuka portal Puskesmas yang dipilih?"),
-          actions: <Widget>[
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.teal, // background
-                onPrimary: Colors.white, // foreground
-              ),
-              child: Text(
-                'Ya',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                dashboardBloc.add(EventDashboardBukaPortal());
-                Navigator.pop(context);
-              },
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.grey, // background
-                onPrimary: Colors.white, // foreground
-              ),
-              child: Text(
-                'Tidak',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ));
-  }
-
-  _closePortalDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: Text("Tutup Portal"),
-          content: Text("Anda yakin menutup portal Puskesmas yang dipilih?"),
-          actions: <Widget>[
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.red, // background
-                onPrimary: Colors.white, // foreground
-              ),
-              child: Text(
-                'Ya',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                dashboardBloc.add(EventDashboardTutupPortal());
-                Navigator.pop(context);
-              },
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.grey, // background
-                onPrimary: Colors.white, // foreground
-              ),
-              child: Text(
-                'Tidak',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ));
+              title: (isOpen) ? Text("Buka Portal") : Text("Tutup Portal"),
+              content: (isOpen)
+                  ? Text("Anda yakin membuka portal Puskesmas yang dipilih?")
+                  : Text("Anda yakin menutup portal Puskesmas yang dipilih?"),
+              actions: <Widget>[
+                (isOpen)
+                    ? ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.teal, // background
+                          onPrimary: Colors.white, // foreground
+                        ),
+                        child: Text(
+                          'Ya',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () {
+                          dashboardBloc.add(EventDashboardBukaPortal());
+                          Navigator.pop(context);
+                        },
+                      )
+                    : ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.red, // background
+                          onPrimary: Colors.white, // foreground
+                        ),
+                        child: Text(
+                          'Ya',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () {
+                          dashboardBloc.add(EventDashboardTutupPortal());
+                          Navigator.pop(context);
+                        },
+                      ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.grey, // background
+                    onPrimary: Colors.white, // foreground
+                  ),
+                  child: Text(
+                    'Tidak',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ));
   }
 
   @override
@@ -273,7 +253,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     flex: 2,
                                     child: ElevatedButton(
                                         onPressed: () {
-                                          _openPortalDialog(context);
+                                          _portalDialog(context, true);
                                         },
                                         child: Text("Buka Portal")),
                                   ),
@@ -286,7 +266,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           onPrimary: Colors.white, // foreground
                                         ),
                                         onPressed: () {
-                                          _closePortalDialog(context);
+                                          _portalDialog(context, false);
                                         },
                                         child: Text("Tutup Portal")),
                                   ),
