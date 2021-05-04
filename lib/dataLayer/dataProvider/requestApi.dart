@@ -7,7 +7,7 @@ class RequestApi {
 
   static Future<bool> loginAdministrator(
       String username, String password) async {
-    var uri = Uri.http(apiUrl, 'administrator/login',
+    var uri = Uri.https(apiUrl, 'administrator/login',
         {"username": username, "password": password});
     var result = await http.get(uri);
     if (result.statusCode == 200) {
@@ -18,7 +18,7 @@ class RequestApi {
   }
 
   static Future getAllPoliklinik() async {
-    var uri = Uri.http(apiUrl, 'poliklinik');
+    var uri = Uri.https(apiUrl, 'poliklinik');
     var result = await http.get(uri);
     if (result.statusCode == 200) {
       return json.decode(result.body);
@@ -28,7 +28,7 @@ class RequestApi {
   }
 
   static Future<bool> updatePoliklinik(Poliklinik poliklinik) async {
-    var uri = Uri.http(apiUrl, 'poliklinik/ubah');
+    var uri = Uri.https(apiUrl, 'poliklinik/ubah');
     var result = await http.put(uri, body: poliklinik.toJson());
     if (result.statusCode == 200) {
       return true;
@@ -38,7 +38,7 @@ class RequestApi {
   }
 
   static Future<bool> updateStatus(List<Poliklinik> daftarPoliklinik) async {
-    var uri = Uri.http(apiUrl, 'poliklinik/status');
+    var uri = Uri.https(apiUrl, 'poliklinik/status');
     List data = [];
     for (var i in daftarPoliklinik) {
       data.add({
