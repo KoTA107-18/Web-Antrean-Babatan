@@ -12,11 +12,6 @@ class StatePoliklinikSuccess extends PoliklinikState {
   StatePoliklinikSuccess({@required this.daftarPoli});
 }
 
-class StatePoliklinikAddPoli extends PoliklinikState {
-  final List<Poliklinik> daftarPoli;
-  StatePoliklinikAddPoli({@required this.daftarPoli});
-}
-
 class StatePoliklinikFailed extends PoliklinikState {
   final String messageFailed;
   StatePoliklinikFailed({@required this.messageFailed});

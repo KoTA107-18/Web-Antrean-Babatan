@@ -110,60 +110,48 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (_) => _poliklinikBloc,
-        child: BlocListener<PoliklinikBloc, PoliklinikState>(
-          listener: (context, state) {
-            if (state is EventPoliklinikAddPoli) {
-              addDialog();
-              Navigator.pop(context);
-            }
-          },
-          child: Scaffold(
-              backgroundColor: Colors.teal[50],
-              appBar: AppBar(
-                leading: Icon(Icons.local_hospital),
-                title: Text("Daftar Poliklinik"),
-                actions: [
-                  Container(
-                    padding: EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.white, // background
-                        onPrimary: ColorTheme.greenDark, // foreground
-                      ),
-                      child: Text(
-                        'Tambah Data',
-                        style: TextStyle(color: ColorTheme.greenDark),
-                      ),
-                      onPressed: () {
-                        addDialog();
-                      },
+        child: Scaffold(
+            backgroundColor: Colors.teal[50],
+            appBar: AppBar(
+              leading: Icon(Icons.local_hospital),
+              title: Text("Daftar Poliklinik"),
+              actions: [
+                Container(
+                  padding: EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white, // background
+                      onPrimary: ColorTheme.greenDark, // foreground
                     ),
-                  )
-                ],
-              ),
-              body: BlocBuilder<PoliklinikBloc, PoliklinikState>(
-                bloc: _poliklinikBloc,
-                builder: (BuildContext context, state) {
-                  if (state is StatePoliklinikSuccess) {
-                    return Container(
-                        padding: EdgeInsets.all(20.0),
-                        child: daftarPoli(state.daftarPoli));
-                  } else if (state is StatePoliklinikAddPoli) {
-                    return Container(
-                        padding: EdgeInsets.all(20.0),
-                        child: daftarPoli(state.daftarPoli));
-                  } else if (state is StatePoliklinikFailed) {
-                    return Center(
-                      child: Text(state.messageFailed),
-                    );
-                  } else {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
-              )),
-        ));
+                    child: Text(
+                      'Tambah Data',
+                      style: TextStyle(color: ColorTheme.greenDark),
+                    ),
+                    onPressed: () {
+                      addDialog();
+                    },
+                  ),
+                )
+              ],
+            ),
+            body: BlocBuilder<PoliklinikBloc, PoliklinikState>(
+              bloc: _poliklinikBloc,
+              builder: (BuildContext context, state) {
+                if (state is StatePoliklinikSuccess) {
+                  return Container(
+                      padding: EdgeInsets.all(20.0),
+                      child: daftarPoli(state.daftarPoli));
+                } else if (state is StatePoliklinikFailed) {
+                  return Center(
+                    child: Text(state.messageFailed),
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            )));
   }
 
   addDialog() {
@@ -181,7 +169,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
       Map<String, dynamic> dataPoliklinik = {
         "nama_poli": _nama.text,
         "desc_poli": _desc.text,
-        "status_poli": 1,
+        "status_poli": 0,
         "rerata_waktu_pelayanan": _rataRata.text,
         "data_hari": [_senin, _selasa, _rabu, _kamis, _jumat, _sabtu]
       };
@@ -410,6 +398,23 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
     bool _setiapHari, _senin, _selasa, _rabu, _kamis, _jumat, _sabtu;
     _setiapHari = _senin = _selasa = _rabu = _kamis = _jumat = _sabtu = true;
 
+    validateCheckBox() {
+      _setiapHari = (_senin && _selasa && _rabu && _kamis && _jumat && _sabtu);
+    }
+
+    void submitPoliklinik() {
+      Map<String, dynamic> dataPoliklinik = {
+        "id_poli": poliklinik.idPoli,
+        "nama_poli": _nama.text,
+        "desc_poli": _deskripsi.text,
+        "status_poli": poliklinik.statusPoli,
+        "rerata_waktu_pelayanan": _ratarata.text,
+        "data_hari": [_senin, _selasa, _rabu, _kamis, _jumat, _sabtu]
+      };
+      _poliklinikBloc
+          .add(EventPoliklinikEditSubmitPoli(dataPoliklinik: dataPoliklinik));
+    }
+
     showDialog(
         context: context,
         builder: (context) {
@@ -425,8 +430,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
               content: Container(
                 width: MediaQuery.of(context).size.width / 2,
                 height: MediaQuery.of(context).size.height / 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: ListView(
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -501,9 +505,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _senin = value;
-                                  if (_setiapHari) {
-                                    _setiapHari = false;
-                                  }
+                                  validateCheckBox();
                                 });
                               },
                             ),
@@ -517,9 +519,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _selasa = value;
-                                  if (_setiapHari) {
-                                    _setiapHari = false;
-                                  }
+                                  validateCheckBox();
                                 });
                               },
                             ),
@@ -533,9 +533,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _rabu = value;
-                                  if (_setiapHari) {
-                                    _setiapHari = false;
-                                  }
+                                  validateCheckBox();
                                 });
                               },
                             ),
@@ -554,9 +552,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _kamis = value;
-                                  if (_setiapHari) {
-                                    _setiapHari = false;
-                                  }
+                                  validateCheckBox();
                                 });
                               },
                             ),
@@ -570,9 +566,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _jumat = value;
-                                  if (_setiapHari) {
-                                    _setiapHari = false;
-                                  }
+                                  validateCheckBox();
                                 });
                               },
                             ),
@@ -586,9 +580,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _sabtu = value;
-                                  if (_setiapHari) {
-                                    _setiapHari = false;
-                                  }
+                                  validateCheckBox();
                                 });
                               },
                             ),
@@ -611,22 +603,8 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    Poliklinik aPoliklinik = Poliklinik(
-                        idPoli: int.parse(poliklinik.idPoli.toString()),
-                        namaPoli: _nama.text.toString(),
-                        descPoli: _deskripsi.text.toString(),
-                        statusPoli: int.parse(poliklinik.statusPoli.toString()),
-                        rerataWaktuPelayanan: int.parse(_ratarata.text));
-                    loading(context);
-                    RequestApi.updatePoliklinik(aPoliklinik).then((value) {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      if (value) {
-                        print("Sukses");
-                      } else {
-                        print("Gagal");
-                      }
-                    });
+                    Navigator.pop(context);
+                    submitPoliklinik();
                   },
                 ),
                 ElevatedButton(
@@ -666,8 +644,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
               content: Container(
                 width: MediaQuery.of(context).size.width / 2,
                 height: MediaQuery.of(context).size.height / 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: ListView(
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),

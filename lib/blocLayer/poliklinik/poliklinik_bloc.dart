@@ -33,14 +33,28 @@ class PoliklinikBloc extends Bloc<PoliklinikEvent, PoliklinikState> {
       }
     }
 
-    if (event is EventPoliklinikAddPoli) {
-      yield StatePoliklinikAddPoli(daftarPoli: daftarPoli);
-    }
-
     if (event is EventPoliklinikAddSubmitPoli) {
       yield StatePoliklinikLoading();
       try {
         await RequestApi.insertPoliklinik(event.dataPoliklinik);
+        await RequestApi.getAllPoliklinik().then((snapshot) {
+          if (snapshot != null) {
+            var resultSnapshot = snapshot as List;
+            daftarPoli = resultSnapshot
+                .map((aJson) => Poliklinik.fromJson(aJson))
+                .toList();
+          }
+        });
+        yield StatePoliklinikSuccess(daftarPoli: daftarPoli);
+      } catch (e) {
+        yield StatePoliklinikFailed(messageFailed: e.toString());
+      }
+    }
+
+    if (event is EventPoliklinikEditSubmitPoli) {
+      yield StatePoliklinikLoading();
+      try {
+        await RequestApi.updatePoliklinik(event.dataPoliklinik);
         await RequestApi.getAllPoliklinik().then((snapshot) {
           if (snapshot != null) {
             var resultSnapshot = snapshot as List;
