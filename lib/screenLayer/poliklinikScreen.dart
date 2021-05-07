@@ -114,6 +114,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
           listener: (context, state) {
             if (state is EventPoliklinikAddPoli) {
               addDialog();
+              Navigator.pop(context);
             }
           },
           child: Scaffold(
@@ -169,11 +170,23 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
     TextEditingController _nama = TextEditingController();
     TextEditingController _desc = TextEditingController();
     TextEditingController _rataRata = TextEditingController();
-    List<Map<String, int>> statusDaftarHari = [];
     bool _setiapHari, _senin, _selasa, _rabu, _kamis, _jumat, _sabtu;
     _setiapHari = _senin = _selasa = _rabu = _kamis = _jumat = _sabtu = false;
+
     validateCheckBox() {
       _setiapHari = (_senin && _selasa && _rabu && _kamis && _jumat && _sabtu);
+    }
+
+    void submitPoliklinik() {
+      Map<String, dynamic> dataPoliklinik = {
+        "nama_poli": _nama.text,
+        "desc_poli": _desc.text,
+        "status_poli": 1,
+        "rerata_waktu_pelayanan": _rataRata.text,
+        "data_hari": [_senin, _selasa, _rabu, _kamis, _jumat, _sabtu]
+      };
+      _poliklinikBloc
+          .add(EventPoliklinikAddSubmitPoli(dataPoliklinik: dataPoliklinik));
     }
 
     showDialog(
@@ -365,6 +378,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                   ),
                   onPressed: () {
                     Navigator.pop(context);
+                    submitPoliklinik();
                   },
                 ),
                 ElevatedButton(

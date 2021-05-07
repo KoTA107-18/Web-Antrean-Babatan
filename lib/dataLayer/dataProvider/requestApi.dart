@@ -27,6 +27,20 @@ class RequestApi {
     }
   }
 
+  static Future insertPoliklinik(Map<String, dynamic> dataPoliklinik) async {
+    var uri = Uri.https(apiUrl, 'poliklinik');
+    var result = await http.post(uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(dataPoliklinik));
+    if (result.statusCode == 200) {
+      return true;
+    } else {
+      return null;
+    }
+  }
+
   static Future<bool> updatePoliklinik(Poliklinik poliklinik) async {
     var uri = Uri.https(apiUrl, 'poliklinik/ubah');
     var result = await http.put(uri, body: poliklinik.toJson());
