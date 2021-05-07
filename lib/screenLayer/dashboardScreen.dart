@@ -191,6 +191,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
           body: BlocBuilder<DashboardBloc, DashboardState>(
+            bloc: dashboardBloc,
             builder: (BuildContext context, state) {
               if (state is StateDashboardLoading) {
                 return Center(child: CircularProgressIndicator());
@@ -274,6 +275,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                             ),
                             BlocBuilder<DashboardBloc, DashboardState>(
+                              bloc: dashboardBloc,
                               builder: (context, state) {
                                 if (state is StateDashboardSuccess) {
                                   return Expanded(
