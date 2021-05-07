@@ -32,5 +32,9 @@ class PoliklinikBloc extends Bloc<PoliklinikEvent, PoliklinikState> {
         yield StatePoliklinikFailed(messageFailed: e.toString());
       }
     }
+
+    if (event is EventPoliklinikAddPoli) {
+      yield StatePoliklinikAddPoli(daftarPoli: daftarPoli);
+    }
   }
 }

@@ -6,3 +6,5 @@ abstract class PoliklinikEvent {
 }
 
 class EventPoliklinikGetPoli extends PoliklinikEvent {}
+
+class EventPoliklinikAddPoli extends PoliklinikEvent {}
