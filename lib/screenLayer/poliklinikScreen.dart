@@ -20,7 +20,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(3),
-          color: Colors.teal,
+          color: Colors.teal[300],
           boxShadow: [
             BoxShadow(
               color: const Color(0x29000000),
@@ -64,7 +64,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                         if (poliklinik.statusPoli == 1) {
                           return Colors.white;
                         } else {
-                          return Colors.white70;
+                          return Colors.red[100];
                         }
                       }),
                       cells: [
