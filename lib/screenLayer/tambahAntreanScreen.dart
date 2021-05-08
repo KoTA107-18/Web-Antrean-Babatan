@@ -393,6 +393,8 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                   return formTambahAntrean(state.daftarPoli);
                 } else if (state is StateTambahAntreanSubmitPasienFailed) {
                   return formTambahAntrean(state.daftarPoli);
+                } else if (state is StateTambahAntreanPilihJenisPasien) {
+                  return formTambahAntrean(state.daftarPoli);
                 } else if (state is StateTambahAntreanFailed) {
                   return Center(
                     child: Text(state.errMessage),
@@ -411,8 +413,33 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
   }
 
   ListView formTambahAntrean(List<Poliklinik> daftarPoli) {
+    TextEditingController _username = TextEditingController();
     return ListView(
       children: [
+        Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Text('Username Pasien',
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+        ),
+        Container(
+          padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+          child: textFieldModified(
+              hint: 'Kombinasi huruf dan angka.',
+              icon: Icon(Icons.person),
+              formatter: [
+                FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
+              ],
+              validatorFunc: (value) {
+                if (value.isEmpty) {
+                  return "Harus diisi";
+                } else if (value.length < 4) {
+                  return "Minimum 4 karakter";
+                } else {
+                  return null;
+                }
+              },
+              controller: _username),
+        ),
         Container(
           padding: const EdgeInsets.all(16.0),
           child: Text('Poliklinik Tujuan',
@@ -426,7 +453,6 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                 prefixIcon: Icon(Icons.local_hospital),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16.0))),
-            value: daftarPoli[0],
             items: daftarPoli.map((value) {
               return DropdownMenuItem(
                 child: Text(value.namaPoli),
@@ -434,8 +460,113 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
               );
             }).toList(),
             onChanged: (value) {
-              //_poliTujuan = value;
+              _tambahantreanBloc
+                  .add(EventTambahAntreanSubmitPoliTujuan(poliklinik: value));
             },
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Text('Jenis Pasien',
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+        ),
+        Container(
+          padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+          child: BlocBuilder<TambahantreanBloc, TambahantreanState>(
+            bloc: _tambahantreanBloc,
+            builder: (context, state) {
+              if (state is StateTambahAntreanPilihJenisPasien) {
+                return Row(
+                  children: [
+                    Radio(
+                      value: 0,
+                      groupValue: state.isUmum,
+                      onChanged: (result) {
+                        _tambahantreanBloc.add(EventTambahAntreanRadioUmum());
+                      },
+                    ),
+                    Text(
+                      'Umum',
+                      style: new TextStyle(fontSize: 16.0),
+                    ),
+                    Radio(
+                      value: 1,
+                      groupValue: state.isUmum,
+                      onChanged: (result) {
+                        _tambahantreanBloc.add(EventTambahAntreanRadioBPJS());
+                      },
+                    ),
+                    Text(
+                      'BPJS',
+                      style: new TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return Row(
+                  children: [
+                    Radio(
+                      value: 0,
+                      groupValue: _tambahantreanBloc.jenisPasien,
+                      onChanged: (result) {
+                        _tambahantreanBloc.add(EventTambahAntreanRadioUmum());
+                      },
+                    ),
+                    Text(
+                      'Umum',
+                      style: new TextStyle(fontSize: 16.0),
+                    ),
+                    Radio(
+                      value: 1,
+                      groupValue: _tambahantreanBloc.jenisPasien,
+                      onChanged: (result) {
+                        _tambahantreanBloc.add(EventTambahAntreanRadioBPJS());
+                      },
+                    ),
+                    Text(
+                      'BPJS',
+                      style: new TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(16.0),
+          child: InkWell(
+            onTap: () {
+              if ((_username.text.isEmpty) ||
+                  (_tambahantreanBloc.poliklinikTujuan == null)) {
+                Fluttertoast.showToast(
+                    msg: "Lengkapi seluruh isian form.",
+                    gravity: ToastGravity.CENTER,
+                    toastLength: Toast.LENGTH_LONG);
+              } else {
+                _tambahantreanBloc.add(EventTambahAntreanSubmitAntreanBaru(
+                    username: _username.text));
+              }
+            },
+            child: Container(
+              height: 40.0,
+              child: Material(
+                borderRadius: BorderRadius.circular(20.0),
+                color: ColorTheme.greenDark,
+                elevation: 7.0,
+                child: Center(
+                  child: Text(
+                    'Daftar',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ],

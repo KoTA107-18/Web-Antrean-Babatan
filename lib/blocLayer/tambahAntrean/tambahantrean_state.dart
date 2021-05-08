@@ -35,3 +35,9 @@ class StateTambahAntreanSubmitPasienFailed extends TambahantreanState {
   StateTambahAntreanSubmitPasienFailed(
       {@required this.errMessage, this.daftarPoli});
 }
+
+class StateTambahAntreanPilihJenisPasien extends TambahantreanState {
+  final List<Poliklinik> daftarPoli;
+  final int isUmum;
+  StateTambahAntreanPilihJenisPasien({@required this.daftarPoli, this.isUmum});
+}
