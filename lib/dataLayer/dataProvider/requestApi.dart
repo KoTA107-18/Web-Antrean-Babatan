@@ -60,6 +60,16 @@ class RequestApi {
     }
   }
 
+  static Future getAntreanWithId(String idPoli) async {
+    var uri = Uri.https(apiUrl, 'antrean/poliklinik', {"id_poli": idPoli});
+    var result = await http.get(uri);
+    if (result.statusCode == 200) {
+      return json.decode(result.body);
+    } else {
+      return null;
+    }
+  }
+
   static Future insertPoliklinik(Map<String, dynamic> dataPoliklinik) async {
     var uri = Uri.https(apiUrl, 'poliklinik');
     var result = await http.post(uri,

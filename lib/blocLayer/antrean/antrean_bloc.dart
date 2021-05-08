@@ -33,5 +33,17 @@ class AntreanBloc extends Bloc<AntreanEvent, AntreanState> {
         yield StateAntreanGetPoliFailed(messageFailed: e.toString());
       }
     }
+
+    if (event is EventAntreanGetAntreanPoli) {
+      print("Bingo");
+      try {
+        await RequestApi.getAntreanWithId(event.idPoli).then((snapshot) {
+          print(snapshot);
+        });
+        //yield StateAntreanGetPoliSuccess(daftarPoli: daftarPoli);
+      } catch (e) {
+        //yield StateAntreanGetPoliFailed(messageFailed: e.toString());
+      }
+    }
   }
 }

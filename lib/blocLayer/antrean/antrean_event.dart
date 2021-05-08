@@ -6,3 +6,8 @@ abstract class AntreanEvent {
 }
 
 class EventAntreanGetPoli extends AntreanEvent {}
+
+class EventAntreanGetAntreanPoli extends AntreanEvent {
+  final String idPoli;
+  EventAntreanGetAntreanPoli({@required this.idPoli});
+}
