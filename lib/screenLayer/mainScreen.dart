@@ -14,7 +14,7 @@ import 'riwayatScreen.dart';
 import 'tambahAntreanScreen.dart';
 
 class MainScreen extends StatelessWidget {
-  final NavbarBloc navbarBloc = NavbarBloc(0);
+  final NavbarBloc navbarBloc = NavbarBloc(1);
   final List page = [
     DashboardScreen(),
     AntreanScreen(),
