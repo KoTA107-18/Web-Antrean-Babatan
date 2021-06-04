@@ -15,10 +15,12 @@ class Login extends StatelessWidget {
   TextEditingController _username = new TextEditingController();
   TextEditingController _password = new TextEditingController();
   bool isClickValidated = false;
+  LoginBloc _loginBloc = LoginBloc();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => LoginBloc(),
+      create: (context) => _loginBloc,
       child: Scaffold(
         body: Container(
           color: ColorTheme.greenDark,
@@ -61,7 +63,76 @@ class Login extends StatelessWidget {
                                 fontSize: 16.0, color: ColorTheme.greenDark)),
                       ),
                     ),
-                    SizedBox(height: 32.0),
+                    SizedBox(height: 16.0),
+                    Container(
+                      child: BlocBuilder<LoginBloc, LoginState>(
+                        bloc: _loginBloc,
+                        builder: (context, state){
+                          if(state is StateLoginChooseRole){
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Radio(
+                                  value: 0,
+                                  groupValue: state.chooseRole,
+                                  onChanged: (result) {
+                                    _loginBloc.add(EventLoginChooseAdmin());
+                                  },
+                                ),
+                                Text(
+                                  'Administrator',
+                                  style: new TextStyle(fontSize: 16.0),
+                                ),
+                                Radio(
+                                  value: 1,
+                                  groupValue: state.chooseRole,
+                                  onChanged: (result) {
+                                    _loginBloc.add(EventLoginChoosePerawat());
+                                  },
+                                ),
+                                Text(
+                                  'Perawat',
+                                  style: new TextStyle(
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Radio(
+                                  value: 0,
+                                  groupValue: _loginBloc.choiceRole,
+                                  onChanged: (result) {
+                                    _loginBloc.add(EventLoginChooseAdmin());
+                                  },
+                                ),
+                                Text(
+                                  'Administrator',
+                                  style: new TextStyle(fontSize: 16.0),
+                                ),
+                                Radio(
+                                  value: 1,
+                                  groupValue: _loginBloc.choiceRole,
+                                  onChanged: (result) {
+                                    _loginBloc.add(EventLoginChoosePerawat());
+                                  },
+                                ),
+                                Text(
+                                  'Perawat',
+                                  style: new TextStyle(
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                        }
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
                     Container(
                       child: textFieldModified(
                           label: 'Username',
@@ -105,27 +176,24 @@ class Login extends StatelessWidget {
                     ),
                     SizedBox(height: 20.0),
                     BlocBuilder<LoginBloc, LoginState>(
+                        bloc: _loginBloc,
                         builder: (context, state) {
                       return InkWell(
                         onTap: () {
                           authLogin(context);
                         },
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.only(top: 16.0, bottom: 16.0),
-                          child: Container(
-                            height: 40.0,
-                            child: Material(
-                              borderRadius: BorderRadius.circular(20.0),
-                              color: ColorTheme.greenDark,
-                              elevation: 7.0,
-                              child: Center(
-                                child: Text(
-                                  'Masuk',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                        child: Container(
+                          height: 40.0,
+                          child: Material(
+                            borderRadius: BorderRadius.circular(20.0),
+                            color: ColorTheme.greenDark,
+                            elevation: 7.0,
+                            child: Center(
+                              child: Text(
+                                'Masuk',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
@@ -133,6 +201,7 @@ class Login extends StatelessWidget {
                       );
                     }),
                     BlocListener<LoginBloc, LoginState>(
+                        bloc: _loginBloc,
                         child: SizedBox.shrink(),
                         listener: (context, state) {
                           if (state is StateLoginSuccess) {
@@ -152,6 +221,7 @@ class Login extends StatelessWidget {
                           }
                         }),
                     BlocBuilder<LoginBloc, LoginState>(
+                        bloc: _loginBloc,
                         builder: (context, state) {
                       if (state is StateLoginLoading) {
                         return Column(

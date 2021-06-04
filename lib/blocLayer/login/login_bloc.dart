@@ -9,6 +9,7 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  int choiceRole = 0;
   bool isVerified = false;
   String username, password, result;
   LoginBloc() : super(StateLoginInitial());
@@ -38,6 +39,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       } else {
         yield StateLoginFailed(errorMessage: result);
       }
+    }
+
+    if(event is EventLoginChooseAdmin){
+      choiceRole = 0;
+      yield StateLoginChooseRole(chooseRole: choiceRole);
+    }
+
+    if(event is EventLoginChoosePerawat){
+      choiceRole = 1;
+      yield StateLoginChooseRole(chooseRole: choiceRole);
     }
   }
 }

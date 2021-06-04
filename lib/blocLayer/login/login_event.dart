@@ -9,3 +9,7 @@ class EventTapLogin extends LoginEvent {
   final String username, password;
   EventTapLogin({@required this.username, @required this.password});
 }
+
+class EventLoginChooseAdmin extends LoginEvent {}
+
+class EventLoginChoosePerawat extends LoginEvent {}

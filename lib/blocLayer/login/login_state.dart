@@ -19,3 +19,7 @@ class StateLoginFailed extends LoginState {
   StateLoginFailed({this.errorMessage});
 }
 
+class StateLoginChooseRole extends LoginState {
+  int chooseRole;
+  StateLoginChooseRole({@required this.chooseRole});
+}
