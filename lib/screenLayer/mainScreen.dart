@@ -155,6 +155,18 @@ class MainScreen extends StatelessWidget {
                             () {
                           navbarBloc.add(NavbarEvent.tapAkunPerawat);
                         }),
+                        listMenu('Antrean Utama Perawat', Icon(Icons.person),
+                                () {
+                          navbarBloc.add(NavbarEvent.tapAntrean);
+                        }),
+                        listMenu('Antrean Sementara Perawat', Icon(Icons.switch_account),
+                                () {
+                          navbarBloc.add(NavbarEvent.tapAntreanSementara);
+                        }),
+                        listMenu('Selesai Dilayani', Icon(Icons.switch_account),
+                                () {
+                          navbarBloc.add(NavbarEvent.tapAkunPerawat);
+                        }),
                         listMenu('Logout', Icon(Icons.logout), () {
                           _showMaterialDialog(context);
                         }),
