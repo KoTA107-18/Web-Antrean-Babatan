@@ -1,38 +1,66 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
+import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
+import 'package:web_antrean_babatan/screenLayer/akunPerawatScreen.dart';
+import 'package:web_antrean_babatan/screenLayer/antreanScreen.dart';
+import 'package:web_antrean_babatan/screenLayer/antreanSementaraScreen.dart';
+import 'package:web_antrean_babatan/screenLayer/dashboardScreen.dart';
+import 'package:web_antrean_babatan/screenLayer/poliklinikScreen.dart';
+import 'package:web_antrean_babatan/screenLayer/riwayatScreen.dart';
+import 'package:web_antrean_babatan/screenLayer/tambahAntreanScreen.dart';
 
 part 'navbar_event.dart';
-class NavbarBloc extends Bloc<NavbarEvent, int> {
+part 'navbar_state.dart';
 
-  NavbarBloc(int initialState) : super(initialState);
+class NavbarBloc extends Bloc<NavbarEvent, NavbarState> {
+  NavbarBloc() : super(NavbarStateLoadingGetRole());
+   bool isAdmin = false;
 
   @override
-  Stream<int> mapEventToState(
+  Stream<NavbarState> mapEventToState(
     NavbarEvent event,
   ) async* {
-    switch (event) {
-      case NavbarEvent.tapDashboard:
-        yield 0;
-        break;
-      case NavbarEvent.tapAntrean:
-        yield 1;
-        break;
-      case NavbarEvent.tapAntreanSementara:
-        yield 2;
-        break;
-      case NavbarEvent.tapTambahAntrean:
-        yield 3;
-        break;
-      case NavbarEvent.tapPoliklinik:
-        yield 4;
-        break;
-      case NavbarEvent.tapRiwayatKunjungan:
-        yield 5;
-        break;
-      case NavbarEvent.tapAkunPerawat:
-        yield 6;
-        break;
+    if(event is NavbarEventGetRole){
+      yield NavbarStateLoadingGetRole();
+      await SharedPref.getRole().then((value){
+        if(value == SharedPref.administrator){
+          isAdmin = true;
+        } else {
+          isAdmin = false;
+        }
+      });
+      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: DashboardScreen());
+    }
+
+    if(event is NavbarEventLoadDashboard){
+      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: DashboardScreen());
+    }
+
+    if(event is NavbarEventLoadAntrean){
+      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: AntreanScreen());
+    }
+
+    if(event is NavbarEventLoadAntreanSementara){
+      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: AntreanSementaraScreen());
+    }
+
+    if(event is NavbarEventLoadTambahAntrean){
+      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: TambahAntreanScreen());
+    }
+
+    if(event is NavbarEventLoadPoliklinik){
+      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: PoliklinikScreen());
+    }
+
+    if(event is NavbarEventLoadRiwayat){
+      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: RiwayatScreen());
+    }
+
+    if(event is NavbarEventLoadAkunPerawat){
+      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: AkunPerawatScreen());
     }
   }
 }

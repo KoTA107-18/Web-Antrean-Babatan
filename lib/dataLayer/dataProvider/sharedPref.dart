@@ -3,17 +3,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPref {
   static String _username = "KEY_USERNAME";
   static String _role = "KEY_ROLE";
-  static String _administrator = "ADMINISTRATOR";
-  static String _perawat = "PERAWAT";
+  static String administrator = "ADMINISTRATOR";
+  static String perawat = "PERAWAT";
 
 
   static Future<void> saveLogin(String username, int choiceRole) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(_username, username);
     if(choiceRole == 0){
-      prefs.setString(_role, _administrator);
+      prefs.setString(_role, administrator);
     } else {
-      prefs.setString(_role, _perawat);
+      prefs.setString(_role, perawat);
     }
   }
 

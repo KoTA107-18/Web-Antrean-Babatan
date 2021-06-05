@@ -4,26 +4,172 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:web_antrean_babatan/blocLayer/navbar/navbar_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
 import 'package:web_antrean_babatan/utils/color.dart';
-import 'akunPerawatScreen.dart';
-import 'antreanScreen.dart';
-import 'antreanSementaraScreen.dart';
-import 'dashboardScreen.dart';
 import 'loginScreen.dart';
-import 'poliklinikScreen.dart';
-import 'riwayatScreen.dart';
-import 'tambahAntreanScreen.dart';
 
-class MainScreen extends StatelessWidget {
-  final NavbarBloc navbarBloc = NavbarBloc(6);
-  final List page = [
-    DashboardScreen(),
-    AntreanScreen(),
-    AntreanSementaraScreen(),
-    TambahAntreanScreen(),
-    PoliklinikScreen(),
-    RiwayatScreen(),
-    AkunPerawatScreen()
-  ];
+class MainScreen extends StatefulWidget {
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  final NavbarBloc _navbarBloc = NavbarBloc();
+
+  @override
+  void initState() {
+    _navbarBloc.add(NavbarEventGetRole());
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => _navbarBloc,
+      child: Scaffold(
+        body: Row(
+          children: [
+            Container(
+              width: 280.0,
+              color: Colors.white,
+              child: SafeArea(
+                child: BlocBuilder<NavbarBloc, NavbarState>(
+                  builder: (context, state) {
+                    if (state is NavbarStateSuccessGetRole) {
+                      return (state.isAdmin) ? navbarAdmin() : navbarPerawat();
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  },
+                ),
+              ),
+            ),
+            BlocBuilder<NavbarBloc, NavbarState>(
+              builder: (context, state) {
+                if(state is NavbarStateSuccessGetRole){
+                  return Expanded(
+                    child: state.page,
+                  );
+                } else {
+                  return SizedBox.shrink();
+                }
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  ListView navbarAdmin() {
+    return ListView(
+      children: [
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset(
+                'asset/LogoPuskesmas.png',
+                width: 64,
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  child: Center(
+                    child: Text('Selamat Datang',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.teal)),
+                  ),
+                ),
+                Container(
+                  child: Center(
+                    child: Text('Puskesmas Babatan',
+                        style: TextStyle(fontSize: 14.0, color: Colors.teal)),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+        listMenu('Dashboard', Icon(Icons.dashboard), () {
+          _navbarBloc.add(NavbarEventLoadDashboard());
+        }),
+        listMenu('Antrean', Icon(Icons.people), () {
+          _navbarBloc.add(NavbarEventLoadAntrean());
+        }),
+        listMenu('Antrean Sementara', Icon(Icons.people), () {
+          _navbarBloc.add(NavbarEventLoadAntreanSementara());
+        }),
+        listMenu('Tambah Antrean', Icon(Icons.person_add), () {
+          _navbarBloc.add(NavbarEventLoadTambahAntrean());
+        }),
+        listMenu('Poliklinik', Icon(Icons.local_hospital), () {
+          _navbarBloc.add(NavbarEventLoadPoliklinik());
+        }),
+        listMenu('Riwayat Kunjungan', Icon(Icons.history), () {
+          _navbarBloc.add(NavbarEventLoadRiwayat());
+        }),
+        listMenu('Akun Perawat', Icon(Icons.switch_account), () {
+          _navbarBloc.add(NavbarEventLoadAkunPerawat());
+        }),
+        listMenu('Logout', Icon(Icons.logout), () {
+          _showMaterialDialog(context);
+        }),
+      ],
+    );
+  }
+
+  ListView navbarPerawat() {
+    return ListView(
+      children: [
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset(
+                'asset/LogoPuskesmas.png',
+                width: 64,
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  child: Center(
+                    child: Text('Selamat Datang',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.teal)),
+                  ),
+                ),
+                Container(
+                  child: Center(
+                    child: Text('Puskesmas Babatan',
+                        style: TextStyle(fontSize: 14.0, color: Colors.teal)),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+        listMenu('Dashboard', Icon(Icons.dashboard), () {
+          _navbarBloc.add(NavbarEventLoadDashboard());
+        }),
+        listMenu('Antrean', Icon(Icons.people), () {
+          _navbarBloc.add(NavbarEventLoadAntrean());
+        }),
+        listMenu('Antrean Sementara', Icon(Icons.people), () {
+          _navbarBloc.add(NavbarEventLoadAntreanSementara());
+        }),
+        listMenu('Logout', Icon(Icons.logout), () {
+          _showMaterialDialog(context);
+        }),
+      ],
+    );
+  }
 
   Card listMenu(String title, Icon icon, Function func) {
     return Card(
@@ -43,7 +189,8 @@ class MainScreen extends StatelessWidget {
   _showMaterialDialog(BuildContext context) {
     showDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        builder: (_) =>
+            AlertDialog(
               title: Text("Keluar"),
               content: Text("Anda yakin keluar dari aplikasi?"),
               actions: <Widget>[
@@ -83,105 +230,5 @@ class MainScreen extends StatelessWidget {
                 ),
               ],
             ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => navbarBloc,
-      child: Scaffold(
-        body: BlocBuilder<NavbarBloc, int>(
-          builder: (context, index) {
-            return Row(
-              children: [
-                Container(
-                  width: 280.0,
-                  color: Colors.white,
-                  child: SafeArea(
-                    child: ListView(
-                      children: [
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.asset(
-                                'asset/LogoPuskesmas.png',
-                                width: 64,
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  child: Center(
-                                    child: Text('Selamat Datang',
-                                        style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.teal)),
-                                  ),
-                                ),
-                                Container(
-                                  child: Center(
-                                    child: Text('Puskesmas Babatan',
-                                        style: TextStyle(
-                                            fontSize: 14.0,
-                                            color: Colors.teal)),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        listMenu('Dashboard', Icon(Icons.dashboard), () {
-                          navbarBloc.add(NavbarEvent.tapDashboard);
-                        }),
-                        listMenu('Antrean', Icon(Icons.people), () {
-                          navbarBloc.add(NavbarEvent.tapAntrean);
-                        }),
-                        listMenu('Antrean Sementara', Icon(Icons.people), () {
-                          navbarBloc.add(NavbarEvent.tapAntreanSementara);
-                        }),
-                        listMenu('Tambah Antrean', Icon(Icons.person_add), () {
-                          navbarBloc.add(NavbarEvent.tapTambahAntrean);
-                        }),
-                        listMenu('Poliklinik', Icon(Icons.local_hospital), () {
-                          navbarBloc.add(NavbarEvent.tapPoliklinik);
-                        }),
-                        listMenu('Riwayat Kunjungan', Icon(Icons.history), () {
-                          navbarBloc.add(NavbarEvent.tapRiwayatKunjungan);
-                        }),
-                        listMenu('Akun Perawat', Icon(Icons.switch_account),
-                            () {
-                          navbarBloc.add(NavbarEvent.tapAkunPerawat);
-                        }),
-                        listMenu('Antrean Utama Perawat', Icon(Icons.person),
-                                () {
-                          navbarBloc.add(NavbarEvent.tapAntrean);
-                        }),
-                        listMenu('Antrean Sementara Perawat', Icon(Icons.switch_account),
-                                () {
-                          navbarBloc.add(NavbarEvent.tapAntreanSementara);
-                        }),
-                        listMenu('Selesai Dilayani', Icon(Icons.switch_account),
-                                () {
-                          navbarBloc.add(NavbarEvent.tapAkunPerawat);
-                        }),
-                        listMenu('Logout', Icon(Icons.logout), () {
-                          _showMaterialDialog(context);
-                        }),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: page.elementAt(index),
-                )
-              ],
-            );
-          },
-        ),
-      ),
-    );
   }
 }
