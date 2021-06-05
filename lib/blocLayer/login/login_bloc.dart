@@ -22,18 +22,34 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       username = event.username;
       password = event.password;
       yield StateLoginLoading();
-      await RequestApi.loginAdministrator(username, password).then((value) async {
-        if(value){
-          await SharedPref.saveLogin(username);
-          isVerified = true;
-          result = "Login berhasil!";
-        } else {
-          result = "Login gagal, akun tidak dikenali";
-        }
+      if(choiceRole == 0){
+        await RequestApi.loginAdministrator(username, password).then((value) async {
+          if(value){
+            await SharedPref.saveLogin(username, choiceRole);
+            isVerified = true;
+            result = "Login berhasil!";
+          } else {
+            result = "Login gagal, akun tidak dikenali";
+          }
 
-      }).catchError((e){
-        result = "Gagal : " + e.toString();
-      });
+        }).catchError((e){
+          result = "Gagal : " + e.toString();
+        });
+      } else {
+        await RequestApi.loginPerawat(username, password).then((value) async {
+          if(value){
+            await SharedPref.saveLogin(username, choiceRole);
+            isVerified = true;
+            result = "Login berhasil!";
+          } else {
+            result = "Login gagal, akun tidak dikenali";
+          }
+
+        }).catchError((e){
+          result = "Gagal : " + e.toString();
+        });
+      }
+
       if(isVerified){
         yield StateLoginSuccess(message: result);
       } else {

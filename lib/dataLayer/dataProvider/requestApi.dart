@@ -194,4 +194,18 @@ class RequestApi {
       return false;
     }
   }
+
+  static Future<bool> loginPerawat(
+      String username, String password) async {
+    var uri = Uri.https(apiUrl, 'perawat/login',
+        {"username": username, "password": password});
+    var result = await http.post(uri);
+    print(username);
+    print(password);
+    if (result.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
