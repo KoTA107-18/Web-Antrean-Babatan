@@ -44,7 +44,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
             BlocBuilder<NavbarBloc, NavbarState>(
               builder: (context, state) {
-                if(state is NavbarStateSuccessGetRole){
+                if (state is NavbarStateSuccessGetRole) {
                   return Expanded(
                     child: state.page,
                   );
@@ -92,6 +92,15 @@ class _MainScreenState extends State<MainScreen> {
               ],
             )
           ],
+        ),
+        Card(
+          color: Colors.teal[50],
+          child: ListTile(
+            leading: Icon(Icons.account_box_rounded),
+            title: Text(
+              "Admin",
+            ),
+          ),
         ),
         listMenu('Dashboard', Icon(Icons.dashboard), () {
           _navbarBloc.add(NavbarEventLoadDashboard());
@@ -155,6 +164,15 @@ class _MainScreenState extends State<MainScreen> {
             )
           ],
         ),
+        Card(
+          color: Colors.teal[50],
+          child: ListTile(
+            leading: Icon(Icons.account_box_rounded),
+            title: Text(
+              "Perawat",
+            ),
+          ),
+        ),
         listMenu('Dashboard', Icon(Icons.dashboard), () {
           _navbarBloc.add(NavbarEventLoadDashboard());
         }),
@@ -164,6 +182,8 @@ class _MainScreenState extends State<MainScreen> {
         listMenu('Antrean Sementara', Icon(Icons.people), () {
           _navbarBloc.add(NavbarEventLoadAntreanSementara());
         }),
+        listMenu('Antrean Selesai', Icon(Icons.people), () {}),
+        listMenu('Akun', Icon(Icons.people), () {}),
         listMenu('Logout', Icon(Icons.logout), () {
           _showMaterialDialog(context);
         }),
@@ -189,8 +209,7 @@ class _MainScreenState extends State<MainScreen> {
   _showMaterialDialog(BuildContext context) {
     showDialog(
         context: context,
-        builder: (_) =>
-            AlertDialog(
+        builder: (_) => AlertDialog(
               title: Text("Keluar"),
               content: Text("Anda yakin keluar dari aplikasi?"),
               actions: <Widget>[
