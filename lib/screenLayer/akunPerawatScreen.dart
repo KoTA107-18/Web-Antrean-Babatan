@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:web_antrean_babatan/blocLayer/akunPerawat/akun_perawat_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
 import 'package:web_antrean_babatan/utils/color.dart';
 import 'package:web_antrean_babatan/utils/textFieldModified.dart';
@@ -10,8 +12,74 @@ class AkunPerawatScreen extends StatefulWidget {
 }
 
 class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
+  final AkunPerawatBloc _akunPerawatBloc = AkunPerawatBloc();
 
-  ListView tabelAkunPerawat(List<int> daftarAkun) {
+  @override
+  void initState() {
+    _akunPerawatBloc.add(AkunPerawatEventGetData());
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<int> daftarAngka = [1, 2];
+    return BlocProvider(
+      create: (_) => _akunPerawatBloc,
+      child: Scaffold(
+        backgroundColor: Colors.teal[50],
+        appBar: AppBar(
+          leading: Icon(Icons.switch_account),
+          title: Text("Daftar Akun Perawat"),
+          actions: [
+            BlocBuilder<AkunPerawatBloc, AkunPerawatState>(
+                bloc: _akunPerawatBloc,
+                builder: (context, state) {
+                  if (state is AkunPerawatStateSuccess) {
+                    return Container(
+                      padding: EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white, // background
+                          onPrimary: ColorTheme.greenDark, // foreground
+                        ),
+                        child: Text(
+                          'Tambah Data',
+                          style: TextStyle(color: ColorTheme.greenDark),
+                        ),
+                        onPressed: () {
+                          addAkunPerawat(state.daftarPoli);
+                        },
+                      ),
+                    );
+                  } else {
+                    return SizedBox.shrink();
+                  }
+                }),
+          ],
+        ),
+        body: BlocBuilder<AkunPerawatBloc, AkunPerawatState>(
+          bloc: _akunPerawatBloc,
+          builder: (context, state) {
+            if (state is AkunPerawatStateSuccess) {
+              return Container(
+                  padding: EdgeInsets.all(20.0),
+                  child: tabelAkunPerawat(daftarAngka, state.daftarPoli));
+            } else if (state is AkunPerawatStateFailed) {
+              return Center(
+                child: Text(state.messageFailed),
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  ListView tabelAkunPerawat(List<int> daftarAkun, List<Poliklinik> daftarPoli) {
     return ListView(children: <Widget>[
       Container(
         width: double.infinity,
@@ -63,41 +131,40 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
           ],
           rows: daftarAkun
               .map((akun) => DataRow(
-              color: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
+                      color: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
                         return Colors.white;
                       }),
-              cells: [
-                DataCell(Text("1")),
-                DataCell(Text(
-                  "Andifauzy7",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                )),
-                DataCell(Text("********")),
-                DataCell(Text("Poliklinik Umum")),
-                DataCell(Row(
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () {
-                          editAkunPerawat();
-                        }),
-                    IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () {
-                          deleteAkunPerawat();
-                        })
-                  ],
-                )),
-              ]))
+                      cells: [
+                        DataCell(Text("1")),
+                        DataCell(Text(
+                          "Andifauzy7",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
+                        DataCell(Text("********")),
+                        DataCell(Text("Poliklinik Umum")),
+                        DataCell(Row(
+                          children: [
+                            IconButton(
+                                icon: Icon(Icons.edit),
+                                onPressed: () {
+                                  editAkunPerawat(daftarPoli);
+                                }),
+                            IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () {
+                                  deleteAkunPerawat();
+                                })
+                          ],
+                        )),
+                      ]))
               .toList(),
         ),
       ),
     ]);
   }
 
-  editAkunPerawat(){
-    List<String> daftarPoli = ["Poliklinik Umum", "Poliklinik Gigi"];
+  editAkunPerawat(List<Poliklinik> daftarPoli) {
     TextEditingController _username = TextEditingController();
     TextEditingController _password = TextEditingController();
     TextEditingController _passwordTwo = TextEditingController();
@@ -239,13 +306,11 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
                                 borderRadius: BorderRadius.circular(16.0))),
                         items: daftarPoli.map((value) {
                           return DropdownMenuItem(
-                            child: Text(value),
+                            child: Text(value.namaPoli),
                             value: value,
                           );
                         }).toList(),
-                        onChanged: (value) {
-
-                        },
+                        onChanged: (value) {},
                       ),
                     ),
                   ],
@@ -284,50 +349,48 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
         });
   }
 
-  deleteAkunPerawat(){
+  deleteAkunPerawat() {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: Text("Hapus Akun Perawat"),
-          content: Text("Anda yakin menghapus Akun Perawat yang dipilih?"),
-          actions: <Widget>[
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.red, // background
-                onPrimary: Colors.white, // foreground
-              ),
-              child: Text(
-                'Ya',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.grey, // background
-                onPrimary: Colors.white, // foreground
-              ),
-              child: Text(
-                'Tidak',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ));
+              title: Text("Hapus Akun Perawat"),
+              content: Text("Anda yakin menghapus Akun Perawat yang dipilih?"),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.red, // background
+                    onPrimary: Colors.white, // foreground
+                  ),
+                  child: Text(
+                    'Ya',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.grey, // background
+                    onPrimary: Colors.white, // foreground
+                  ),
+                  child: Text(
+                    'Tidak',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ));
   }
 
-  addAkunPerawat(){
-    List<String> daftarPoli = ["Poliklinik Umum", "Poliklinik Gigi"];
+  addAkunPerawat(List<Poliklinik> daftarPoli) {
     TextEditingController _username = TextEditingController();
     TextEditingController _password = TextEditingController();
     TextEditingController _passwordTwo = TextEditingController();
     TextEditingController _nama = TextEditingController();
-    Poliklinik poliklinik;
 
     showDialog(
         context: context,
@@ -464,13 +527,11 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
                                 borderRadius: BorderRadius.circular(16.0))),
                         items: daftarPoli.map((value) {
                           return DropdownMenuItem(
-                            child: Text(value),
+                            child: Text(value.namaPoli),
                             value: value,
                           );
                         }).toList(),
-                        onChanged: (value) {
-
-                        },
+                        onChanged: (value) {},
                       ),
                     ),
                   ],
@@ -507,38 +568,5 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
             );
           });
         });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    List<int> daftarAngka = [1,2];
-    return Scaffold(
-      backgroundColor: Colors.teal[50],
-      appBar: AppBar(
-        leading: Icon(Icons.switch_account),
-        title: Text("Daftar Akun Perawat"),
-        actions: [
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.white, // background
-                onPrimary: ColorTheme.greenDark, // foreground
-              ),
-              child: Text(
-                'Tambah Data',
-                style: TextStyle(color: ColorTheme.greenDark),
-              ),
-              onPressed: () {
-                addAkunPerawat();
-              },
-            ),
-          )
-        ],
-      ),
-      body: Container(
-          padding: EdgeInsets.all(20.0),
-          child: tabelAkunPerawat(daftarAngka)),
-    );
   }
 }

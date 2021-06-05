@@ -116,4 +116,22 @@ class RequestApi {
       return false;
     }
   }
+
+  // Refactor API.
+
+
+  static Future getPoliklinik() async {
+    /*
+    Endpoint : rest-api-babatan.herokuapp.com/poliklinik
+    Method Type : GET
+    Desc : Get All Poliklinik in Database
+    */
+    var uri = Uri.https(apiUrl, 'poliklinik');
+    var result = await http.get(uri);
+    if (result.statusCode == 200) {
+      return json.decode(result.body);
+    } else {
+      return null;
+    }
+  }
 }
