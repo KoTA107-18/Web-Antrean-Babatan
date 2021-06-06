@@ -53,6 +53,16 @@ class RequestApi {
     }
   }
 
+  static Future getAntreanRiwayat(String idPoli) async {
+    var uri = Uri.https(apiUrl, 'antrean/poliklinik/riwayat/$idPoli');
+    var result = await http.get(uri);
+    if (result.statusCode == 200) {
+      return json.decode(result.body);
+    } else {
+      return null;
+    }
+  }
+
   /*
     Method for functional Poliklinik.
   */

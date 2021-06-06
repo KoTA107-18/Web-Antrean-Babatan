@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_antrean_babatan/blocLayer/antreanSementara/antrean_sementara_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
+import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
 
 class AntreanSementaraScreen extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class AntreanSementaraScreen extends StatefulWidget {
 
 class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
   AntreanSementaraBloc _antreanSementaraBloc = AntreanSementaraBloc();
+  int nomor;
 
   @override
   void initState() {
@@ -47,22 +49,13 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                                     state.daftarPoli[index].idPoli.toString()),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
-                                    List<Map<String, dynamic>> daftarAntrean = [];
+                                    nomor = 0;
+                                    List<JadwalPasien> daftarAntrean = [];
                                     var resultSnapshot = snapshot.data as List;
-                                    daftarAntrean = resultSnapshot.map((aJson) {
-                                      return {
-                                        'nomor_antrean':
-                                        aJson['nomor_antrean'].toString(),
-                                        'username': aJson['username'],
-                                        'tgl_pelayanan': aJson['tgl_pelayanan'],
-                                        'tipe_booking':
-                                        aJson['tipe_booking'].toString(),
-                                        'jam_daftar_antrean':
-                                        aJson['jam_daftar_antrean'],
-                                        'status_antrean':
-                                        aJson['status_antrean'].toString(),
-                                      };
-                                    }).toList();
+                                    daftarAntrean = resultSnapshot
+                                        .map(
+                                            (aJson) => JadwalPasien.fromJson(aJson))
+                                        .toList();
                                     return Container(
                                       color: Colors.teal[50],
                                       padding: EdgeInsets.all(20.0),
@@ -85,35 +78,35 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                                             showBottomBorder: true,
                                             columns: [
                                               DataColumn(
-                                                  label: Text('No Antrean',
+                                                  label: Text('No',
                                                       style: TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
                                                           FontWeight.bold,
                                                           color: Colors.white))),
                                               DataColumn(
-                                                  label: Text('Username',
+                                                  label: Text('Nama',
                                                       style: TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
                                                           FontWeight.bold,
                                                           color: Colors.white))),
                                               DataColumn(
-                                                  label: Text('Tanggal Pelayanan',
+                                                  label: Text('Tanggal Lahir',
                                                       style: TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
                                                           FontWeight.bold,
                                                           color: Colors.white))),
                                               DataColumn(
-                                                  label: Text('Tipe Antrean',
+                                                  label: Text('Kepala Keluarga',
                                                       style: TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
                                                           FontWeight.bold,
                                                           color: Colors.white))),
                                               DataColumn(
-                                                  label: Text('Jam Daftar',
+                                                  label: Text('Jenis',
                                                       style: TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
@@ -127,53 +120,44 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                                                           FontWeight.bold,
                                                           color: Colors.white))),
                                             ],
-                                            rows: daftarAntrean
-                                                .map((antrean) => DataRow(
-                                                color: MaterialStateProperty
-                                                    .resolveWith<Color>(
-                                                        (Set<MaterialState>
-                                                    states) {
-                                                      if (antrean[
-                                                      'status_antrean'] ==
-                                                          "4") {
-                                                        return Colors.red[100];
-                                                      } else {
-                                                        return Colors.white;
-                                                      }
-                                                    }),
-                                                cells: [
-                                                  DataCell(Text(antrean[
-                                                  'nomor_antrean'])),
-                                                  DataCell(Text(
-                                                      antrean['username'])),
-                                                  DataCell(Text(antrean[
-                                                  'tgl_pelayanan'])),
-                                                  DataCell(Text((antrean[
-                                                  'tipe_booking'] ==
-                                                      "1")
-                                                      ? "Booking"
-                                                      : "Umum")),
-                                                  DataCell(Text(antrean[
-                                                  'jam_daftar_antrean'] +
-                                                      " WIB")),
-                                                  DataCell(Row(
-                                                    children: [
-                                                      IconButton(
-                                                          icon: Icon(Icons
-                                                              .access_time_sharp),
-                                                          onPressed: () {}),
-                                                      IconButton(
-                                                          icon: Icon(
-                                                              Icons.edit),
-                                                          onPressed: () {}),
-                                                      IconButton(
-                                                          icon: Icon(
-                                                              Icons.delete),
-                                                          onPressed: () {})
-                                                    ],
-                                                  )),
-                                                ]))
-                                                .toList(),
+                                            rows: [
+                                              for (var i in daftarAntrean)
+                                                DataRow(
+                                                    color: MaterialStateProperty
+                                                        .resolveWith<Color>(
+                                                            (Set<MaterialState>
+                                                        states) {
+                                                          return Colors.white;
+                                                        }),
+                                                    cells: [
+                                                      DataCell(Text(
+                                                          (nomor += 1).toString())),
+                                                      DataCell(Text(i.namaLengkap)),
+                                                      DataCell(Text(i.tglLahir)),
+                                                      DataCell(
+                                                          Text(i.kepalaKeluarga)),
+                                                      DataCell(Text(
+                                                          (i.tipeBooking == 1)
+                                                              ? "Booking"
+                                                              : "Umum")),
+                                                      DataCell(Row(
+                                                        children: [
+                                                          IconButton(
+                                                              icon: Icon(Icons
+                                                                  .access_time_sharp),
+                                                              onPressed: () {}),
+                                                          IconButton(
+                                                              icon:
+                                                              Icon(Icons.edit),
+                                                              onPressed: () {}),
+                                                          IconButton(
+                                                              icon:
+                                                              Icon(Icons.info),
+                                                              onPressed: () {})
+                                                        ],
+                                                      )),
+                                                    ])
+                                            ],
                                           ),
                                         ),
                                       ]),
