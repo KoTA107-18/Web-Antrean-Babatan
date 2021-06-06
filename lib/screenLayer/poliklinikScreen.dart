@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_antrean_babatan/blocLayer/poliklinik/poliklinik_bloc.dart';
+import 'package:web_antrean_babatan/dataLayer/model/hari.dart';
 import 'package:web_antrean_babatan/utils/color.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
 import 'package:web_antrean_babatan/utils/textFieldModified.dart';
@@ -12,91 +13,6 @@ class PoliklinikScreen extends StatefulWidget {
 
 class _PoliklinikScreenState extends State<PoliklinikScreen> {
   final PoliklinikBloc _poliklinikBloc = PoliklinikBloc();
-
-  ListView daftarPoli(List<Poliklinik> daftarPoli) {
-    return ListView(children: <Widget>[
-      Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(3),
-          color: Colors.teal[300],
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0x29000000),
-              offset: Offset(0, 3),
-              blurRadius: 6,
-            ),
-          ],
-        ),
-        child: DataTable(
-          showBottomBorder: true,
-          columns: [
-            DataColumn(
-                label: Text('Nama',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-            DataColumn(
-                label: Text('Waktu Buka',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-            DataColumn(
-                label: Text('Deskripsi',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-            DataColumn(
-                label: Text('Aksi',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-          ],
-          rows: daftarPoli
-              .map((poliklinik) => DataRow(
-                      color: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        if (poliklinik.statusPoli == 1) {
-                          return Colors.white;
-                        } else {
-                          return Colors.red[100];
-                        }
-                      }),
-                      cells: [
-                        DataCell(Text(poliklinik.namaPoli)),
-                        DataCell(Text(
-                          "Belum diatur",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )),
-                        DataCell((poliklinik.descPoli.length >= 50)
-                            ? Text(
-                                poliklinik.descPoli.substring(0, 50) + " ...")
-                            : Text(poliklinik.descPoli)),
-                        DataCell(Row(
-                          children: [
-                            IconButton(
-                                icon: Icon(Icons.edit),
-                                onPressed: () {
-                                  editDialog(poliklinik);
-                                }),
-                            IconButton(
-                                icon: Icon(Icons.info),
-                                onPressed: () {
-                                  infoDialog(poliklinik);
-                                })
-                          ],
-                        )),
-                      ]))
-              .toList(),
-        ),
-      ),
-    ]);
-  }
 
   @override
   void initState() {
@@ -150,6 +66,91 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                 }
               },
             )));
+  }
+
+  ListView daftarPoli(List<Poliklinik> daftarPoli) {
+    return ListView(children: <Widget>[
+      Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(3),
+          color: Colors.teal[300],
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0x29000000),
+              offset: Offset(0, 3),
+              blurRadius: 6,
+            ),
+          ],
+        ),
+        child: DataTable(
+          showBottomBorder: true,
+          columns: [
+            DataColumn(
+                label: Text('Nama',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white))),
+            DataColumn(
+                label: Text('Jadwal',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white))),
+            DataColumn(
+                label: Text('Deskripsi',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white))),
+            DataColumn(
+                label: Text('Aksi',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white))),
+          ],
+          rows: daftarPoli
+              .map((poliklinik) => DataRow(
+              color: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                    if (poliklinik.statusPoli == 1) {
+                      return Colors.white;
+                    } else {
+                      return Colors.red[100];
+                    }
+                  }),
+              cells: [
+                DataCell(Text(poliklinik.namaPoli)),
+                DataCell(Text(
+                  poliklinik.jadwalToString(),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )),
+                DataCell((poliklinik.descPoli.length >= 50)
+                    ? Text(
+                    poliklinik.descPoli.substring(0, 50) + " ...")
+                    : Text(poliklinik.descPoli)),
+                DataCell(Row(
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          editDialog(poliklinik);
+                        }),
+                    IconButton(
+                        icon: Icon(Icons.info),
+                        onPressed: () {
+                          infoDialog(poliklinik);
+                        })
+                  ],
+                )),
+              ]))
+              .toList(),
+        ),
+      ),
+    ]);
   }
 
   addDialog() {
@@ -625,8 +626,35 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
   }
 
   infoDialog(Poliklinik poliklinik) {
-    bool _setiapHari, _senin, _selasa, _rabu, _kamis, _jumat, _sabtu;
-    _setiapHari = _senin = _selasa = _rabu = _kamis = _jumat = _sabtu = true;
+    bool _senin, _selasa, _rabu, _kamis, _jumat, _sabtu;
+    _senin = _selasa = _rabu = _kamis = _jumat = _sabtu = false;
+
+    for (var i=0; i<poliklinik.jadwal.length; i++) {
+      if(poliklinik.jadwal[i].hari == Hari.SENIN){
+        _senin = true;
+      }
+
+      if(poliklinik.jadwal[i].hari == Hari.SELASA){
+        _selasa = true;
+      }
+
+      if(poliklinik.jadwal[i].hari == Hari.RABU){
+        _rabu = true;
+      }
+
+      if(poliklinik.jadwal[i].hari == Hari.KAMIS){
+        _kamis = true;
+      }
+
+      if(poliklinik.jadwal[i].hari == Hari.JUMAT){
+        _jumat = true;
+      }
+
+      if(poliklinik.jadwal[i].hari == Hari.SABTU){
+        _sabtu = true;
+      }
+    }
+
     showDialog(
         context: context,
         builder: (context) {
@@ -698,15 +726,6 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: Text(
                           (poliklinik.idPoli == 1) ? "Aktif" : "Tidak Aktif"),
-                    ),
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: _setiapHari,
-                          onChanged: null,
-                        ),
-                        Text('Setiap Hari'),
-                      ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

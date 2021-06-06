@@ -51,6 +51,10 @@ class RequestApi {
     }
   }
 
+  /*
+    Method for functional Poliklinik.
+  */
+
   static Future getAllPoliklinik() async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/poliklinik
