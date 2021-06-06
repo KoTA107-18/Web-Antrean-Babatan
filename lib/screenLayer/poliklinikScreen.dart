@@ -444,6 +444,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
           namaPoli: _nama.text.toString(),
           descPoli: _deskripsi.text.toString(),
           jadwal: resultHari,
+          statusPoli: poliklinik.statusPoli,
           rerataWaktuPelayanan: int.parse(_ratarata.text.toString()));
       _poliklinikBloc.add(EventPoliklinikEditSubmitPoli(dataPoliklinik: dataPoliklinik));
     }
