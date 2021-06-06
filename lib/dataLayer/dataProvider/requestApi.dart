@@ -21,7 +21,7 @@ class RequestApi {
       String username, String password) async {
     var uri = Uri.https(apiUrl, 'administrator/login',
         {"username": username, "password": password});
-    var result = await http.get(uri);
+    var result = await http.post(uri);
     if (result.statusCode == 200) {
       return true;
     } else {

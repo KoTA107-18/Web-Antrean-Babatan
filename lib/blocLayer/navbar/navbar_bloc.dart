@@ -32,7 +32,7 @@ class NavbarBloc extends Bloc<NavbarEvent, NavbarState> {
           isAdmin = false;
         }
       });
-      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: PoliklinikScreen());
+      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: DashboardScreen());
     }
 
     if(event is NavbarEventLoadDashboard){
