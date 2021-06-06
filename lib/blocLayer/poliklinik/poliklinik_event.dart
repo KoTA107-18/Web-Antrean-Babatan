@@ -13,6 +13,6 @@ class EventPoliklinikAddSubmitPoli extends PoliklinikEvent {
 }
 
 class EventPoliklinikEditSubmitPoli extends PoliklinikEvent {
-  final Map<String, dynamic> dataPoliklinik;
+  final Poliklinik dataPoliklinik;
   EventPoliklinikEditSubmitPoli({@required this.dataPoliklinik});
 }

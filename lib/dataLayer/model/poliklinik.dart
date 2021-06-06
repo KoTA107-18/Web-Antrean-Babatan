@@ -52,6 +52,10 @@ class Poliklinik {
         daftarHari += jadwal[i].hari + ", ";
       }
     }
+
+    if(daftarHari==""){
+      daftarHari = "-";
+    }
     return daftarHari;
   }
 }

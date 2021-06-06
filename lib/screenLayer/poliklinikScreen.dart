@@ -391,24 +391,61 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
     _nama.text = poliklinik.namaPoli;
     _deskripsi.text = poliklinik.descPoli;
     _ratarata.text = poliklinik.rerataWaktuPelayanan.toString();
-    bool _setiapHari, _senin, _selasa, _rabu, _kamis, _jumat, _sabtu;
-    _setiapHari = _senin = _selasa = _rabu = _kamis = _jumat = _sabtu = true;
 
-    validateCheckBox() {
-      _setiapHari = (_senin && _selasa && _rabu && _kamis && _jumat && _sabtu);
+    List<HariPelayanan> hariPelayanan = [
+      HariPelayanan(
+          status: false,
+          hari: "Senin",
+          kodeHari: Hari.SENIN),
+      HariPelayanan(
+          status: false,
+          hari: "Selasa",
+          kodeHari: Hari.SELASA),
+      HariPelayanan(
+          status: false,
+          hari: "Rabu",
+          kodeHari: Hari.RABU),
+      HariPelayanan(
+          status: false,
+          hari: "Kamis",
+          kodeHari: Hari.KAMIS),
+      HariPelayanan(
+          status: false,
+          hari: "Jumat",
+          kodeHari: Hari.JUMAT),
+      HariPelayanan(
+          status: false,
+          hari: "Sabtu",
+          kodeHari: Hari.SABTU),
+    ];
+
+    for (var i = 0; i < poliklinik.jadwal.length; i++) {
+      for(var j = 0; j < hariPelayanan.length; j++){
+        if(poliklinik.jadwal[i].hari == hariPelayanan[j].kodeHari){
+          hariPelayanan[j].status = true;
+          hariPelayanan[j].jamBukaBookingInput.text = poliklinik.jadwal[i].jamBukaBooking;
+          hariPelayanan[j].jamTutupBookingInput.text = poliklinik.jadwal[i].jamTutupBooking;
+        }
+      }
     }
 
     void submitPoliklinik() {
-      Map<String, dynamic> dataPoliklinik = {
-        "id_poli": poliklinik.idPoli,
-        "nama_poli": _nama.text,
-        "desc_poli": _deskripsi.text,
-        "status_poli": poliklinik.statusPoli,
-        "rerata_waktu_pelayanan": _ratarata.text,
-        "data_hari": [_senin, _selasa, _rabu, _kamis, _jumat, _sabtu]
-      };
-      _poliklinikBloc
-          .add(EventPoliklinikEditSubmitPoli(dataPoliklinik: dataPoliklinik));
+      List<Jadwal> resultHari = [];
+      for(var i in hariPelayanan){
+        if(i.status){
+          resultHari.add(Jadwal(idPoli: 0,
+              hari: i.kodeHari,
+              jamBukaBooking: i.jamBukaBookingInput.text.toString(),
+              jamTutupBooking: i.jamTutupBookingInput.text.toString()));
+        }
+      }
+      Poliklinik dataPoliklinik = Poliklinik(
+          idPoli: poliklinik.idPoli,
+          namaPoli: _nama.text.toString(),
+          descPoli: _deskripsi.text.toString(),
+          jadwal: resultHari,
+          rerataWaktuPelayanan: int.parse(_ratarata.text.toString()));
+      _poliklinikBloc.add(EventPoliklinikEditSubmitPoli(dataPoliklinik: dataPoliklinik));
     }
 
     showDialog(
@@ -476,115 +513,70 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                           style: TextStyle(
                               fontSize: 16.0, fontWeight: FontWeight.bold)),
                     ),
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: _setiapHari,
-                          onChanged: (value) {
-                            setState(() {
-                              _setiapHari = value;
-                              _senin = _selasa = _rabu =
-                                  _kamis = _jumat = _sabtu = _setiapHari;
-                            });
-                          },
-                        ),
-                        Text('Setiap Hari'),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Row(
+                    for (var i in hariPelayanan)
+                      Container(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Row(
                           children: [
-                            Checkbox(
-                              value: _senin,
-                              onChanged: (value) {
-                                setState(() {
-                                  _senin = value;
-                                  validateCheckBox();
-                                });
-                              },
+                            Expanded(
+                              flex: 2,
+                              child: Row(
+                                children: [
+                                  Checkbox(
+                                    value: i.status,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        i.status = value;
+                                        if(i.status == false){
+                                          i.jamTutupBookingInput.clear();
+                                          i.jamBukaBookingInput.clear();
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  Text(i.hari)
+                                ],
+                              ),
                             ),
-                            Text('Senin'),
+                            Expanded(
+                              flex: 4,
+                              child: textFieldModified(
+                                  controller: i.jamBukaBookingInput,
+                                  label: "Buka",
+                                  isEnabled: false),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: IconButton(
+                                icon: Icon(Icons.update),
+                                onPressed: () {
+                                  if(i.status){
+                                    _selectTime(context, i.jamBukaBookingInput);
+                                  }
+                                },
+                              ),
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: textFieldModified(
+                                  controller: i.jamTutupBookingInput,
+                                  label: "Tutup",
+                                  isEnabled: false),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: IconButton(
+                                icon: Icon(Icons.update),
+                                onPressed: () {
+                                  if(i.status){
+                                    _selectTime(context, i.jamTutupBookingInput);
+                                  }
+                                },
+                              ),
+                            ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: _selasa,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selasa = value;
-                                  validateCheckBox();
-                                });
-                              },
-                            ),
-                            Text('Selasa'),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: _rabu,
-                              onChanged: (value) {
-                                setState(() {
-                                  _rabu = value;
-                                  validateCheckBox();
-                                });
-                              },
-                            ),
-                            Text('Rabu'),
-                          ],
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: _kamis,
-                              onChanged: (value) {
-                                setState(() {
-                                  _kamis = value;
-                                  validateCheckBox();
-                                });
-                              },
-                            ),
-                            Text('Kamis'),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: _jumat,
-                              onChanged: (value) {
-                                setState(() {
-                                  _jumat = value;
-                                  validateCheckBox();
-                                });
-                              },
-                            ),
-                            Text('Jumat'),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: _sabtu,
-                              onChanged: (value) {
-                                setState(() {
-                                  _sabtu = value;
-                                  validateCheckBox();
-                                });
-                              },
-                            ),
-                            Text('Sabtu'),
-                          ],
-                        )
-                      ],
-                    )
+                      )
                   ],
                 ),
               ),

@@ -95,13 +95,13 @@ class RequestApi {
   }
 
   static Future<bool> updatePoliklinik(
-      Map<String, dynamic> dataPoliklinik) async {
-    var uri = Uri.https(apiUrl, 'poliklinik/ubah');
+      Poliklinik dataPoliklinik) async {
+    var uri = Uri.https(apiUrl, 'poliklinik/${dataPoliklinik.idPoli}');
     var result = await http.put(uri,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(dataPoliklinik));
+        body: jsonEncode(dataPoliklinik.toJson()));
     if (result.statusCode == 200) {
       return true;
     } else {
