@@ -155,6 +155,22 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
     ]);
   }
 
+  Future _selectTime(BuildContext context, TextEditingController _timeController) async {
+    TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: 00, minute: 00),
+    );
+    if (picked != null)
+      setState(() {
+        selectedTime = picked;
+        var _hour = selectedTime.hour.toString().padLeft(2, '0');
+        var _minute = selectedTime.minute.toString().padLeft(2, '0');
+        var _time = _hour + ':' + _minute;
+        _timeController.text = _time;
+      });
+  }
+
   addDialog() {
     List<HariPelayanan> hariPelayanan = [
       HariPelayanan(
@@ -204,22 +220,6 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
           rerataWaktuPelayanan: int.parse(_rataRata.text.toString()));
       _poliklinikBloc
           .add(EventPoliklinikAddSubmitPoli(dataPoliklinik: dataPoliklinik));
-    }
-
-    Future _selectTime(BuildContext context, TextEditingController _timeController) async {
-      TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
-      final TimeOfDay picked = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay(hour: 00, minute: 00),
-      );
-      if (picked != null)
-        setState(() {
-          selectedTime = picked;
-          var _hour = selectedTime.hour.toString().padLeft(2, '0');
-          var _minute = selectedTime.minute.toString().padLeft(2, '0');
-          var _time = _hour + ':' + _minute;
-          _timeController.text = _time;
-        });
     }
 
     showDialog(
@@ -623,32 +623,40 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
   }
 
   infoDialog(Poliklinik poliklinik) {
-    bool _senin, _selasa, _rabu, _kamis, _jumat, _sabtu;
-    _senin = _selasa = _rabu = _kamis = _jumat = _sabtu = false;
+    List<HariPelayanan> hariPelayanan = [
+      HariPelayanan(
+          status: false,
+          hari: "Senin",
+          kodeHari: Hari.SENIN),
+      HariPelayanan(
+          status: false,
+          hari: "Selasa",
+          kodeHari: Hari.SELASA),
+      HariPelayanan(
+          status: false,
+          hari: "Rabu",
+          kodeHari: Hari.RABU),
+      HariPelayanan(
+          status: false,
+          hari: "Kamis",
+          kodeHari: Hari.KAMIS),
+      HariPelayanan(
+          status: false,
+          hari: "Jumat",
+          kodeHari: Hari.JUMAT),
+      HariPelayanan(
+          status: false,
+          hari: "Sabtu",
+          kodeHari: Hari.SABTU),
+    ];
 
     for (var i = 0; i < poliklinik.jadwal.length; i++) {
-      if (poliklinik.jadwal[i].hari == Hari.SENIN) {
-        _senin = true;
-      }
-
-      if (poliklinik.jadwal[i].hari == Hari.SELASA) {
-        _selasa = true;
-      }
-
-      if (poliklinik.jadwal[i].hari == Hari.RABU) {
-        _rabu = true;
-      }
-
-      if (poliklinik.jadwal[i].hari == Hari.KAMIS) {
-        _kamis = true;
-      }
-
-      if (poliklinik.jadwal[i].hari == Hari.JUMAT) {
-        _jumat = true;
-      }
-
-      if (poliklinik.jadwal[i].hari == Hari.SABTU) {
-        _sabtu = true;
+      for(var j = 0; j < hariPelayanan.length; j++){
+        if(poliklinik.jadwal[i].hari == hariPelayanan[j].kodeHari){
+          hariPelayanan[j].status = true;
+          hariPelayanan[j].jamBukaBookingInput.text = poliklinik.jadwal[i].jamBukaBooking;
+          hariPelayanan[j].jamTutupBookingInput.text = poliklinik.jadwal[i].jamTutupBooking;
+        }
       }
     }
 
@@ -722,72 +730,44 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: Text(
-                          (poliklinik.idPoli == 1) ? "Aktif" : "Tidak Aktif"),
+                          (poliklinik.statusPoli == 1) ? "Aktif" : "Tidak Aktif"),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Row(
+                    for (var i in hariPelayanan)
+                      Container(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Row(
                           children: [
-                            Checkbox(
-                              value: _senin,
-                              onChanged: null,
+                            Expanded(
+                              flex: 2,
+                              child: Row(
+                                children: [
+                                  Checkbox(
+                                    value: i.status,
+                                    onChanged: null,
+                                  ),
+                                  Text(i.hari)
+                                ],
+                              ),
                             ),
-                            Text('Senin'),
+                            Expanded(
+                              flex: 4,
+                              child: textFieldModified(
+                                  controller: i.jamBukaBookingInput,
+                                  label: "Buka",
+                                  isEnabled: false),
+                            ),
+                            Spacer(flex: 1,),
+                            Expanded(
+                              flex: 4,
+                              child: textFieldModified(
+                                  controller: i.jamTutupBookingInput,
+                                  label: "Tutup",
+                                  isEnabled: false),
+                            ),
+                            Spacer(flex: 1,),
                           ],
                         ),
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: _selasa,
-                              onChanged: null,
-                            ),
-                            Text('Selasa'),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: _rabu,
-                              onChanged: null,
-                            ),
-                            Text('Rabu'),
-                          ],
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: _kamis,
-                              onChanged: null,
-                            ),
-                            Text('Kamis'),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: _jumat,
-                              onChanged: null,
-                            ),
-                            Text('Jumat'),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: _sabtu,
-                              onChanged: null,
-                            ),
-                            Text('Sabtu'),
-                          ],
-                        )
-                      ],
-                    )
+                      )
                   ],
                 ),
               ),
