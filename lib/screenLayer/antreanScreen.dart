@@ -197,6 +197,7 @@ class _AntreanScreenState extends State<AntreanScreen> {
                                 );
                               } else {
                                 return Container(
+                                  color: Colors.teal[50],
                                   child: Center(
                                     child: CircularProgressIndicator(),
                                   ),

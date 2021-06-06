@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:web_antrean_babatan/blocLayer/antrean/antrean_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:web_antrean_babatan/blocLayer/antreanSementara/antrean_sementara_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
@@ -153,11 +153,15 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                                                           IconButton(
                                                               icon:
                                                               Icon(Icons.edit),
-                                                              onPressed: () {}),
+                                                              onPressed: () {
+                                                                editAntrean(context, i);
+                                                              }),
                                                           IconButton(
                                                               icon:
                                                               Icon(Icons.info),
-                                                              onPressed: () {})
+                                                              onPressed: () {
+                                                                infoAntrean(context, i);
+                                                              })
                                                         ],
                                                       )),
                                                     ])
@@ -170,12 +174,27 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                                       snapshot.connectionState ==
                                           ConnectionState.done) {
                                     return Container(
-                                      child: Center(
-                                        child: Text("Data Kosong"),
+                                      color: Colors.teal[50],
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            child: Lottie.asset(
+                                              'asset/not_found.json',
+                                              repeat: false,
+                                              reverse: false,
+                                              animate: true,
+                                            ),
+                                          ),
+                                          Container(
+                                            child: Text("Data kosong."),
+                                          ),
+                                        ],
                                       ),
                                     );
                                   } else {
                                     return Container(
+                                      color: Colors.teal[50],
                                       child: Center(
                                         child: CircularProgressIndicator(),
                                       ),
@@ -224,6 +243,281 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
               ),
               child: Text(
                 'Tidak',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ));
+  }
+
+  editAntrean(BuildContext context, JadwalPasien pasien) {
+    Map result;
+    List<Map> daftarStatus = [
+      {
+        'status' : "Belum Dilayani",
+        'value' : 1
+      },
+      {
+        'status' : "Sedang Dilayani",
+        'value' : 2
+      },
+      {
+        'status' : "Sudah Dilayani",
+        'value' : 3
+      },
+      {
+        'status' : "Dilewati",
+        'value' : 4
+      },
+      {
+        'status' : "Dibatalkan",
+        'value' : 5
+      }
+    ];
+
+    for(var i in daftarStatus){
+      if(i['value'] == pasien.statusAntrean){
+        result = i;
+      }
+    }
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.edit),
+              SizedBox(width: 8.0),
+              Text("Ubah Status"),
+            ],
+          ),
+          content: Container(
+            width: MediaQuery.of(context).size.width / 2,
+            height: MediaQuery.of(context).size.height / 2,
+            child: Container(
+              padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+              child: DropdownButtonFormField(
+                decoration: InputDecoration(
+                    labelText: "Pilih Status",
+                    prefixIcon: Icon(Icons.local_hospital),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16.0))),
+                value: result["value"],
+                items: daftarStatus.map((value) {
+                  return DropdownMenuItem(
+                    child: Text(value["status"]),
+                    value: value["value"],
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  result["value"] = value;
+                },
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.teal, // background
+                onPrimary: Colors.white, // foreground
+              ),
+              child: Text(
+                'Ya',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {
+                pasien.statusAntrean = result["value"];
+                _antreanSementaraBloc
+                    .add(EventAntreanSementaraEditJadwalPasien(pasien: pasien));
+                Navigator.pop(context);
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.grey, // background
+                onPrimary: Colors.white, // foreground
+              ),
+              child: Text(
+                'Tidak',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ));
+  }
+
+  infoAntrean(BuildContext context, JadwalPasien pasien) {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.info),
+              SizedBox(width: 8.0),
+              Text("Info Antrean"),
+            ],
+          ),
+          content: Container(
+            width: MediaQuery.of(context).size.width / 2,
+            height: MediaQuery.of(context).size.height / 2,
+            child: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Username',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(pasien.username),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Nama Lengkap',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(pasien.namaLengkap),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('No Handphone',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(pasien.noHandphone),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Kepala Keluarga',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(pasien.kepalaKeluarga),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Tanggal Lahir',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(pasien.tglLahir),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Alamat',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(pasien.alamat),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Jenis Pasien',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text("Umum"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Poliklinik Tujuan',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(pasien.namaPoli),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Nomor Antrean',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text((pasien.nomorAntrean == null) ? "0" : pasien.nomorAntrean.toString()),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Tipe Booking',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(pasien.tipeBooking.toString()),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Tanggal Pelayanan',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(pasien.tglPelayanan),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Jam Daftar Antrean',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(pasien.jamDaftarAntrean),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Jam Mulai Dilayani',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text((pasien.jamMulaiDilayani == null) ? "00:00:00" : pasien.jamMulaiDilayani.toString()),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Jam Selesai Dilayani',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text((pasien.jamSelesaiDilayani == null) ? "00:00:00" : pasien.jamSelesaiDilayani.toString()),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.teal, // background
+                onPrimary: Colors.white, // foreground
+              ),
+              child: Text(
+                'Tutup',
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
