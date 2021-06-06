@@ -45,7 +45,7 @@ class _AntreanScreenState extends State<AntreanScreen> {
                       children: List<Widget>.generate(state.daftarPoli.length,
                           (int index) {
                         return FutureBuilder(
-                            future: RequestApi.getAntreanWithId(
+                            future: RequestApi.getAntreanUtama(
                                 state.daftarPoli[index].idPoli.toString()),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
@@ -145,10 +145,16 @@ class _AntreanScreenState extends State<AntreanScreen> {
                                                       IconButton(
                                                           icon: Icon(Icons
                                                               .access_time_sharp),
-                                                          onPressed: () {}),
+                                                          onPressed: () {
+                                                            konfirmasiAntreanSementara(context);
+                                                          }),
                                                       IconButton(
                                                           icon:
                                                               Icon(Icons.edit),
+                                                          onPressed: () {}),
+                                                      IconButton(
+                                                          icon:
+                                                          Icon(Icons.info),
                                                           onPressed: () {})
                                                     ],
                                                   )),
@@ -212,6 +218,43 @@ class _AntreanScreenState extends State<AntreanScreen> {
           child: Center(
             child: CircularProgressIndicator(),
           ),
+        ));
+  }
+
+  konfirmasiAntreanSementara(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text("Konfirmasi"),
+          content: Text("Anda yakin merubah status pasien yang dipilih ke 'Dilewati'?"),
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.teal, // background
+                onPrimary: Colors.white, // foreground
+              ),
+              child: Text(
+                'Ya',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.grey, // background
+                onPrimary: Colors.white, // foreground
+              ),
+              child: Text(
+                'Tidak',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
         ));
   }
 }

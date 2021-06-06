@@ -334,6 +334,12 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text("Fitur sementara di disable"),
+      ),
+    );
+    /*
     return BlocProvider(
       create: (context) => _tambahantreanBloc,
       child: BlocListener<TambahantreanBloc, TambahantreanState>(
@@ -409,7 +415,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
           ),
         ),
       ),
-    );
+    );*/
   }
 
   ListView formTambahAntrean(List<Poliklinik> daftarPoli) {

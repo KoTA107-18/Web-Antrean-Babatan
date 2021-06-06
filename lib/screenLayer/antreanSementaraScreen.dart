@@ -43,7 +43,7 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                       children: List<Widget>.generate(state.daftarPoli.length,
                               (int index) {
                             return FutureBuilder(
-                                future: RequestApi.getAntreanWithId(
+                                future: RequestApi.getAntreanSementara(
                                     state.daftarPoli[index].idPoli.toString()),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {

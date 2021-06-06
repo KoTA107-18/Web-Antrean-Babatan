@@ -33,8 +33,18 @@ class RequestApi {
     Method for functional Jadwal Pasien.
   */
 
-  static Future getAntreanWithId(String idPoli) async {
-    var uri = Uri.https(apiUrl, 'antrean/poliklinik/$idPoli');
+  static Future getAntreanUtama(String idPoli) async {
+    var uri = Uri.https(apiUrl, 'antrean/poliklinik/utama/$idPoli');
+    var result = await http.get(uri);
+    if (result.statusCode == 200) {
+      return json.decode(result.body);
+    } else {
+      return null;
+    }
+  }
+
+  static Future getAntreanSementara(String idPoli) async {
+    var uri = Uri.https(apiUrl, 'antrean/poliklinik/sementara/$idPoli');
     var result = await http.get(uri);
     if (result.statusCode == 200) {
       return json.decode(result.body);
