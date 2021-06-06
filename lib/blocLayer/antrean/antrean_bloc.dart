@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
+import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
 
 part 'antrean_event.dart';
@@ -28,6 +29,16 @@ class AntreanBloc extends Bloc<AntreanEvent, AntreanState> {
                 .toList();
           }
         });
+        yield StateAntreanGetPoliSuccess(daftarPoli: daftarPoli);
+      } catch (e) {
+        yield StateAntreanGetPoliFailed(messageFailed: e.toString());
+      }
+    }
+
+    if (event is EventAntreanEditJadwalPasien) {
+      yield StateAntreanGetPoliLoading();
+      try {
+        await RequestApi.editAntrean(event.pasien);
         yield StateAntreanGetPoliSuccess(daftarPoli: daftarPoli);
       } catch (e) {
         yield StateAntreanGetPoliFailed(messageFailed: e.toString());

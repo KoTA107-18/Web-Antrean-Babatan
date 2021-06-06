@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/pasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/perawat.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
@@ -60,6 +61,20 @@ class RequestApi {
       return json.decode(result.body);
     } else {
       return null;
+    }
+  }
+
+  static Future<bool> editAntrean(JadwalPasien data) async {
+    var uri = Uri.https(apiUrl, 'antrean');
+    var result = await http.put(uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(data.toJson()));
+    if (result.statusCode == 200) {
+      return true;
+    } else {
+      return false;
     }
   }
 

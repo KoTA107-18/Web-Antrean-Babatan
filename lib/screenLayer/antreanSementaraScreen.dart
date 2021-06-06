@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:web_antrean_babatan/blocLayer/antrean/antrean_bloc.dart';
 import 'package:web_antrean_babatan/blocLayer/antreanSementara/antrean_sementara_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
+import 'package:web_antrean_babatan/utils/statusAntrean.dart';
 
 class AntreanSementaraScreen extends StatefulWidget {
   @override
@@ -145,7 +147,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                                                           IconButton(
                                                               icon: Icon(Icons
                                                                   .access_time_sharp),
-                                                              onPressed: () {}),
+                                                              onPressed: () {
+                                                                konfirmasiAntreanUtama(context, i);
+                                                              }),
                                                           IconButton(
                                                               icon:
                                                               Icon(Icons.edit),
@@ -189,6 +193,45 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
         },
       ),
     );
+  }
+
+  konfirmasiAntreanUtama(BuildContext context, JadwalPasien pasien) {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text("Konfirmasi"),
+          content: Text("Anda yakin memindahkan pasien yang dipilih ke Antrean Utama?"),
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.teal, // background
+                onPrimary: Colors.white, // foreground
+              ),
+              child: Text(
+                'Ya',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {
+                pasien.statusAntrean = StatusAntrean.BELUM_DILAYANI;
+                _antreanSementaraBloc.add(EventAntreanSementaraEditJadwalPasien(pasien: pasien));
+                Navigator.pop(context);
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.grey, // background
+                onPrimary: Colors.white, // foreground
+              ),
+              child: Text(
+                'Tidak',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ));
   }
 
   Scaffold failedScreen(String messageFailed) {

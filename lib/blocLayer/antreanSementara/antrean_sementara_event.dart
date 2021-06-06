@@ -7,4 +7,7 @@ abstract class AntreanSementaraEvent {
 
 class EventAntreanSementaraGetPoli extends AntreanSementaraEvent {}
 
-class EventAntreanSementaraGetAntreanList extends AntreanSementaraEvent {}
+class EventAntreanSementaraEditJadwalPasien extends AntreanSementaraEvent {
+  final JadwalPasien pasien;
+  EventAntreanSementaraEditJadwalPasien({@required this.pasien});
+}
