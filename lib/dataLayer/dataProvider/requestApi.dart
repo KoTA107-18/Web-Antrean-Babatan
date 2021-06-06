@@ -120,6 +120,9 @@ class RequestApi {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(data));
+    print(result.statusCode);
+    print(result.body);
+
     if (result.statusCode == 200) {
       return true;
     } else {

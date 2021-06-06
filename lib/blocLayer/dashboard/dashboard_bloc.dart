@@ -42,19 +42,17 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       }
     }
 
-    if ((event is EventDashboardBukaPortal) ||
-        (event is EventDashboardTutupPortal)) {
+    if (event is EventDashboardBukaPortal) {
       yield StateDashboardLoading();
       try {
-        await RequestApi.updateStatus(daftarPoli).then((value) {
-          RequestApi.getAllPoliklinik().then((snapshot) {
-            if (snapshot != null) {
-              var resultSnapshot = snapshot as List;
-              daftarPoli = resultSnapshot
-                  .map((aJson) => Poliklinik.fromJson(aJson))
-                  .toList();
-            }
-          });
+        await RequestApi.updateStatus(daftarPoli);
+        await RequestApi.getAllPoliklinik().then((snapshot) {
+          if (snapshot != null) {
+            var resultSnapshot = snapshot as List;
+            daftarPoli = resultSnapshot
+                .map((aJson) => Poliklinik.fromJson(aJson))
+                .toList();
+          }
         });
         yield StateDashboardSuccess(daftarPoli: daftarPoli);
       } catch (e) {

@@ -10,6 +10,11 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final DashboardBloc dashboardBloc = DashboardBloc();
+  String dateSlug = ""
+      "${DateTime.now().year.toString()}/"
+      "${DateTime.now().month.toString().padLeft(2, '0')}/"
+      "${DateTime.now().day.toString().padLeft(2, '0')}";
+
   @override
   void initState() {
     dashboardBloc.add(EventDashboardGetPoli());
@@ -178,16 +183,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   padding: EdgeInsets.all(16.0),
                   child: Center(
                       child: Text(
-                    "20 April 2021",
+                    dateSlug,
                     style: TextStyle(fontSize: 18.0),
                   ))),
-              Container(
-                  padding: EdgeInsets.all(16.0),
-                  child: Center(
-                      child: Text(
-                    "09.35 WIB",
-                    style: TextStyle(fontSize: 18.0),
-                  )))
             ],
           ),
           body: BlocBuilder<DashboardBloc, DashboardState>(
@@ -274,41 +272,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ],
                               ),
                             ),
-                            BlocBuilder<DashboardBloc, DashboardState>(
-                              bloc: dashboardBloc,
-                              builder: (context, state) {
-                                if (state is StateDashboardSuccess) {
-                                  return Expanded(
-                                    child: ListView.builder(
-                                        itemCount: state.daftarPoli.length,
-                                        itemBuilder: (context, index) {
-                                          return CheckboxListTile(
-                                            controlAffinity:
-                                                ListTileControlAffinity
-                                                    .trailing,
-                                            title: Text(state
-                                                .daftarPoli[index].namaPoli),
-                                            secondary: const Icon(
-                                                Icons.local_hospital),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                dashboardBloc.add(
-                                                    EventDashboardChangeStatusPoli(
-                                                        indexPoli: index));
-                                              });
-                                            },
-                                            value: (state.daftarPoli[index]
-                                                        .statusPoli ==
-                                                    1)
-                                                ? true
-                                                : false,
-                                          );
-                                        }),
-                                  );
-                                } else {
-                                  return Container(color: Colors.red);
-                                }
-                              },
+                            Expanded(
+                              child: ListView(
+                                children: [
+                                  for (var i in state.daftarPoli)
+                                    CheckboxListTile(
+                                      controlAffinity:
+                                          ListTileControlAffinity.trailing,
+                                      title: Text(i.namaPoli),
+                                      secondary:
+                                          const Icon(Icons.local_hospital),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          if (value) {
+                                            i.statusPoli = 1;
+                                          } else {
+                                            i.statusPoli = 0;
+                                          }
+                                        });
+                                      },
+                                      value: (i.statusPoli == 1) ? true : false,
+                                    )
+                                ],
+                              ),
                             ),
                           ],
                         ),
