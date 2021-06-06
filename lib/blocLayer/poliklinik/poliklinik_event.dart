@@ -8,7 +8,7 @@ abstract class PoliklinikEvent {
 class EventPoliklinikGetPoli extends PoliklinikEvent {}
 
 class EventPoliklinikAddSubmitPoli extends PoliklinikEvent {
-  final Map<String, dynamic> dataPoliklinik;
+  final Poliklinik dataPoliklinik;
   EventPoliklinikAddSubmitPoli({@required this.dataPoliklinik});
 }
 

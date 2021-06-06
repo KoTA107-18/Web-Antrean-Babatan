@@ -9,10 +9,10 @@ class Poliklinik {
   List<Jadwal> jadwal;
 
   Poliklinik(
-      {this.idPoli,
+      {this.idPoli = 0,
         this.namaPoli,
         this.descPoli,
-        this.statusPoli,
+        this.statusPoli = 0,
         this.rerataWaktuPelayanan,
         this.jadwal});
 
