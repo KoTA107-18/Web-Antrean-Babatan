@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
-import 'package:web_antrean_babatan/dataLayer/model/kartuAntre.dart';
+import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/pasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
 
@@ -71,9 +71,10 @@ class TambahantreanBloc extends Bloc<TambahantreanEvent, TambahantreanState> {
       yield StateTambahAntreanSubmitPasienLoading(daftarPoli: daftarPoli);
       username = event.username;
       try {
+        /*
         var resultCheck = await RequestApi.checkAlreadyRegisterQueue(username);
         if (resultCheck == false) {
-          KartuAntre tiket = KartuAntre(
+          JadwalPasien tiket = JadwalPasien(
               idJadwalPasien: 0,
               idPoli: poliklinikTujuan.idPoli,
               idHari: DateTime.now().weekday,
@@ -102,6 +103,7 @@ class TambahantreanBloc extends Bloc<TambahantreanEvent, TambahantreanState> {
                   "Pasien tersebut masih memiliki nomor antrean yang belum diproses.",
               daftarPoli: daftarPoli);
         }
+         */
       } catch (e) {
         yield StateTambahAntreanFailed(errMessage: e.toString());
       }

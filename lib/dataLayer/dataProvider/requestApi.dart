@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:web_antrean_babatan/dataLayer/model/kartuAntre.dart';
 import 'package:web_antrean_babatan/dataLayer/model/pasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/perawat.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
@@ -18,27 +17,6 @@ class RequestApi {
     }
   }
 
-  static Future<bool> checkAlreadyRegisterQueue(String username) async {
-    var uri = Uri.http(apiUrl, 'ticket/check', {"username": username});
-    var result = await http.get(uri);
-    if (result.statusCode == 200) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  static Future<bool> registerAntreanHariIni(KartuAntre ticket) async {
-    var result = await http.post(Uri.http(apiUrl, 'ticket/daftar'),
-        body: ticket.toJson());
-
-    if (result.statusCode == 200) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   static Future<bool> loginAdministrator(
       String username, String password) async {
     var uri = Uri.https(apiUrl, 'administrator/login',
@@ -48,6 +26,20 @@ class RequestApi {
       return true;
     } else {
       return false;
+    }
+  }
+
+  /*
+    Method for functional Jadwal Pasien.
+  */
+
+  static Future getAntreanWithId(String idPoli) async {
+    var uri = Uri.https(apiUrl, 'antrean/poliklinik/$idPoli');
+    var result = await http.get(uri);
+    if (result.statusCode == 200) {
+      return json.decode(result.body);
+    } else {
+      return null;
     }
   }
 
@@ -70,17 +62,12 @@ class RequestApi {
     }
   }
 
-  static Future getAntreanWithId(String idPoli) async {
-    var uri = Uri.https(apiUrl, 'antrean/poliklinik', {"id_poli": idPoli});
-    var result = await http.get(uri);
-    if (result.statusCode == 200) {
-      return json.decode(result.body);
-    } else {
-      return null;
-    }
-  }
-
   static Future insertPoliklinik(Poliklinik dataPoliklinik) async {
+    /*
+    Endpoint : rest-api-babatan.herokuapp.com/poliklinik
+    Method Type : POST
+    Desc : Insert Data Poliklinik in Database
+    */
     var uri = Uri.https(apiUrl, 'poliklinik');
     var result = await http.post(uri,
         headers: <String, String>{
@@ -96,6 +83,11 @@ class RequestApi {
 
   static Future<bool> updatePoliklinik(
       Poliklinik dataPoliklinik) async {
+    /*
+    Endpoint : rest-api-babatan.herokuapp.com/poliklinik/id
+    Method Type : PUT
+    Desc : Update Data Poliklinik in Database
+    */
     var uri = Uri.https(apiUrl, 'poliklinik/${dataPoliklinik.idPoli}');
     var result = await http.put(uri,
         headers: <String, String>{
@@ -110,6 +102,11 @@ class RequestApi {
   }
 
   static Future<bool> updateStatus(List<Poliklinik> daftarPoliklinik) async {
+    /*
+    Endpoint : rest-api-babatan.herokuapp.com/poliklinik/status
+    Method Type : PUT
+    Desc : Update Portal Poliklinik in Database
+    */
     var uri = Uri.https(apiUrl, 'poliklinik/status');
     List data = [];
     for (var i in daftarPoliklinik) {
@@ -120,15 +117,13 @@ class RequestApi {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(data));
-    print(result.statusCode);
-    print(result.body);
-
     if (result.statusCode == 200) {
       return true;
     } else {
       return false;
     }
   }
+
 
   /*
     Method for functional Perawat.
