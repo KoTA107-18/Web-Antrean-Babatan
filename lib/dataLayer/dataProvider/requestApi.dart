@@ -204,6 +204,21 @@ class RequestApi {
     }
   }
 
+  static Future getPerawat(String id) async {
+    /*
+    Endpoint : rest-api-babatan.herokuapp.com/perawat
+    Method Type : GET
+    Desc : Get Perawat in Database
+    */
+    var uri = Uri.https(apiUrl, 'perawat/$id');
+    var result = await http.get(uri);
+    if (result.statusCode == 200) {
+      return json.decode(result.body);
+    } else {
+      return null;
+    }
+  }
+
   static Future<bool> editPerawat(Perawat perawat) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/perawat/id

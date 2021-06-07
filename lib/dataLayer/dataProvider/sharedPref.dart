@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPref {
   static String _username = "KEY_USERNAME";
   static String _poliklinik = "KEY_POLIKLINIK";
+  static String _idPerawat = "KEY_ID_PERAWAT";
   static String _role = "KEY_ROLE";
   static String administrator = "ADMINISTRATOR";
   static String perawat = "PERAWAT";
@@ -18,14 +19,21 @@ class SharedPref {
     }
   }
 
-  static Future<void> savePoli(int id) async {
+  static Future<void> saveInfoPerawat(int idPoli, int idPerawat) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt(_poliklinik, id);
+    prefs.setInt(_poliklinik, idPoli);
+    prefs.setInt(_idPerawat, idPerawat);
   }
 
   static Future<int> getPoli() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int result = prefs.getInt(_poliklinik);
+    return result;
+  }
+
+  static Future<int> getIdPerawat() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int result = prefs.getInt(_idPerawat);
     return result;
   }
 

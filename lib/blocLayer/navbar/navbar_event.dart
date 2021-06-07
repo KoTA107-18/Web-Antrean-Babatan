@@ -15,6 +15,8 @@ class NavbarEventLoadAntreanSementara extends NavbarEvent {}
 
 class NavbarEventLoadAntreanSelesai extends NavbarEvent {}
 
+class NavbarEventLoadAkun extends NavbarEvent {}
+
 class NavbarEventLoadTambahAntrean extends NavbarEvent {}
 
 class NavbarEventLoadPoliklinik extends NavbarEvent {}

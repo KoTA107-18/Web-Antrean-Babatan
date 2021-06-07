@@ -46,7 +46,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
                 .toList();
 
             await SharedPref.saveLogin(username, choiceRole);
-            await SharedPref.savePoli(daftarPerawat[0].idPoli);
+            await SharedPref.saveInfoPerawat(daftarPerawat[0].idPoli, daftarPerawat[0].idPerawat);
             isVerified = true;
             result = "Login berhasil!";
           } else {
