@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
+import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
 
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
+  bool isAdmin = false;
   String messageError;
   List<Poliklinik> daftarPoli = [];
   DashboardBloc() : super(StateDashboardLoading());
@@ -20,6 +22,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     if (event is EventDashboardGetPoli) {
       yield StateDashboardLoading();
       try {
+        var roleValue = await SharedPref.getRole();
+        if(roleValue == SharedPref.administrator){
+          isAdmin = true;
+        }
+
         await RequestApi.getAllPoliklinik().then((snapshot) {
           if (snapshot != null) {
             var resultSnapshot = snapshot as List;

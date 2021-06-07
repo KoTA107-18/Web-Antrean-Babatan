@@ -202,7 +202,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       flex: 2,
                       child: cardPoli(state.daftarPoli),
                     ),
-                    Expanded(
+                    (dashboardBloc.isAdmin) ? Expanded(
                       flex: 1,
                       child: Container(
                         color: Colors.white,
@@ -278,10 +278,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   for (var i in state.daftarPoli)
                                     CheckboxListTile(
                                       controlAffinity:
-                                          ListTileControlAffinity.trailing,
+                                      ListTileControlAffinity.trailing,
                                       title: Text(i.namaPoli),
                                       secondary:
-                                          const Icon(Icons.local_hospital),
+                                      const Icon(Icons.local_hospital),
                                       onChanged: (value) {
                                         setState(() {
                                           if (value) {
@@ -299,7 +299,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ],
                         ),
                       ),
-                    )
+                    ) : SizedBox.shrink()
                   ],
                 );
               } else {
