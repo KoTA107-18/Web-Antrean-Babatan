@@ -54,6 +54,16 @@ class RequestApi {
     }
   }
 
+  static Future getAntreanSelesai(String idPoli) async {
+    var uri = Uri.https(apiUrl, 'antrean/poliklinik/selesai/$idPoli');
+    var result = await http.get(uri);
+    if (result.statusCode == 200) {
+      return json.decode(result.body);
+    } else {
+      return null;
+    }
+  }
+
   static Future getAntreanRiwayat(String idPoli) async {
     var uri = Uri.https(apiUrl, 'antrean/poliklinik/riwayat/$idPoli');
     var result = await http.get(uri);

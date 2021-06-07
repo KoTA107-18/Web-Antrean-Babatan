@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
 import 'package:web_antrean_babatan/screenLayer/akunPerawatScreen.dart';
 import 'package:web_antrean_babatan/screenLayer/antreanScreen.dart';
+import 'package:web_antrean_babatan/screenLayer/antreanSelesaiScreen.dart';
 import 'package:web_antrean_babatan/screenLayer/antreanSementaraScreen.dart';
 import 'package:web_antrean_babatan/screenLayer/dashboardScreen.dart';
 import 'package:web_antrean_babatan/screenLayer/poliklinikScreen.dart';
@@ -45,6 +46,10 @@ class NavbarBloc extends Bloc<NavbarEvent, NavbarState> {
 
     if(event is NavbarEventLoadAntreanSementara){
       yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: AntreanSementaraScreen());
+    }
+
+    if(event is NavbarEventLoadAntreanSelesai){
+      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: AntreanSelesaiScreen());
     }
 
     if(event is NavbarEventLoadTambahAntrean){

@@ -182,7 +182,9 @@ class _MainScreenState extends State<MainScreen> {
         listMenu('Antrean Sementara', Icon(Icons.people), () {
           _navbarBloc.add(NavbarEventLoadAntreanSementara());
         }),
-        listMenu('Antrean Selesai', Icon(Icons.people), () {}),
+        listMenu('Antrean Selesai', Icon(Icons.people), () {
+          _navbarBloc.add(NavbarEventLoadAntreanSelesai());
+        }),
         listMenu('Akun', Icon(Icons.people), () {}),
         listMenu('Logout', Icon(Icons.logout), () {
           _showMaterialDialog(context);
