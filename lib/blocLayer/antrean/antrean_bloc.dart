@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
+import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
 import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
 
@@ -21,14 +22,27 @@ class AntreanBloc extends Bloc<AntreanEvent, AntreanState> {
     if (event is EventAntreanGetPoli) {
       yield StateAntreanGetPoliLoading();
       try {
-        await RequestApi.getAllPoliklinik().then((snapshot) {
-          if (snapshot != null) {
-            var resultSnapshot = snapshot as List;
-            daftarPoli = resultSnapshot
-                .map((aJson) => Poliklinik.fromJson(aJson))
-                .toList();
-          }
-        });
+        var roleValue = await SharedPref.getRole();
+        if(roleValue == SharedPref.administrator){
+          await RequestApi.getAllPoliklinik().then((snapshot) {
+            if (snapshot != null) {
+              var resultSnapshot = snapshot as List;
+              daftarPoli = resultSnapshot
+                  .map((aJson) => Poliklinik.fromJson(aJson))
+                  .toList();
+            }
+          });
+        } else {
+          var idPoli = await SharedPref.getPoli();
+          await RequestApi.getPoliklinik(idPoli).then((snapshot) {
+            if (snapshot != null) {
+              var resultSnapshot = snapshot as List;
+              daftarPoli = resultSnapshot
+                  .map((aJson) => Poliklinik.fromJson(aJson))
+                  .toList();
+            }
+          });
+        }
         yield StateAntreanGetPoliSuccess(daftarPoli: daftarPoli);
       } catch (e) {
         yield StateAntreanGetPoliFailed(messageFailed: e.toString());

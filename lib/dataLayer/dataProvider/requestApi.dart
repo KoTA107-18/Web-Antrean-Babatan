@@ -97,6 +97,21 @@ class RequestApi {
     }
   }
 
+  static Future getPoliklinik(int id) async {
+    /*
+    Endpoint : rest-api-babatan.herokuapp.com/poliklinik
+    Method Type : GET
+    Desc : Get Poliklinik in Database
+    */
+    var uri = Uri.https(apiUrl, 'poliklinik/${id.toString()}');
+    var result = await http.get(uri);
+    if (result.statusCode == 200) {
+      return json.decode(result.body);
+    } else {
+      return null;
+    }
+  }
+
   static Future insertPoliklinik(Poliklinik dataPoliklinik) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/poliklinik
@@ -235,7 +250,7 @@ class RequestApi {
     }
   }
 
-  static Future<bool> loginPerawat(
+  static Future loginPerawat(
       String username, String password) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/perawat/login
@@ -248,9 +263,9 @@ class RequestApi {
     print(username);
     print(password);
     if (result.statusCode == 200) {
-      return true;
+      return jsonDecode(result.body);
     } else {
-      return false;
+      return null;
     }
   }
 }

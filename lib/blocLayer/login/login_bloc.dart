@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
+import 'package:web_antrean_babatan/dataLayer/model/perawat.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -12,6 +13,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   int choiceRole = 0;
   bool isVerified = false;
   String username, password, result;
+  List<Perawat> daftarPerawat = [];
   LoginBloc() : super(StateLoginInitial());
 
   @override
@@ -37,8 +39,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         });
       } else {
         await RequestApi.loginPerawat(username, password).then((value) async {
-          if(value){
+          if(value != null){
+            var resultSnapshot = value as List;
+            daftarPerawat = resultSnapshot
+                .map((aJson) => Perawat.fromJson(aJson))
+                .toList();
+
             await SharedPref.saveLogin(username, choiceRole);
+            await SharedPref.savePoli(daftarPerawat[0].idPoli);
             isVerified = true;
             result = "Login berhasil!";
           } else {
