@@ -363,33 +363,7 @@ class _AkunScreenState extends State<AkunScreen> {
                               }
                             },
                             controller: _passwordTwo),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Text('Poliklinik',
-                            style: TextStyle(
-                                fontSize: 16.0, fontWeight: FontWeight.bold)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: DropdownButtonFormField(
-                          decoration: InputDecoration(
-                              labelText: "Pilih Poliklinik yang anda tuju",
-                              prefixIcon: Icon(Icons.local_hospital),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16.0))),
-                          value: perawat.idPoli,
-                          items: daftarPoli.map((value) {
-                            return DropdownMenuItem(
-                              child: Text(value.namaPoli),
-                              value: value.idPoli,
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            idPoliklinik = value;
-                          },
-                        ),
-                      ),
+                      )
                     ],
                   ),
                 ),
