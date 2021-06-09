@@ -78,122 +78,120 @@ class _AntreanScreenState extends State<AntreanScreen> {
                                     .map(
                                         (aJson) => JadwalPasien.fromJson(aJson))
                                     .toList();
-                                return Expanded(
-                                  child: Container(
-                                    color: Colors.teal[50],
-                                    padding: EdgeInsets.all(20.0),
-                                    child: ListView(children: <Widget>[
-                                      Container(
-                                        width: double.infinity,
-                                        padding: EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(3),
-                                          color: Colors.teal[300],
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: const Color(0x29000000),
-                                              offset: Offset(0, 3),
-                                              blurRadius: 6,
-                                            ),
-                                          ],
-                                        ),
-                                        child: DataTable(
-                                          showBottomBorder: true,
-                                          columns: [
-                                            DataColumn(
-                                                label: Text('No',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white))),
-                                            DataColumn(
-                                                label: Text('Nama',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white))),
-                                            DataColumn(
-                                                label: Text('Tanggal Lahir',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white))),
-                                            DataColumn(
-                                                label: Text('Kepala Keluarga',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white))),
-                                            DataColumn(
-                                                label: Text('Jenis',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white))),
-                                            DataColumn(
-                                                label: Text('Aksi',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white))),
-                                          ],
-                                          rows: [
-                                            for (var i in daftarAntrean)
-                                              DataRow(
-                                                  color: MaterialStateProperty
-                                                      .resolveWith<Color>(
-                                                          (Set<MaterialState>
-                                                              states) {
-                                                    return Colors.white;
-                                                  }),
-                                                  cells: [
-                                                    DataCell(Text(
-                                                        (nomor += 1).toString())),
-                                                    DataCell(Text(i.namaLengkap)),
-                                                    DataCell(Text(i.tglLahir)),
-                                                    DataCell(
-                                                        Text(i.kepalaKeluarga)),
-                                                    DataCell(Text(
-                                                        (i.tipeBooking == 1)
-                                                            ? "Booking"
-                                                            : "Umum")),
-                                                    DataCell(Row(
-                                                      children: [
-                                                        IconButton(
-                                                            icon: Icon(Icons
-                                                                .access_time_sharp),
-                                                            onPressed: () {
-                                                              konfirmasiAntreanSementara(
-                                                                  context, i);
-                                                            }),
-                                                        IconButton(
-                                                            icon:
-                                                                Icon(Icons.edit),
-                                                            onPressed: () {
-                                                              editAntrean(
-                                                                  context, i);
-                                                            }),
-                                                        IconButton(
-                                                            icon:
-                                                                Icon(Icons.info),
-                                                            onPressed: () {
-                                                              infoAntrean(
-                                                                  context, i);
-                                                            })
-                                                      ],
-                                                    )),
-                                                  ])
-                                          ],
-                                        ),
+                                return Container(
+                                  color: Colors.teal[50],
+                                  padding: EdgeInsets.all(20.0),
+                                  child: ListView(children: <Widget>[
+                                    Container(
+                                      width: double.infinity,
+                                      padding: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(3),
+                                        color: Colors.teal[300],
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: const Color(0x29000000),
+                                            offset: Offset(0, 3),
+                                            blurRadius: 6,
+                                          ),
+                                        ],
                                       ),
-                                    ]),
-                                  ),
+                                      child: DataTable(
+                                        showBottomBorder: true,
+                                        columns: [
+                                          DataColumn(
+                                              label: Text('No',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white))),
+                                          DataColumn(
+                                              label: Text('Nama',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white))),
+                                          DataColumn(
+                                              label: Text('Tanggal Lahir',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white))),
+                                          DataColumn(
+                                              label: Text('Kepala Keluarga',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white))),
+                                          DataColumn(
+                                              label: Text('Jenis',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white))),
+                                          DataColumn(
+                                              label: Text('Aksi',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white))),
+                                        ],
+                                        rows: [
+                                          for (var i in daftarAntrean)
+                                            DataRow(
+                                                color: MaterialStateProperty
+                                                    .resolveWith<Color>(
+                                                        (Set<MaterialState>
+                                                            states) {
+                                                  return Colors.white;
+                                                }),
+                                                cells: [
+                                                  DataCell(Text(
+                                                      (nomor += 1).toString())),
+                                                  DataCell(Text(i.namaLengkap)),
+                                                  DataCell(Text(i.tglLahir)),
+                                                  DataCell(
+                                                      Text(i.kepalaKeluarga)),
+                                                  DataCell(Text(
+                                                      (i.tipeBooking == 1)
+                                                          ? "Booking"
+                                                          : "Umum")),
+                                                  DataCell(Row(
+                                                    children: [
+                                                      IconButton(
+                                                          icon: Icon(Icons
+                                                              .access_time_sharp),
+                                                          onPressed: () {
+                                                            konfirmasiAntreanSementara(
+                                                                context, i);
+                                                          }),
+                                                      IconButton(
+                                                          icon:
+                                                              Icon(Icons.edit),
+                                                          onPressed: () {
+                                                            editAntrean(
+                                                                context, i);
+                                                          }),
+                                                      IconButton(
+                                                          icon:
+                                                              Icon(Icons.info),
+                                                          onPressed: () {
+                                                            infoAntrean(
+                                                                context, i);
+                                                          })
+                                                    ],
+                                                  )),
+                                                ])
+                                        ],
+                                      ),
+                                    ),
+                                  ]),
                                 );
                               } else if (snapshot.data == null &&
                                   snapshot.connectionState ==
