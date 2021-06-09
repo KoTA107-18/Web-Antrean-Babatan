@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
-import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
+import 'package:web_antrean_babatan/dataLayer/model/infoPoliklinik.dart';
 
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
@@ -12,7 +12,7 @@ part 'dashboard_state.dart';
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   bool isAdmin = false;
   String messageError;
-  List<Poliklinik> daftarPoli = [];
+  List<InfoPoliklinik> daftarPoli = [];
   DashboardBloc() : super(StateDashboardLoading());
 
   @override
@@ -27,11 +27,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           isAdmin = true;
         }
 
-        await RequestApi.getAllPoliklinik().then((snapshot) {
+        await RequestApi.getInfoPoliklinik().then((snapshot) {
           if (snapshot != null) {
             var resultSnapshot = snapshot as List;
             daftarPoli = resultSnapshot
-                .map((aJson) => Poliklinik.fromJson(aJson))
+                .map((aJson) => InfoPoliklinik.fromJson(aJson))
                 .toList();
           }
         });
@@ -53,11 +53,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       yield StateDashboardLoading();
       try {
         await RequestApi.updateStatus(daftarPoli);
-        await RequestApi.getAllPoliklinik().then((snapshot) {
+        await RequestApi.getInfoPoliklinik().then((snapshot) {
           if (snapshot != null) {
             var resultSnapshot = snapshot as List;
             daftarPoli = resultSnapshot
-                .map((aJson) => Poliklinik.fromJson(aJson))
+                .map((aJson) => InfoPoliklinik.fromJson(aJson))
                 .toList();
           }
         });

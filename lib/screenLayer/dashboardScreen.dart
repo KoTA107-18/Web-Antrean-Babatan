@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_antrean_babatan/blocLayer/dashboard/dashboard_bloc.dart';
-import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
+import 'package:web_antrean_babatan/dataLayer/model/infoPoliklinik.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -21,7 +21,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
   }
 
-  cardPoli(List<Poliklinik> daftarPoli) {
+  cardPoli(List<InfoPoliklinik> daftarPoli) {
     return GridView.builder(
       itemCount: daftarPoli.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -75,7 +75,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           "Total Antrean",
                           style: TextStyle(fontSize: 16),
                         ),
-                        Text("NULL"),
+                        Text(daftarPoli[index].totalAntrean.toString()),
                       ],
                     ),
                   ),
@@ -88,7 +88,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           "Antrean Sementara",
                           style: TextStyle(fontSize: 16),
                         ),
-                        Text("NULL"),
+                        Text(daftarPoli[index].antreanSementara.toString()),
                       ],
                     ),
                   ),
@@ -101,7 +101,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           "Nomor Antrean Saat Ini",
                           style: TextStyle(fontSize: 16),
                         ),
-                        Text("NULL"),
+                        Text(daftarPoli[index].nomorAntrean.toString()),
                       ],
                     ),
                   )

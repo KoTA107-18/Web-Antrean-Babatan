@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:web_antrean_babatan/dataLayer/model/infoPoliklinik.dart';
 import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/pasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/perawat.dart';
@@ -92,6 +93,21 @@ class RequestApi {
     Method for functional Poliklinik.
   */
 
+  static Future getInfoPoliklinik() async {
+    /*
+    Endpoint : rest-api-babatan.herokuapp.com/antrean/info
+    Method Type : GET
+    Desc : Get All Poliklinik in Database
+    */
+    var uri = Uri.https(apiUrl, 'antrean/info');
+    var result = await http.get(uri);
+    if (result.statusCode == 200) {
+      return json.decode(result.body);
+    } else {
+      return null;
+    }
+  }
+
   static Future getAllPoliklinik() async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/poliklinik
@@ -161,7 +177,7 @@ class RequestApi {
     }
   }
 
-  static Future<bool> updateStatus(List<Poliklinik> daftarPoliklinik) async {
+  static Future<bool> updateStatus(List<InfoPoliklinik> daftarPoliklinik) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/poliklinik/status
     Method Type : PUT
