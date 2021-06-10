@@ -485,7 +485,17 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(pasien.jamDaftarAntrean),
+                  child: Text(pasien.waktuDaftarAntrean),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Jam Booking',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(pasien.jamBooking),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),

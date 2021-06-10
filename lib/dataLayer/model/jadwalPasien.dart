@@ -2,9 +2,10 @@ class JadwalPasien {
   int nomorAntrean;
   int tipeBooking;
   String tglPelayanan;
-  String jamDaftarAntrean;
-  String jamMulaiDilayani;
-  String jamSelesaiDilayani;
+  String jamBooking;
+  String waktuDaftarAntrean;
+  int jamMulaiDilayani;
+  int jamSelesaiDilayani;
   int statusAntrean;
   String hari;
   int idPoli;
@@ -22,7 +23,8 @@ class JadwalPasien {
       {this.nomorAntrean,
         this.tipeBooking,
         this.tglPelayanan,
-        this.jamDaftarAntrean,
+        this.jamBooking,
+        this.waktuDaftarAntrean,
         this.jamMulaiDilayani,
         this.jamSelesaiDilayani,
         this.statusAntrean,
@@ -42,7 +44,8 @@ class JadwalPasien {
     nomorAntrean = json['nomor_antrean'];
     tipeBooking = json['tipe_booking'];
     tglPelayanan = json['tgl_pelayanan'];
-    jamDaftarAntrean = json['jam_daftar_antrean'];
+    jamBooking = json['jam_booking'];
+    waktuDaftarAntrean = json['waktu_daftar_antrean'];
     jamMulaiDilayani = json['jam_mulai_dilayani'];
     jamSelesaiDilayani = json['jam_selesai_dilayani'];
     statusAntrean = json['status_antrean'];
@@ -64,7 +67,8 @@ class JadwalPasien {
     data['nomor_antrean'] = this.nomorAntrean;
     data['tipe_booking'] = this.tipeBooking;
     data['tgl_pelayanan'] = this.tglPelayanan;
-    data['jam_daftar_antrean'] = this.jamDaftarAntrean;
+    data['jam_booking'] = this.jamBooking;
+    data['waktu_daftar_antrean'] = this.waktuDaftarAntrean;
     data['jam_mulai_dilayani'] = this.jamMulaiDilayani;
     data['jam_selesai_dilayani'] = this.jamSelesaiDilayani;
     data['status_antrean'] = this.statusAntrean;
