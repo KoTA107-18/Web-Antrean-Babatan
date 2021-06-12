@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
+import 'package:web_antrean_babatan/dataLayer/model/apiResponse.dart';
 import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/pasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
@@ -42,9 +43,16 @@ class TambahantreanBloc extends Bloc<TambahantreanEvent, TambahantreanState> {
     if (event is EventTambahAntreanSubmitPasien) {
       yield StateTambahAntreanSubmitPasienLoading(daftarPoli: daftarPoli);
       try {
-        await RequestApi.registerPasien(event.pasien);
-        yield StateTambahAntreanSubmitPasienSuccess(
-            message: "Data pasien telah masuk!", daftarPoli: daftarPoli);
+        var resultValidasi = await RequestApi.validasiPasien(event.pasien);
+        var response = ApiResponse.fromJson(resultValidasi);
+        if(response.success){
+          await RequestApi.registerPasien(event.pasien);
+          yield StateTambahAntreanSubmitPasienSuccess(
+              message: "Data pasien telah masuk!", daftarPoli: daftarPoli);
+        } else {
+          yield StateTambahAntreanSubmitPasienFailed(
+              errMessage: response.message, daftarPoli: daftarPoli);
+        }
       } catch (e) {
         yield StateTambahAntreanSubmitPasienFailed(
             errMessage: e.toString(), daftarPoli: daftarPoli);

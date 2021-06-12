@@ -19,6 +19,16 @@ class RequestApi {
     }
   }
 
+  static Future validasiPasien(Pasien pasien) async {
+    var uri = Uri.http(apiUrl, 'pasien/validasi');
+    var result = await http.post(uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(pasien.toJson()));
+    return json.decode(result.body);
+  }
+
   static Future<bool> loginAdministrator(
       String username, String password) async {
     var uri = Uri.https(apiUrl, 'administrator/login',

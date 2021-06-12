@@ -58,7 +58,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
             alamat: _alamat.text,
             tglLahir: _tglLahir.text);
         _tambahantreanBloc.add(EventTambahAntreanSubmitPasien(pasien: _pasien));
-        Navigator.pop(context);
+        //Navigator.pop(context);
       }
     }
 
@@ -71,7 +71,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                 children: [
                   Icon(Icons.add_circle),
                   SizedBox(width: 8.0),
-                  Text("Tambah Poliklinik"),
+                  Text("Buat Akun Pasien Baru"),
                 ],
               ),
               content: Container(
@@ -256,6 +256,8 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                                 return "Harus diisi";
                               } else if (value.length < 4) {
                                 return "Minimum 4 karakter";
+                              } else if (value != _password.text) {
+                                return "Konfirmasi Password tidak sesuai";
                               } else {
                                 return null;
                               }
@@ -283,7 +285,9 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                                 return "Harus diisi";
                               } else if (value.length < 10) {
                                 return "Minimum 10 digit";
-                              } else {
+                              } else if (value.substring(0,2) != "62"){
+                                return "Format tidak sesuai, awali dengan 62";
+                              }  else {
                                 return null;
                               }
                             },
@@ -334,18 +338,13 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text("Fitur sementara di disable"),
-      ),
-    );
-    /*
     return BlocProvider(
       create: (context) => _tambahantreanBloc,
       child: BlocListener<TambahantreanBloc, TambahantreanState>(
         bloc: _tambahantreanBloc,
         listener: (context, state) {
           if (state is StateTambahAntreanSubmitPasienSuccess) {
+            Navigator.pop(context);
             Navigator.pop(context);
             Fluttertoast.showToast(
                 msg: state.message,
@@ -415,166 +414,320 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
           ),
         ),
       ),
-    );*/
+    );
   }
 
-  ListView formTambahAntrean(List<Poliklinik> daftarPoli) {
-    TextEditingController _username = TextEditingController();
-    return ListView(
+  Row formTambahAntrean(List<Poliklinik> daftarPoli) {
+    DateTime selectedDate = DateTime.now();
+    TextEditingController _namaLengkap = TextEditingController();
+    TextEditingController _tglLahir = TextEditingController();
+    TextEditingController _alamat = TextEditingController();
+    TextEditingController _kepalaKeluarga = TextEditingController();
+    TextEditingController _nomorHandphone = TextEditingController();
+    return Row(
       children: [
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Text('Username Pasien',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-        ),
-        Container(
-          padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-          child: textFieldModified(
-              hint: 'Kombinasi huruf dan angka.',
-              icon: Icon(Icons.person),
-              formatter: [
-                FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
-              ],
-              validatorFunc: (value) {
-                if (value.isEmpty) {
-                  return "Harus diisi";
-                } else if (value.length < 4) {
-                  return "Minimum 4 karakter";
-                } else {
-                  return null;
-                }
-              },
-              controller: _username),
-        ),
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Text('Poliklinik Tujuan',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-        ),
-        Container(
-          padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-          child: DropdownButtonFormField(
-            decoration: InputDecoration(
-                labelText: "Pilih Poliklinik yang anda tuju",
-                prefixIcon: Icon(Icons.local_hospital),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16.0))),
-            items: daftarPoli.map((value) {
-              return DropdownMenuItem(
-                child: Text(value.namaPoli),
-                value: value,
-              );
-            }).toList(),
-            onChanged: (value) {
-              _tambahantreanBloc
-                  .add(EventTambahAntreanSubmitPoliTujuan(poliklinik: value));
-            },
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Text('Jenis Pasien',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-        ),
-        Container(
-          padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-          child: BlocBuilder<TambahantreanBloc, TambahantreanState>(
-            bloc: _tambahantreanBloc,
-            builder: (context, state) {
-              if (state is StateTambahAntreanPilihJenisPasien) {
-                return Row(
-                  children: [
-                    Radio(
-                      value: 0,
-                      groupValue: state.isUmum,
-                      onChanged: (result) {
-                        _tambahantreanBloc.add(EventTambahAntreanRadioUmum());
+        Expanded(
+          flex: 2,
+          child: Container(
+            color: Colors.white,
+            margin: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
+            child: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                  child: Text('Nama Lengkap',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                  child: textFieldModified(
+                      hint: 'Isi nama anda',
+                      icon: Icon(Icons.person),
+                      formatter: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp('[a-zA-Z ]')),
+                      ],
+                      validatorFunc: (value) {
+                        if (value.isEmpty) {
+                          return "Harus diisi";
+                        } else {
+                          return null;
+                        }
                       },
-                    ),
-                    Text(
-                      'Umum',
-                      style: new TextStyle(fontSize: 16.0),
-                    ),
-                    Radio(
-                      value: 1,
-                      groupValue: state.isUmum,
-                      onChanged: (result) {
-                        _tambahantreanBloc.add(EventTambahAntreanRadioBPJS());
-                      },
-                    ),
-                    Text(
-                      'BPJS',
-                      style: new TextStyle(
-                        fontSize: 16.0,
+                      controller: _namaLengkap),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                  child: Text('Tanggal Lahir',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: textFieldModified(
+                            isEnabled: false,
+                            hint: 'Tanggal Lahir',
+                            icon: Icon(Icons.date_range),
+                            controller: _tglLahir),
                       ),
-                    ),
-                  ],
-                );
-              } else {
-                return Row(
-                  children: [
-                    Radio(
-                      value: 0,
-                      groupValue: _tambahantreanBloc.jenisPasien,
-                      onChanged: (result) {
-                        _tambahantreanBloc.add(EventTambahAntreanRadioUmum());
-                      },
-                    ),
-                    Text(
-                      'Umum',
-                      style: new TextStyle(fontSize: 16.0),
-                    ),
-                    Radio(
-                      value: 1,
-                      groupValue: _tambahantreanBloc.jenisPasien,
-                      onChanged: (result) {
-                        _tambahantreanBloc.add(EventTambahAntreanRadioBPJS());
-                      },
-                    ),
-                    Text(
-                      'BPJS',
-                      style: new TextStyle(
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ],
-                );
-              }
-            },
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          child: InkWell(
-            onTap: () {
-              if ((_username.text.isEmpty) ||
-                  (_tambahantreanBloc.poliklinikTujuan == null)) {
-                Fluttertoast.showToast(
-                    msg: "Lengkapi seluruh isian form.",
-                    gravity: ToastGravity.CENTER,
-                    toastLength: Toast.LENGTH_LONG);
-              } else {
-                _tambahantreanBloc.add(EventTambahAntreanSubmitAntreanBaru(
-                    username: _username.text));
-              }
-            },
-            child: Container(
-              height: 40.0,
-              child: Material(
-                borderRadius: BorderRadius.circular(20.0),
-                color: ColorTheme.greenDark,
-                elevation: 7.0,
-                child: Center(
-                  child: Text(
-                    'Daftar',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                      SizedBox(width: 16.0),
+                      ElevatedButton(
+                          onPressed: () {
+                            _selectDate(context).then((value) {
+                              selectedDate = value;
+                              setState(() {
+                                _tglLahir.text =
+                                "${selectedDate.year.toString()}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
+                              });
+                            });
+                          },
+                          child: Icon(Icons.date_range))
+                    ],
                   ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                  child: Text('Alamat Lengkap',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                  child: textFieldModified(
+                      hint: 'Isi alamat rumah anda',
+                      icon: Icon(Icons.map),
+                      validatorFunc: (value) {
+                        if (value.isEmpty) {
+                          return "Harus diisi";
+                        } else {
+                          return null;
+                        }
+                      },
+                      controller: _alamat),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                  child: Text('Nama Kepala Keluarga',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                  child: textFieldModified(
+                      hint: 'Isi nama kepala keluarga anda',
+                      icon: Icon(Icons.person),
+                      formatter: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp('[a-zA-Z ]')),
+                      ],
+                      validatorFunc: (value) {
+                        if (value.isEmpty) {
+                          return "Harus diisi";
+                        } else {
+                          return null;
+                        }
+                      },
+                      controller: _kepalaKeluarga),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                  child: Text('Nomor Seluler',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                  child: textFieldModified(
+                      hint: 'Isi dengan nomor seluler anda',
+                      icon: Icon(Icons.call),
+                      typeKeyboard: TextInputType.number,
+                      formatter: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[0-9]')),
+                      ],
+                      validatorFunc: (value) {
+                        if (value.isEmpty) {
+                          return "Harus diisi";
+                        } else if (value.length < 10) {
+                          return "Minimum 10 digit";
+                        } else if (value.substring(0,2) != "62"){
+                          return "Format tidak sesuai, awali dengan 62";
+                        }  else {
+                          return null;
+                        }
+                      },
+                      controller: _nomorHandphone),
+                )
+              ],
             ),
           ),
         ),
+        Expanded(
+          flex: 1,
+          child: Container(
+            color: Colors.white,
+            margin: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset(
+                        'asset/LogoPuskesmas.png',
+                        width: 64,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          child: Center(
+                            child: Text('Portal Pendaftaran',
+                                style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.teal)),
+                          ),
+                        ),
+                        Container(
+                          child: Center(
+                            child: Text('Puskesmas Babatan',
+                                style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.teal)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                  child: DropdownButtonFormField(
+                    decoration: InputDecoration(
+                        labelText: "Pilih Poliklinik yang dituju",
+                        prefixIcon: Icon(Icons.local_hospital),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16.0))),
+                    items: daftarPoli.map((value) {
+                      return DropdownMenuItem(
+                        child: Text(value.namaPoli),
+                        value: value,
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      _tambahantreanBloc
+                          .add(EventTambahAntreanSubmitPoliTujuan(poliklinik: value));
+                    },
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                  child: BlocBuilder<TambahantreanBloc, TambahantreanState>(
+                    bloc: _tambahantreanBloc,
+                    builder: (context, state) {
+                      if (state is StateTambahAntreanPilihJenisPasien) {
+                        return Row(
+                          children: [
+                            Radio(
+                              value: 0,
+                              groupValue: state.isUmum,
+                              onChanged: (result) {
+                                _tambahantreanBloc.add(EventTambahAntreanRadioUmum());
+                              },
+                            ),
+                            Text(
+                              'Umum',
+                              style: new TextStyle(fontSize: 16.0),
+                            ),
+                            Radio(
+                              value: 1,
+                              groupValue: state.isUmum,
+                              onChanged: (result) {
+                                _tambahantreanBloc.add(EventTambahAntreanRadioBPJS());
+                              },
+                            ),
+                            Text(
+                              'BPJS',
+                              style: new TextStyle(
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Row(
+                          children: [
+                            Radio(
+                              value: 0,
+                              groupValue: _tambahantreanBloc.jenisPasien,
+                              onChanged: (result) {
+                                _tambahantreanBloc.add(EventTambahAntreanRadioUmum());
+                              },
+                            ),
+                            Text(
+                              'Umum',
+                              style: new TextStyle(fontSize: 16.0),
+                            ),
+                            Radio(
+                              value: 1,
+                              groupValue: _tambahantreanBloc.jenisPasien,
+                              onChanged: (result) {
+                                _tambahantreanBloc.add(EventTambahAntreanRadioBPJS());
+                              },
+                            ),
+                            Text(
+                              'BPJS',
+                              style: new TextStyle(
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              //_tambahantreanBloc.add(EventTambahAntreanSubmitAntreanBaru(username: _username.text));
+                            },
+                            child: Text("Antrean Normal")),
+                      ),
+                      SizedBox(width: 8.0),
+                      Expanded(
+                        flex: 2,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red, // background
+                              onPrimary: Colors.white, // foreground
+                            ),
+                            onPressed: () {
+                              //_tambahantreanBloc.add(EventTambahAntreanSubmitAntreanBaru(username: _username.text));
+                            },
+                            child: Text("Antrean Gawat")),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        )
       ],
     );
   }
