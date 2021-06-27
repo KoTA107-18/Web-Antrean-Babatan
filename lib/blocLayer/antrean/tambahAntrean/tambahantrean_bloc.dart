@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
+import 'package:web_antrean_babatan/dataLayer/api/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/apiResponse.dart';
-import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/pasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
 

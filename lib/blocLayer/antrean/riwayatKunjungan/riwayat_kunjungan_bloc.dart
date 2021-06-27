@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
+import 'package:web_antrean_babatan/dataLayer/api/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
 
 part 'riwayat_kunjungan_event.dart';

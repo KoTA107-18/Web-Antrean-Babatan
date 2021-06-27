@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
-import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
+import 'package:web_antrean_babatan/dataLayer/api/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/infoPoliklinik.dart';
+import 'package:web_antrean_babatan/dataLayer/session/sharedPref.dart';
 
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:web_antrean_babatan/blocLayer/navbar/navbar_bloc.dart';
-import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
+import 'package:web_antrean_babatan/dataLayer/session/sharedPref.dart';
 import 'package:web_antrean_babatan/utils/color.dart';
 import 'loginScreen.dart';
 

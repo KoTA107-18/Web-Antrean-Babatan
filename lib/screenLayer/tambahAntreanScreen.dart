@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:web_antrean_babatan/blocLayer/tambahAntrean/tambahantrean_bloc.dart';
+import 'package:web_antrean_babatan/blocLayer/antrean/tambahAntrean/tambahantrean_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/model/pasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
 import 'package:web_antrean_babatan/utils/color.dart';

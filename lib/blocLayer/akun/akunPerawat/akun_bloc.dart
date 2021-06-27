@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
-import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
+import 'package:web_antrean_babatan/dataLayer/api/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/perawat.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
+import 'package:web_antrean_babatan/dataLayer/session/sharedPref.dart';
 
 part 'akun_event.dart';
 part 'akun_state.dart';

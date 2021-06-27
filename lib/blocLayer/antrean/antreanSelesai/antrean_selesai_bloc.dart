@@ -2,25 +2,24 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
-import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
-import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
+import 'package:web_antrean_babatan/dataLayer/api/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
+import 'package:web_antrean_babatan/dataLayer/session/sharedPref.dart';
 
-part 'antrean_event.dart';
-part 'antrean_state.dart';
+part 'antrean_selesai_event.dart';
+part 'antrean_selesai_state.dart';
 
-class AntreanBloc extends Bloc<AntreanEvent, AntreanState> {
+class AntreanSelesaiBloc extends Bloc<AntreanSelesaiEvent, AntreanSelesaiState> {
+  AntreanSelesaiBloc() : super(StateAntreanSelesaiGetPoliLoading());
   String messageError;
   List<Poliklinik> daftarPoli = [];
-  AntreanBloc() : super(StateAntreanGetPoliLoading());
 
   @override
-  Stream<AntreanState> mapEventToState(
-    AntreanEvent event,
+  Stream<AntreanSelesaiState> mapEventToState(
+    AntreanSelesaiEvent event,
   ) async* {
-    if (event is EventAntreanGetPoli) {
-      yield StateAntreanGetPoliLoading();
+    if (event is EventAntreanSelesaiGetPoli) {
+      yield StateAntreanSelesaiGetPoliLoading();
       try {
         var roleValue = await SharedPref.getRole();
         if(roleValue == SharedPref.administrator){
@@ -43,19 +42,9 @@ class AntreanBloc extends Bloc<AntreanEvent, AntreanState> {
             }
           });
         }
-        yield StateAntreanGetPoliSuccess(daftarPoli: daftarPoli);
+        yield StateAntreanSelesaiGetPoliSuccess(daftarPoli: daftarPoli);
       } catch (e) {
-        yield StateAntreanGetPoliFailed(messageFailed: e.toString());
-      }
-    }
-
-    if (event is EventAntreanEditJadwalPasien) {
-      yield StateAntreanGetPoliLoading();
-      try {
-        await RequestApi.editAntrean(event.pasien);
-        yield StateAntreanGetPoliSuccess(daftarPoli: daftarPoli);
-      } catch (e) {
-        yield StateAntreanGetPoliFailed(messageFailed: e.toString());
+        yield StateAntreanSelesaiGetPoliFailed(messageFailed: e.toString());
       }
     }
   }

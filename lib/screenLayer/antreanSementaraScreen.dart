@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:web_antrean_babatan/blocLayer/antreanSementara/antrean_sementara_bloc.dart';
-import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
+import 'package:web_antrean_babatan/blocLayer/antrean/antreanSementara/antrean_sementara_bloc.dart';
+import 'package:web_antrean_babatan/dataLayer/api/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
-import 'package:web_antrean_babatan/utils/statusAntrean.dart';
+import 'package:web_antrean_babatan/dataLayer/model/statusAntrean.dart';
 
 class AntreanSementaraScreen extends StatefulWidget {
   @override

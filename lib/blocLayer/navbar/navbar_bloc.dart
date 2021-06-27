@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
+import 'package:web_antrean_babatan/dataLayer/session/sharedPref.dart';
 import 'package:web_antrean_babatan/screenLayer/akunPerawatScreen.dart';
 import 'package:web_antrean_babatan/screenLayer/akunScreen.dart';
 import 'package:web_antrean_babatan/screenLayer/antreanScreen.dart';

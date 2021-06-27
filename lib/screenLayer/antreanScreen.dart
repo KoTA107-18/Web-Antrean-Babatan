@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:web_antrean_babatan/blocLayer/antrean/antrean_bloc.dart';
-import 'package:web_antrean_babatan/dataLayer/dataProvider/requestApi.dart';
+import 'package:web_antrean_babatan/blocLayer/antrean/antreanUtama/antrean_bloc.dart';
+import 'package:web_antrean_babatan/dataLayer/api/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
 import 'package:web_antrean_babatan/utils/searchView.dart';
-import 'package:web_antrean_babatan/utils/statusAntrean.dart';
+import 'package:web_antrean_babatan/dataLayer/model/statusAntrean.dart';
 
 class AntreanScreen extends StatefulWidget {
   @override

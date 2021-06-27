@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:web_antrean_babatan/dataLayer/dataProvider/sharedPref.dart';
+import 'package:web_antrean_babatan/dataLayer/session/sharedPref.dart';
 import 'package:web_antrean_babatan/utils/color.dart';
 
 import 'loginScreen.dart';
