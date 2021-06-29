@@ -14,6 +14,7 @@ class AkunPerawatScreen extends StatefulWidget {
 
 class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
   final AkunPerawatBloc _akunPerawatBloc = AkunPerawatBloc();
+  int nomor = 0;
 
   @override
   void initState() {
@@ -101,7 +102,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
           showBottomBorder: true,
           columns: [
             DataColumn(
-                label: Text('ID',
+                label: Text('No',
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -138,7 +139,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
                         return Colors.white;
                       }),
                       cells: [
-                        DataCell(Text(akunPerawat.idPerawat.toString())),
+                        DataCell(Text((nomor += 1).toString())),
                         DataCell(Text(
                           akunPerawat.username,
                           style: TextStyle(fontWeight: FontWeight.bold),
@@ -217,10 +218,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Text(
-                        perawat.password,
-                        textAlign: TextAlign.justify,
-                      ),
+                      child: Text("*" * perawat.password.length),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
