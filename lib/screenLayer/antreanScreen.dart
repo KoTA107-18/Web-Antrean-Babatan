@@ -145,12 +145,14 @@ class _AntreanScreenState extends State<AntreanScreen> {
                                         rows: [
                                           for (var i in daftarAntrean)
                                             DataRow(
-                                                color: MaterialStateProperty
-                                                    .resolveWith<Color>(
-                                                        (Set<MaterialState>
-                                                            states) {
-                                                  return Colors.white;
-                                                }),
+                                                color: MaterialStateProperty.resolveWith<Color>(
+                                                        (Set<MaterialState> states) {
+                                                      if (i.statusAntrean == 2) {
+                                                        return Colors.red[100];
+                                                      } else {
+                                                        return Colors.white;
+                                                      }
+                                                    }),
                                                 cells: [
                                                   DataCell(Text(
                                                       (nomor += 1).toString())),

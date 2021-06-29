@@ -1,0 +1,804 @@
+@startuml
+set namespaceSeparator ::
+
+class "web_antrean_babatan::blocLayer::akun::akunPerawat::akun_bloc.dart::AkunBloc" {
+  +int* idPerawat
+  +List<Poliklinik*>* daftarPoli
+  +List<Perawat*>* daftarPerawat
+  +Stream<AkunState*>* mapEventToState()
+}
+
+abstract class "web_antrean_babatan::blocLayer::akun::akunPerawat::akun_bloc.dart::AkunEvent" {
+}
+
+class "web_antrean_babatan::blocLayer::akun::akunPerawat::akun_bloc.dart::AkunEventGetData" {
+}
+
+class "web_antrean_babatan::blocLayer::akun::akunPerawat::akun_bloc.dart::AkunEventSubmitEdit"
+{
+  +Perawat* perawat
+}
+
+"web_antrean_babatan::blocLayer::akun::akunPerawat::akun_bloc.dart::AkunEventSubmitEdit" o-- "web_antrean_babatan::dataLayer::model::perawat.dart::Perawat"
+
+abstract class "web_antrean_babatan::blocLayer::akun::akunPerawat::akun_bloc.dart::AkunState" {
+}
+
+class "web_antrean_babatan::blocLayer::akun::akunPerawat::akun_bloc.dart::AkunStateLoading" {
+}
+
+class "web_antrean_babatan::blocLayer::akun::akunPerawat::akun_bloc.dart::AkunStateSuccess" {
+  +List<Poliklinik*>* daftarPoli
+  +List<Perawat*>* daftarPerawat
+}
+
+class "web_antrean_babatan::blocLayer::akun::akunPerawat::akun_bloc.dart::AkunStateFailed" {
+  +String* messageFailed
+}
+
+class "web_antrean_babatan::blocLayer::akun::daftarAkunPerawat::akun_perawat_bloc.dart::AkunPerawatBloc" {
+  +List<Poliklinik*>* daftarPoli
+  +List<Perawat*>* daftarPerawat
+  +Stream<AkunPerawatState*>* mapEventToState()
+}
+
+abstract class "web_antrean_babatan::blocLayer::akun::daftarAkunPerawat::akun_perawat_bloc.dart::AkunPerawatEvent" {
+}
+
+class "web_antrean_babatan::blocLayer::akun::daftarAkunPerawat::akun_perawat_bloc.dart::AkunPerawatEventGetData" {
+}
+
+class "web_antrean_babatan::blocLayer::akun::daftarAkunPerawat::akun_perawat_bloc.dart::AkunPerawatEventSubmitEdit" {
+  +Perawat* perawat
+}
+
+"web_antrean_babatan::blocLayer::akun::daftarAkunPerawat::akun_perawat_bloc.dart::AkunPerawatEventSubmitEdit" o-- "web_antrean_babatan::dataLayer::model::perawat.dart::Perawat"
+
+class "web_antrean_babatan::blocLayer::akun::daftarAkunPerawat::akun_perawat_bloc.dart::AkunPerawatEventSubmitAdd" {
+  +Perawat* perawat
+}
+
+"web_antrean_babatan::blocLayer::akun::daftarAkunPerawat::akun_perawat_bloc.dart::AkunPerawatEventSubmitAdd" o-- "web_antrean_babatan::dataLayer::model::perawat.dart::Perawat"
+
+class "web_antrean_babatan::blocLayer::akun::daftarAkunPerawat::akun_perawat_bloc.dart::AkunPerawatEventSubmitDelete" {
+  +int* idPerawat
+}
+
+abstract class "web_antrean_babatan::blocLayer::akun::daftarAkunPerawat::akun_perawat_bloc.dart::AkunPerawatState" {
+}
+
+class "web_antrean_babatan::blocLayer::akun::daftarAkunPerawat::akun_perawat_bloc.dart::AkunPerawatStateLoading" {
+}
+
+class "web_antrean_babatan::blocLayer::akun::daftarAkunPerawat::akun_perawat_bloc.dart::AkunPerawatStateSuccess" {
+  +List<Poliklinik*>* daftarPoli
+  +List<Perawat*>* daftarPerawat
+}
+
+class "web_antrean_babatan::blocLayer::akun::daftarAkunPerawat::akun_perawat_bloc.dart::AkunPerawatStateFailed" {
+  +String* messageFailed
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanSelesai::antrean_selesai_bloc.dart::AntreanSelesaiBloc" {
+  +String* messageError
+  +List<Poliklinik*>* daftarPoli
+  +Stream<AntreanSelesaiState*>* mapEventToState()
+}
+
+abstract class "web_antrean_babatan::blocLayer::antrean::antreanSelesai::antrean_selesai_bloc.dart::AntreanSelesaiEvent" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanSelesai::antrean_selesai_bloc.dart::EventAntreanSelesaiGetPoli" {
+}
+
+abstract class "web_antrean_babatan::blocLayer::antrean::antreanSelesai::antrean_selesai_bloc.dart::AntreanSelesaiState" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanSelesai::antrean_selesai_bloc.dart::StateAntreanSelesaiGetPoliLoading" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanSelesai::antrean_selesai_bloc.dart::StateAntreanSelesaiGetPoliSuccess" {
+  +List<Poliklinik*>* daftarPoli
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanSelesai::antrean_selesai_bloc.dart::StateAntreanSelesaiGetPoliFailed" {
+  +String* messageFailed
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanSementara::antrean_sementara_bloc.dart::AntreanSementaraBloc" {
+  +String* messageError
+  +List<Poliklinik*>* daftarPoli
+  +Stream<AntreanSementaraState*>* mapEventToState()
+}
+
+abstract class "web_antrean_babatan::blocLayer::antrean::antreanSementara::antrean_sementara_bloc.dart::AntreanSementaraEvent" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanSementara::antrean_sementara_bloc.dart::EventAntreanSementaraGetPoli" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanSementara::antrean_sementara_bloc.dart::EventAntreanSementaraEditJadwalPasien" {
+  +JadwalPasien* pasien
+}
+
+"web_antrean_babatan::blocLayer::antrean::antreanSementara::antrean_sementara_bloc.dart::EventAntreanSementaraEditJadwalPasien" o-- "web_antrean_babatan::dataLayer::model::jadwalPasien.dart::JadwalPasien"
+
+abstract class "web_antrean_babatan::blocLayer::antrean::antreanSementara::antrean_sementara_bloc.dart::AntreanSementaraState" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanSementara::antrean_sementara_bloc.dart::StateAntreanSementaraGetPoliLoading" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanSementara::antrean_sementara_bloc.dart::StateAntreanSementaraGetPoliSuccess" {
+  +List<Poliklinik*>* daftarPoli
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanSementara::antrean_sementara_bloc.dart::StateAntreanSementaraGetPoliFailed" {
+  +String* messageFailed
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanUtama::antrean_bloc.dart::AntreanBloc" {
+  +String* messageError
+  +List<Poliklinik*>* daftarPoli
+  +Stream<AntreanState*>* mapEventToState()
+}
+
+abstract class "web_antrean_babatan::blocLayer::antrean::antreanUtama::antrean_bloc.dart::AntreanEvent" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanUtama::antrean_bloc.dart::EventAntreanGetPoli" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanUtama::antrean_bloc.dart::EventAntreanEditJadwalPasien" {
+  +JadwalPasien* pasien
+}
+
+"web_antrean_babatan::blocLayer::antrean::antreanUtama::antrean_bloc.dart::EventAntreanEditJadwalPasien" o-- "web_antrean_babatan::dataLayer::model::jadwalPasien.dart::JadwalPasien"
+
+abstract class "web_antrean_babatan::blocLayer::antrean::antreanUtama::antrean_bloc.dart::AntreanState" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanUtama::antrean_bloc.dart::StateAntreanGetPoliLoading" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanUtama::antrean_bloc.dart::StateAntreanGetPoliSuccess" {
+  +List<Poliklinik*>* daftarPoli
+}
+
+class "web_antrean_babatan::blocLayer::antrean::antreanUtama::antrean_bloc.dart::StateAntreanGetPoliFailed" {
+  +String* messageFailed
+}
+
+class "web_antrean_babatan::blocLayer::antrean::riwayatKunjungan::riwayat_kunjungan_bloc.dart::RiwayatKunjunganBloc" {
+  +String* messageError
+  +List<Poliklinik*>* daftarPoli
+  +Stream<RiwayatKunjunganState*>* mapEventToState()
+}
+
+abstract class "web_antrean_babatan::blocLayer::antrean::riwayatKunjungan::riwayat_kunjungan_bloc.dart::RiwayatKunjunganEvent" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::riwayatKunjungan::riwayat_kunjungan_bloc.dart::RiwayatKunjunganEventGetPoli" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::riwayatKunjungan::riwayat_kunjungan_bloc.dart::RiwayatKunjunganEventGetAntreanList" {
+}
+
+abstract class "web_antrean_babatan::blocLayer::antrean::riwayatKunjungan::riwayat_kunjungan_bloc.dart::RiwayatKunjunganState" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::riwayatKunjungan::riwayat_kunjungan_bloc.dart::StateRiwayatGetPoliLoading" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::riwayatKunjungan::riwayat_kunjungan_bloc.dart::StateRiwayatGetPoliSuccess" {
+  +List<Poliklinik*>* daftarPoli
+}
+
+class "web_antrean_babatan::blocLayer::antrean::riwayatKunjungan::riwayat_kunjungan_bloc.dart::StateRiwayatGetPoliFailed" {
+  +String* messageFailed
+}
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::TambahantreanBloc" {
+  +String* username
+  +Poliklinik* poliklinikTujuan
+  +int* jenisPasien
+  +List<Poliklinik*>* daftarPoli
+  +Stream<TambahantreanState*>* mapEventToState()
+}
+
+"web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::TambahantreanBloc" o-- "web_antrean_babatan::dataLayer::model::poliklinik.dart::Poliklinik"
+
+abstract class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::TambahantreanEvent" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::EventTambahAntreanGetPoli" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::EventTambahAntreanSubmitPasien" {
+  +Pasien* pasien
+}
+
+"web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::EventTambahAntreanSubmitPasien" o-- "web_antrean_babatan::dataLayer::model::pasien.dart::Pasien"
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::EventTambahAntreanRadioUmum" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::EventTambahAntreanRadioBPJS" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::EventTambahAntreanSubmitPoliTujuan" {
+  +Poliklinik* poliklinik
+}
+
+"web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::EventTambahAntreanSubmitPoliTujuan" o-- "web_antrean_babatan::dataLayer::model::poliklinik.dart::Poliklinik"
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::EventTambahAntreanSubmitAntreanBaru" {
+  +String* username
+}
+
+abstract class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::TambahantreanState" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::StateTambahAntreanLoading" {
+}
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::StateTambahAntreanSuccess" {
+  +List<Poliklinik*>* daftarPoli
+}
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::StateTambahAntreanFailed" {
+  +String* errMessage
+}
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::StateTambahAntreanSubmitPasienLoading" {
+  +List<Poliklinik*>* daftarPoli
+}
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::StateTambahAntreanSubmitPasienSuccess" {
+  +List<Poliklinik*>* daftarPoli
+  +String* message
+}
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::StateTambahAntreanSubmitPasienFailed" {
+  +List<Poliklinik*>* daftarPoli
+  +String* errMessage
+}
+
+class "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::StateTambahAntreanPilihJenisPasien" {
+  +List<Poliklinik*>* daftarPoli
+  +int* isUmum
+}
+
+class "web_antrean_babatan::blocLayer::dashboard::dashboard_bloc.dart::DashboardBloc" {
+  +bool* isAdmin
+  +String* messageError
+  +List<InfoPoliklinik*>* daftarPoli
+  +Stream<DashboardState*>* mapEventToState()
+}
+
+abstract class "web_antrean_babatan::blocLayer::dashboard::dashboard_bloc.dart::DashboardEvent"
+ {
+}
+
+class "web_antrean_babatan::blocLayer::dashboard::dashboard_bloc.dart::EventDashboardGetPoli" {
+}
+
+class "web_antrean_babatan::blocLayer::dashboard::dashboard_bloc.dart::EventDashboardBukaPortal" {
+}
+
+class "web_antrean_babatan::blocLayer::dashboard::dashboard_bloc.dart::EventDashboardTutupPortal" {
+}
+
+class "web_antrean_babatan::blocLayer::dashboard::dashboard_bloc.dart::EventDashboardChangeStatusPoli" {
+  +int* indexPoli
+}
+
+abstract class "web_antrean_babatan::blocLayer::dashboard::dashboard_bloc.dart::DashboardState"
+ {
+}
+
+class "web_antrean_babatan::blocLayer::dashboard::dashboard_bloc.dart::StateDashboardLoading" {
+}
+
+class "web_antrean_babatan::blocLayer::dashboard::dashboard_bloc.dart::StateDashboardSuccess" {
+  +List<InfoPoliklinik*>* daftarPoli
+}
+
+class "web_antrean_babatan::blocLayer::dashboard::dashboard_bloc.dart::StateDashboardFailed" {
+  +String* messageFailed
+}
+
+class "web_antrean_babatan::blocLayer::login::login_bloc.dart::LoginBloc" {
+  +int* choiceRole
+  +bool* isVerified
+  +String* username
+  +String* password
+  +String* result
+  +List<Perawat*>* daftarPerawat
+  +Stream<LoginState*>* mapEventToState()
+}
+
+abstract class "web_antrean_babatan::blocLayer::login::login_bloc.dart::LoginEvent" {
+}
+
+class "web_antrean_babatan::blocLayer::login::login_bloc.dart::EventTapLogin" {
+  +String* username
+  +String* password
+}
+
+class "web_antrean_babatan::blocLayer::login::login_bloc.dart::EventLoginChooseAdmin" {
+}
+
+class "web_antrean_babatan::blocLayer::login::login_bloc.dart::EventLoginChoosePerawat" {
+}
+
+abstract class "web_antrean_babatan::blocLayer::login::login_bloc.dart::LoginState" {
+}
+
+class "web_antrean_babatan::blocLayer::login::login_bloc.dart::StateLoginInitial" {
+}
+
+class "web_antrean_babatan::blocLayer::login::login_bloc.dart::StateLoginLoading" {
+}
+
+class "web_antrean_babatan::blocLayer::login::login_bloc.dart::StateLoginSuccess" {
+  +String* message
+}
+
+class "web_antrean_babatan::blocLayer::login::login_bloc.dart::StateLoginFailed" {
+  +String* errorMessage
+}
+
+class "web_antrean_babatan::blocLayer::login::login_bloc.dart::StateLoginChooseRole" {
+  +int* chooseRole
+}
+
+class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarBloc" {
+  +bool* isAdmin
+  +Stream<NavbarState*>* mapEventToState()
+}
+
+abstract class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarEvent" {
+}
+
+class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarEventGetRole" {
+}
+
+class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarEventLoadDashboard" {
+}
+
+class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarEventLoadAntrean" {
+}
+
+class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarEventLoadAntreanSementara" {
+}
+
+class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarEventLoadAntreanSelesai"
+ {
+}
+
+class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarEventLoadAkun" {
+}
+
+class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarEventLoadTambahAntrean"
+{
+}
+
+class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarEventLoadPoliklinik" {
+}
+
+class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarEventLoadRiwayat" {
+}
+
+class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarEventLoadAkunPerawat" {
+}
+
+abstract class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarState" {
+}
+
+class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarStateLoadingGetRole" {
+}
+
+class "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarStateSuccessGetRole" {
+  +bool* isAdmin
+  +Widget* page
+}
+
+"web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarStateSuccessGetRole" o-- "flutter::src::widgets::framework.dart::Widget"
+
+class "web_antrean_babatan::blocLayer::poliklinik::poliklinik_bloc.dart::PoliklinikBloc" {
+  +List<Poliklinik*>* daftarPoli
+  +Stream<PoliklinikState*>* mapEventToState()
+}
+
+abstract class "web_antrean_babatan::blocLayer::poliklinik::poliklinik_bloc.dart::PoliklinikEvent" {
+}
+
+class "web_antrean_babatan::blocLayer::poliklinik::poliklinik_bloc.dart::EventPoliklinikGetPoli" {
+}
+
+class "web_antrean_babatan::blocLayer::poliklinik::poliklinik_bloc.dart::EventPoliklinikAddSubmitPoli" {
+  +Poliklinik* dataPoliklinik
+}
+
+"web_antrean_babatan::blocLayer::poliklinik::poliklinik_bloc.dart::EventPoliklinikAddSubmitPoli" o-- "web_antrean_babatan::dataLayer::model::poliklinik.dart::Poliklinik"
+
+class "web_antrean_babatan::blocLayer::poliklinik::poliklinik_bloc.dart::EventPoliklinikEditSubmitPoli" {
+  +Poliklinik* dataPoliklinik
+}
+
+"web_antrean_babatan::blocLayer::poliklinik::poliklinik_bloc.dart::EventPoliklinikEditSubmitPoli" o-- "web_antrean_babatan::dataLayer::model::poliklinik.dart::Poliklinik"
+
+abstract class "web_antrean_babatan::blocLayer::poliklinik::poliklinik_bloc.dart::PoliklinikState" {
+}
+
+class "web_antrean_babatan::blocLayer::poliklinik::poliklinik_bloc.dart::StatePoliklinikLoading" {
+}
+
+class "web_antrean_babatan::blocLayer::poliklinik::poliklinik_bloc.dart::StatePoliklinikSuccess" {
+  +List<Poliklinik*>* daftarPoli
+}
+
+class "web_antrean_babatan::blocLayer::poliklinik::poliklinik_bloc.dart::StatePoliklinikFailed"
+ {
+  +String* messageFailed
+}
+
+class "web_antrean_babatan::dataLayer::api::requestApi.dart::RequestApi" {
+  {static} +String* apiUrl
+  {static} +Future<bool*>* registerPasien()
+  {static} +Future<dynamic>* validasiPasien()
+  {static} +Future<bool*>* loginAdministrator()
+  {static} +Future<dynamic>* getAntreanUtama()
+  {static} +Future<dynamic>* getAntreanSementara()
+  {static} +Future<dynamic>* getAntreanSelesai()
+  {static} +Future<dynamic>* getAntreanRiwayat()
+  {static} +Future<bool*>* editAntrean()
+  {static} +Future<dynamic>* getInfoPoliklinik()
+  {static} +Future<dynamic>* getAllPoliklinik()
+  {static} +Future<dynamic>* getPoliklinik()
+  {static} +Future<dynamic>* insertPoliklinik()
+  {static} +Future<bool*>* updatePoliklinik()
+  {static} +Future<bool*>* updateStatus()
+  {static} +Future<dynamic>* getAllPerawat()
+  {static} +Future<dynamic>* getPerawat()
+  {static} +Future<bool*>* editPerawat()
+  {static} +Future<bool*>* addPerawat()
+  {static} +Future<bool*>* deletePerawat()
+  {static} +Future<dynamic>* loginPerawat()
+}
+
+class "web_antrean_babatan::dataLayer::model::apiResponse.dart::ApiResponse" {
+  +bool* success
+  +String* message
+  +T* data
+  +Map<String*, dynamic>* toJson()
+}
+
+class "web_antrean_babatan::dataLayer::model::hari.dart::Hari" {
+  {static} +String* SENIN
+  {static} +String* SELASA
+  {static} +String* RABU
+  {static} +String* KAMIS
+  {static} +String* JUMAT
+  {static} +String* SABTU
+}
+
+class "web_antrean_babatan::dataLayer::model::hariPelayanan.dart::HariPelayanan" {
+  +bool* status
+  +String* kodeHari
+  +String* hari
+  +TextEditingController* jamBukaBookingInput
+  +TextEditingController* jamTutupBookingInput
+}
+
+"web_antrean_babatan::dataLayer::model::hariPelayanan.dart::HariPelayanan" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "web_antrean_babatan::dataLayer::model::infoPoliklinik.dart::InfoPoliklinik" {
+  +int* totalAntrean
+  +int* antreanSementara
+  +int* nomorAntrean
+  +int* idPoli
+  +int* statusPoli
+  +String* namaPoli
+  +Map<String*, dynamic>* toJson()
+}
+
+class "web_antrean_babatan::dataLayer::model::jadwal.dart::Jadwal" {
+  +int* idPoli
+  +String* hari
+  +String* jamBukaBooking
+  +String* jamTutupBooking
+  +Map<String*, dynamic>* toJson()
+}
+
+class "web_antrean_babatan::dataLayer::model::jadwalPasien.dart::JadwalPasien" {
+  +int* nomorAntrean
+  +int* tipeBooking
+  +String* tglPelayanan
+  +String* jamBooking
+  +String* waktuDaftarAntrean
+  +int* jamMulaiDilayani
+  +int* jamSelesaiDilayani
+  +int* statusAntrean
+  +String* hari
+  +int* idPoli
+  +String* namaPoli
+  +int* idPasien
+  +String* username
+  +String* noHandphone
+  +String* kepalaKeluarga
+  +String* namaLengkap
+  +String* alamat
+  +String* tglLahir
+  +int* jenisPasien
+  +Map<String*, dynamic>* toJson()
+}
+
+class "web_antrean_babatan::dataLayer::model::pasien.dart::Pasien" {
+  +String* username
+  +String* noHandphone
+  +String* kepalaKeluarga
+  +String* namaLengkap
+  +String* password
+  +String* alamat
+  +String* tglLahir
+  +Map<String*, dynamic>* toJson()
+}
+
+class "web_antrean_babatan::dataLayer::model::perawat.dart::Perawat" {
+  +int* idPerawat
+  +String* username
+  +String* password
+  +String* nama
+  +int* idPoli
+  +String* namaPoli
+  +Map<String*, dynamic>* toJson()
+}
+
+class "web_antrean_babatan::dataLayer::model::poliklinik.dart::Poliklinik" {
+  +int* idPoli
+  +String* namaPoli
+  +String* descPoli
+  +int* statusPoli
+  +int* rerataWaktuPelayanan
+  +List<Jadwal*>* jadwal
+  +Map<String*, dynamic>* toJson()
+  +String* jadwalToString()
+}
+
+class "web_antrean_babatan::dataLayer::model::statusAntrean.dart::StatusAntrean" {
+  {static} +int* BELUM_DILAYANI
+  {static} +int* SEDANG_DILAYANI
+  {static} +int* SUDAH_DILAYANI
+  {static} +int* DILEWATI
+  {static} +int* DIBATALKAN
+}
+
+class "web_antrean_babatan::dataLayer::session::sharedPref.dart::SharedPref" {
+  {static} -String* _username
+  {static} -String* _poliklinik
+  {static} -String* _idPerawat
+  {static} -String* _role
+  {static} +String* administrator
+  {static} +String* perawat
+  {static} +Future<void>* saveLogin()
+  {static} +Future<void>* saveInfoPerawat()
+  {static} +Future<int*>* getPoli()
+  {static} +Future<int*>* getIdPerawat()
+  {static} +Future<bool*>* isLogin()
+  {static} +Future<String*>* getRole()
+  {static} +Future<void>* deleteSharedPref()
+}
+
+class "web_antrean_babatan::main.dart::MyApp" {
+  +Widget* build()
+}
+
+class "web_antrean_babatan::screenLayer::akunPerawatScreen.dart::AkunPerawatScreen" {
+  +_AkunPerawatScreenState* createState()
+}
+
+class "web_antrean_babatan::screenLayer::akunPerawatScreen.dart::_AkunPerawatScreenState" {
+  -AkunPerawatBloc* _akunPerawatBloc
+  +void initState()
+  +Widget* build()
+  +ListView* tabelAkunPerawat()
+  +dynamic infoAkunPerawat()
+  +dynamic editAkunPerawat()
+  +dynamic deleteAkunPerawat()
+  +dynamic addAkunPerawat()
+}
+
+"web_antrean_babatan::screenLayer::akunPerawatScreen.dart::_AkunPerawatScreenState" o-- "web_antrean_babatan::blocLayer::akun::daftarAkunPerawat::akun_perawat_bloc.dart::AkunPerawatBloc"
+
+class "web_antrean_babatan::screenLayer::akunScreen.dart::AkunScreen" {
+  +_AkunScreenState* createState()
+}
+
+class "web_antrean_babatan::screenLayer::akunScreen.dart::_AkunScreenState" {
+  -AkunBloc* _akunBloc
+  +void initState()
+  +Widget* build()
+  +ListView* tabelAkunPerawat()
+  +dynamic infoAkunPerawat()
+  +dynamic editAkunPerawat()
+}
+
+"web_antrean_babatan::screenLayer::akunScreen.dart::_AkunScreenState" o-- "web_antrean_babatan::blocLayer::akun::akunPerawat::akun_bloc.dart::AkunBloc"
+
+class "web_antrean_babatan::screenLayer::antreanScreen.dart::AntreanScreen" {
+  +_AntreanScreenState* createState()
+}
+
+class "web_antrean_babatan::screenLayer::antreanScreen.dart::_AntreanScreenState" {
+  +List<JadwalPasien*>* daftarAntrean
+  -AntreanBloc* _antreanBloc
+  +String* query
+  +int* nomor
+  +void initState()
+  +Widget* buildSearch()
+  +Widget* build()
+  +Scaffold* failedScreen()
+  +Scaffold* loadingScreen()
+  +dynamic konfirmasiAntreanSementara()
+  +dynamic editAntrean()
+  +dynamic infoAntrean()
+}
+
+"web_antrean_babatan::screenLayer::antreanScreen.dart::_AntreanScreenState" o-- "web_antrean_babatan::blocLayer::antrean::antreanUtama::antrean_bloc.dart::AntreanBloc"
+
+class "web_antrean_babatan::screenLayer::antreanSelesaiScreen.dart::AntreanSelesaiScreen" {
+  +_AntreanSelesaiScreenState* createState()
+}
+
+class "web_antrean_babatan::screenLayer::antreanSelesaiScreen.dart::_AntreanSelesaiScreenState"
+ {
+  -AntreanSelesaiBloc* _antreanSelesaiBloc
+  +int* nomor
+  +void initState()
+  +Widget* build()
+  +Scaffold* failedScreen()
+  +Scaffold* loadingScreen()
+  +dynamic infoAntrean()
+}
+
+"web_antrean_babatan::screenLayer::antreanSelesaiScreen.dart::_AntreanSelesaiScreenState" o-- "web_antrean_babatan::blocLayer::antrean::antreanSelesai::antrean_selesai_bloc.dart::AntreanSelesaiBloc"
+
+class "web_antrean_babatan::screenLayer::antreanSementaraScreen.dart::AntreanSementaraScreen" {
+  +_AntreanSementaraScreenState* createState()
+}
+
+class "web_antrean_babatan::screenLayer::antreanSementaraScreen.dart::_AntreanSementaraScreenState" {
+  -AntreanSementaraBloc* _antreanSementaraBloc
+  +int* nomor
+  +void initState()
+  +Widget* build()
+  +dynamic konfirmasiAntreanUtama()
+  +dynamic editAntrean()
+  +dynamic infoAntrean()
+  +Scaffold* failedScreen()
+  +Scaffold* loadingScreen()
+}
+
+"web_antrean_babatan::screenLayer::antreanSementaraScreen.dart::_AntreanSementaraScreenState" o-- "web_antrean_babatan::blocLayer::antrean::antreanSementara::antrean_sementara_bloc.dart::AntreanSementaraBloc"
+
+class "web_antrean_babatan::screenLayer::dashboardScreen.dart::DashboardScreen" {
+  +_DashboardScreenState* createState()
+}
+
+class "web_antrean_babatan::screenLayer::dashboardScreen.dart::_DashboardScreenState" {
+  +DashboardBloc* dashboardBloc
+  +String* dateSlug
+  +void initState()
+  +dynamic cardPoli()
+  -dynamic _portalDialog()
+  +Widget* build()
+}
+
+"web_antrean_babatan::screenLayer::dashboardScreen.dart::_DashboardScreenState" o-- "web_antrean_babatan::blocLayer::dashboard::dashboard_bloc.dart::DashboardBloc"
+
+class "web_antrean_babatan::screenLayer::loginScreen.dart::Login" {
+  -GlobalKey<FormState*>* _formKey
+  -TextEditingController* _username
+  -TextEditingController* _password
+  +bool* isClickValidated
+  -LoginBloc* _loginBloc
+  +Widget* build()
+  +void authLogin()
+}
+
+"web_antrean_babatan::screenLayer::loginScreen.dart::Login" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"web_antrean_babatan::screenLayer::loginScreen.dart::Login" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"web_antrean_babatan::screenLayer::loginScreen.dart::Login" o-- "web_antrean_babatan::blocLayer::login::login_bloc.dart::LoginBloc"
+
+class "web_antrean_babatan::screenLayer::mainScreen.dart::MainScreen" {
+  +_MainScreenState* createState()
+}
+
+class "web_antrean_babatan::screenLayer::mainScreen.dart::_MainScreenState" {
+  -NavbarBloc* _navbarBloc
+  +void initState()
+  +Widget* build()
+  +ListView* navbarAdmin()
+  +ListView* navbarPerawat()
+  +Card* listMenu()
+  -dynamic _showMaterialDialog()
+}
+
+"web_antrean_babatan::screenLayer::mainScreen.dart::_MainScreenState" o-- "web_antrean_babatan::blocLayer::navbar::navbar_bloc.dart::NavbarBloc"
+
+class "web_antrean_babatan::screenLayer::poliklinikScreen.dart::PoliklinikScreen" {
+  +_PoliklinikScreenState* createState()
+}
+
+class "web_antrean_babatan::screenLayer::poliklinikScreen.dart::_PoliklinikScreenState" {
+  -PoliklinikBloc* _poliklinikBloc
+  +void initState()
+  +Widget* build()
+  +ListView* daftarPoli()
+  -Future<dynamic>* _selectTime()
+  +dynamic addDialog()
+  +dynamic editDialog()
+  +dynamic infoDialog()
+}
+
+"web_antrean_babatan::screenLayer::poliklinikScreen.dart::_PoliklinikScreenState" o-- "web_antrean_babatan::blocLayer::poliklinik::poliklinik_bloc.dart::PoliklinikBloc"
+
+class "web_antrean_babatan::screenLayer::riwayatScreen.dart::RiwayatScreen" {
+  +_RiwayatScreenState* createState()
+}
+
+class "web_antrean_babatan::screenLayer::riwayatScreen.dart::_RiwayatScreenState" {
+  +int* nomor
+  -RiwayatKunjunganBloc* _riwayatKunjunganBloc
+  +void initState()
+  +Widget* build()
+  +dynamic infoAntrean()
+  +Scaffold* failedScreen()
+  +Scaffold* loadingScreen()
+}
+
+"web_antrean_babatan::screenLayer::riwayatScreen.dart::_RiwayatScreenState" o-- "web_antrean_babatan::blocLayer::antrean::riwayatKunjungan::riwayat_kunjungan_bloc.dart::RiwayatKunjunganBloc"
+
+class "web_antrean_babatan::screenLayer::splashScreen.dart::SplashScreen" {
+  +_SplashScreenState* createState()
+}
+
+class "web_antrean_babatan::screenLayer::splashScreen.dart::_SplashScreenState" {
+  +Duration* duration
+  +Future<bool*>* isSession()
+  +void changePage()
+  +void afterFirstLayout()
+  +void initState()
+  +Widget* build()
+}
+
+class "web_antrean_babatan::screenLayer::tambahAntreanScreen.dart::TambahAntreanScreen" {
+  +_TambahAntreanScreenState* createState()
+}
+
+class "web_antrean_babatan::screenLayer::tambahAntreanScreen.dart::_TambahAntreanScreenState" {
+  -TambahantreanBloc* _tambahantreanBloc
+  -Future<dynamic>* _selectDate()
+  +dynamic buatAkun()
+  +void initState()
+  +Widget* build()
+  +Row* formTambahAntrean()
+}
+
+"web_antrean_babatan::screenLayer::tambahAntreanScreen.dart::_TambahAntreanScreenState" o-- "web_antrean_babatan::blocLayer::antrean::tambahAntrean::tambahantrean_bloc.dart::TambahantreanBloc"
+
+class "web_antrean_babatan::utils::color.dart::ColorTheme" {
+  {static} +Color* greenDark
+  {static} +Color* greenLight
+}
+
+"web_antrean_babatan::utils::color.dart::ColorTheme" o-- "dart::ui::Color"
+
+class "web_antrean_babatan::utils::searchView.dart::SearchWidget" {
+"web_antrean_babatan::utils::searchView.dart::_SearchWidgetState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+}
+
+
+@enduml

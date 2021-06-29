@@ -4,8 +4,8 @@ class JadwalPasien {
   String tglPelayanan;
   String jamBooking;
   String waktuDaftarAntrean;
-  int jamMulaiDilayani;
-  int jamSelesaiDilayani;
+  String jamMulaiDilayani;
+  String jamSelesaiDilayani;
   int statusAntrean;
   String hari;
   int idPoli;
