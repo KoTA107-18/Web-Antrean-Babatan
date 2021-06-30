@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web_antrean_babatan/dataLayer/api/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/apiResponse.dart';
+import 'package:web_antrean_babatan/dataLayer/model/hari.dart';
 import 'package:web_antrean_babatan/dataLayer/model/pasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
 
@@ -11,7 +12,8 @@ part 'tambahantrean_event.dart';
 part 'tambahantrean_state.dart';
 
 class TambahantreanBloc extends Bloc<TambahantreanEvent, TambahantreanState> {
-  String username;
+  String tglLahir;
+  Pasien pasien;
   Poliklinik poliklinikTujuan;
   int jenisPasien = 0;
   List<Poliklinik> daftarPoli = [];
@@ -67,50 +69,56 @@ class TambahantreanBloc extends Bloc<TambahantreanEvent, TambahantreanState> {
       yield StateTambahAntreanPilihJenisPasien(isUmum: jenisPasien);
     }
 
+    if (event is EventTambahAntreanPilihTanggal) {
+      tglLahir = event.tanggal;
+      yield StateTambahAntreanPilihTanggal(tanggal: tglLahir);
+    }
+
     if (event is EventTambahAntreanSubmitPoliTujuan) {
       poliklinikTujuan = event.poliklinik;
     }
 
     if (event is EventTambahAntreanSubmitAntreanBaru) {
-      yield StateTambahAntreanSubmitPasienLoading();
-      username = event.username;
+      yield StateTambahAntreanSubmitAntreanLoading();
+      pasien = event.pasien;
+      Map<String , dynamic> data = {
+        'nama_lengkap' : pasien.namaLengkap,
+        'tgl_lahir' : pasien.tglLahir,
+        'alamat' : pasien.alamat,
+        'kepala_keluarga' : pasien.kepalaKeluarga,
+        'no_handphone' : pasien.noHandphone,
+        'id_poli' : poliklinikTujuan.idPoli,
+        'jenis_pasien' : jenisPasien,
+        'hari' : convertNumDayToCode(DateTime.now().weekday)
+      };
       try {
-        /*
-        var resultCheck = await RequestApi.checkAlreadyRegisterQueue(username);
-        if (resultCheck == false) {
-          JadwalPasien tiket = JadwalPasien(
-              idJadwalPasien: 0,
-              idPoli: poliklinikTujuan.idPoli,
-              idHari: DateTime.now().weekday,
-              username: username.toString(),
-              nomorAntrean: 0,
-              tipeBooking: 0,
-              tglPelayanan:
-                  "${DateTime.now().year.toString()}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}",
-              jamDaftarAntrean:
-                  "${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')}",
-              jamMulaiDilayani: "NULL",
-              jamSelesaiDilayani: "NULL",
-              statusAntrean: 1);
-          var resultRegister = await RequestApi.registerAntreanHariIni(tiket);
-          if (resultRegister) {
-            yield StateTambahAntreanSubmitPasienSuccess(
-                message: "Data antrean pasien telah masuk!",
-                daftarPoli: daftarPoli);
-          } else {
-            yield StateTambahAntreanSubmitPasienFailed(
-                errMessage: "Pendaftaran gagal!", daftarPoli: daftarPoli);
-          }
+        var result = false;
+        if(event.isGawat){
+          result = await RequestApi.insertAntreanGawat(data);
         } else {
-          yield StateTambahAntreanSubmitPasienFailed(
-              errMessage:
-                  "Pasien tersebut masih memiliki nomor antrean yang belum diproses.",
-              daftarPoli: daftarPoli);
+          result = await RequestApi.insertAntreanNormal(data);
         }
-         */
+        if(result == true){
+          yield StateTambahAntreanSubmitAntreanSuccess();
+        } else {
+          yield StateTambahAntreanSubmitAntreanFailed(errMessage: "Gagal Insert");
+        }
       } catch (e) {
-        yield StateTambahAntreanGetPoliFailed(errMessage: e.toString());
+        yield StateTambahAntreanSubmitAntreanFailed(errMessage: e.toString());
       }
     }
+  }
+
+  String convertNumDayToCode(int day) {
+    List<String> codeDay = [
+      Hari.SENIN,
+      Hari.SELASA,
+      Hari.RABU,
+      Hari.KAMIS,
+      Hari.JUMAT,
+      Hari.SABTU,
+      Hari.MINGGU
+    ];
+    return codeDay.elementAt(day - 1);
   }
 }

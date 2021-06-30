@@ -99,6 +99,35 @@ class RequestApi {
     }
   }
 
+  static Future insertAntreanNormal(Map<String, dynamic> data) async {
+    var uri = Uri.https(apiUrl, 'antrean/admin/normal');
+    var result = await http.post(uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(data));
+    print(result.body.toString());
+    if (result.statusCode == 200) {
+      return true;
+    } else {
+      return null;
+    }
+  }
+
+  static Future insertAntreanGawat(Map<String, dynamic> data) async {
+    var uri = Uri.https(apiUrl, 'antrean/admin/gawat');
+    var result = await http.post(uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(data));
+    if (result.statusCode == 200) {
+      return true;
+    } else {
+      return null;
+    }
+  }
+
   /*
     Method for functional Poliklinik.
   */

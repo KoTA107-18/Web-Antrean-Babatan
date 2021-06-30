@@ -285,9 +285,9 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                                 return "Harus diisi";
                               } else if (value.length < 10) {
                                 return "Minimum 10 digit";
-                              } else if (value.substring(0,2) != "62"){
+                              } else if (value.substring(0, 2) != "62") {
                                 return "Format tidak sesuai, awali dengan 62";
-                              }  else {
+                              } else {
                                 return null;
                               }
                             },
@@ -360,6 +360,23 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
           }
           if (state is StateTambahAntreanSubmitPasienLoading) {
             loading(context);
+          }
+          if (state is StateTambahAntreanSubmitAntreanSuccess) {
+            Navigator.pop(context);
+            Fluttertoast.showToast(
+                msg: "Berhasil!",
+                gravity: ToastGravity.CENTER,
+                toastLength: Toast.LENGTH_LONG);
+          }
+          if (state is StateTambahAntreanSubmitAntreanLoading) {
+            loading(context);
+          }
+          if (state is StateTambahAntreanSubmitAntreanFailed) {
+            Navigator.pop(context);
+            Fluttertoast.showToast(
+                msg: state.errMessage,
+                gravity: ToastGravity.CENTER,
+                toastLength: Toast.LENGTH_LONG);
           }
         },
         child: Scaffold(
@@ -438,8 +455,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                       hint: 'Isi nama anda',
                       icon: Icon(Icons.person),
                       formatter: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp('[a-zA-Z ]')),
+                        FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]')),
                       ],
                       validatorFunc: (value) {
                         if (value.isEmpty) {
@@ -460,22 +476,39 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                   padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
                   child: Row(
                     children: [
-                      Flexible(
-                        child: textFieldModified(
-                            isEnabled: false,
-                            hint: 'Tanggal Lahir',
-                            icon: Icon(Icons.date_range),
-                            controller: _tglLahir),
+                      BlocBuilder<TambahantreanBloc, TambahantreanState>(
+                        builder: (context, state) {
+                          if (state is StateTambahAntreanPilihTanggal) {
+                            _tglLahir.text = _tambahantreanBloc.tglLahir;
+                            return Flexible(
+                              child: textFieldModified(
+                                  isEnabled: false,
+                                  hint: 'Tanggal Lahir',
+                                  icon: Icon(Icons.date_range),
+                                  controller: _tglLahir),
+                            );
+                          } else {
+                            _tglLahir.text = _tambahantreanBloc.tglLahir;
+                            return Flexible(
+                              child: textFieldModified(
+                                  isEnabled: false,
+                                  hint: 'Tanggal Lahir',
+                                  icon: Icon(Icons.date_range),
+                                  controller: _tglLahir),
+                            );
+                          }
+                        },
                       ),
                       SizedBox(width: 16.0),
                       ElevatedButton(
                           onPressed: () {
                             _selectDate(context).then((value) {
                               selectedDate = value;
-                              setState(() {
-                                _tglLahir.text =
-                                "${selectedDate.year.toString()}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
-                              });
+                              _tglLahir.text =
+                                  "${selectedDate.year.toString()}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
+                              _tambahantreanBloc.add(
+                                  EventTambahAntreanPilihTanggal(
+                                      tanggal: _tglLahir.text));
                             });
                           },
                           child: Icon(Icons.date_range))
@@ -493,13 +526,6 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                   child: textFieldModified(
                       hint: 'Isi alamat rumah anda',
                       icon: Icon(Icons.map),
-                      validatorFunc: (value) {
-                        if (value.isEmpty) {
-                          return "Harus diisi";
-                        } else {
-                          return null;
-                        }
-                      },
                       controller: _alamat),
                 ),
                 Padding(
@@ -514,16 +540,8 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                       hint: 'Isi nama kepala keluarga anda',
                       icon: Icon(Icons.person),
                       formatter: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp('[a-zA-Z ]')),
+                        FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]')),
                       ],
-                      validatorFunc: (value) {
-                        if (value.isEmpty) {
-                          return "Harus diisi";
-                        } else {
-                          return null;
-                        }
-                      },
                       controller: _kepalaKeluarga),
                 ),
                 Padding(
@@ -539,20 +557,8 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                       icon: Icon(Icons.call),
                       typeKeyboard: TextInputType.number,
                       formatter: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp(r'[0-9]')),
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                       ],
-                      validatorFunc: (value) {
-                        if (value.isEmpty) {
-                          return "Harus diisi";
-                        } else if (value.length < 10) {
-                          return "Minimum 10 digit";
-                        } else if (value.substring(0,2) != "62"){
-                          return "Format tidak sesuai, awali dengan 62";
-                        }  else {
-                          return null;
-                        }
-                      },
                       controller: _nomorHandphone),
                 )
               ],
@@ -593,8 +599,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                           child: Center(
                             child: Text('Puskesmas Babatan',
                                 style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.teal)),
+                                    fontSize: 14.0, color: Colors.teal)),
                           ),
                         ),
                       ],
@@ -616,8 +621,8 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                       );
                     }).toList(),
                     onChanged: (value) {
-                      _tambahantreanBloc
-                          .add(EventTambahAntreanSubmitPoliTujuan(poliklinik: value));
+                      _tambahantreanBloc.add(EventTambahAntreanSubmitPoliTujuan(
+                          poliklinik: value));
                     },
                   ),
                 ),
@@ -633,7 +638,8 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                               value: 0,
                               groupValue: state.isUmum,
                               onChanged: (result) {
-                                _tambahantreanBloc.add(EventTambahAntreanRadioUmum());
+                                _tambahantreanBloc
+                                    .add(EventTambahAntreanRadioUmum());
                               },
                             ),
                             Text(
@@ -644,7 +650,8 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                               value: 1,
                               groupValue: state.isUmum,
                               onChanged: (result) {
-                                _tambahantreanBloc.add(EventTambahAntreanRadioBPJS());
+                                _tambahantreanBloc
+                                    .add(EventTambahAntreanRadioBPJS());
                               },
                             ),
                             Text(
@@ -662,7 +669,8 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                               value: 0,
                               groupValue: _tambahantreanBloc.jenisPasien,
                               onChanged: (result) {
-                                _tambahantreanBloc.add(EventTambahAntreanRadioUmum());
+                                _tambahantreanBloc
+                                    .add(EventTambahAntreanRadioUmum());
                               },
                             ),
                             Text(
@@ -673,7 +681,8 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                               value: 1,
                               groupValue: _tambahantreanBloc.jenisPasien,
                               onChanged: (result) {
-                                _tambahantreanBloc.add(EventTambahAntreanRadioBPJS());
+                                _tambahantreanBloc
+                                    .add(EventTambahAntreanRadioBPJS());
                               },
                             ),
                             Text(
@@ -696,7 +705,22 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                         flex: 2,
                         child: ElevatedButton(
                             onPressed: () {
-                              //_tambahantreanBloc.add(EventTambahAntreanSubmitAntreanBaru(username: _username.text));
+                              if (_tambahantreanBloc.poliklinikTujuan == null ||
+                                  _namaLengkap.text == "") {
+                                Fluttertoast.showToast(
+                                  msg: "Lengkapi form!",
+                                  gravity: ToastGravity.CENTER,
+                                );
+                              } else {
+                                var pasien = Pasien(
+                                    noHandphone: _nomorHandphone.text,
+                                    kepalaKeluarga: _kepalaKeluarga.text,
+                                    namaLengkap: _namaLengkap.text,
+                                    alamat: _alamat.text,
+                                    tglLahir: _tglLahir.text);
+                                _tambahantreanBloc.add(EventTambahAntreanSubmitAntreanBaru(pasien: pasien, isGawat: false));
+                              }
+
                             },
                             child: Text("Antrean Normal")),
                       ),
@@ -709,7 +733,21 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                               onPrimary: Colors.white, // foreground
                             ),
                             onPressed: () {
-                              //_tambahantreanBloc.add(EventTambahAntreanSubmitAntreanBaru(username: _username.text));
+                              if (_tambahantreanBloc.poliklinikTujuan == null ||
+                                  _namaLengkap.text == "") {
+                                Fluttertoast.showToast(
+                                  msg: "Lengkapi form!",
+                                  gravity: ToastGravity.CENTER,
+                                );
+                              } else {
+                                var pasien = Pasien(
+                                    noHandphone: _nomorHandphone.text,
+                                    kepalaKeluarga: _kepalaKeluarga.text,
+                                    namaLengkap: _namaLengkap.text,
+                                    alamat: _alamat.text,
+                                    tglLahir: _tglLahir.text);
+                                _tambahantreanBloc.add(EventTambahAntreanSubmitAntreanBaru(pasien: pasien, isGawat: true));
+                              }
                             },
                             child: Text("Antrean Gawat")),
                       ),

@@ -5,4 +5,5 @@ class Hari {
   static const KAMIS = "KM";
   static const JUMAT = "JM";
   static const SABTU = "SB";
+  static const MINGGU = "MG";
 }
