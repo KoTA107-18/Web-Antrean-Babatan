@@ -157,9 +157,9 @@ class _AntreanScreenState extends State<AntreanScreen> {
                                                   DataCell(Text(
                                                       (nomor += 1).toString())),
                                                   DataCell(Text(i.namaLengkap)),
-                                                  DataCell(Text(i.tglLahir)),
+                                                  DataCell(Text((i.tglLahir == null) ? "-" : i.tglLahir)),
                                                   DataCell(
-                                                      Text(i.kepalaKeluarga)),
+                                                      Text((i.kepalaKeluarga == null) ? "-" : i.kepalaKeluarga)),
                                                   DataCell(Text(
                                                       (i.tipeBooking == 1)
                                                           ? "Booking"

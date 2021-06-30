@@ -347,7 +347,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
             Navigator.pop(context);
             Navigator.pop(context);
             Fluttertoast.showToast(
-                msg: state.message,
+                msg: "Berhasil!",
                 gravity: ToastGravity.CENTER,
                 toastLength: Toast.LENGTH_LONG);
           }
@@ -390,24 +390,16 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
             child: BlocBuilder<TambahantreanBloc, TambahantreanState>(
               bloc: _tambahantreanBloc,
               builder: (context, state) {
-                if (state is StateTambahAntreanSuccess) {
-                  return formTambahAntrean(state.daftarPoli);
-                } else if (state is StateTambahAntreanSubmitPasienSuccess) {
-                  return formTambahAntrean(state.daftarPoli);
-                } else if (state is StateTambahAntreanSubmitPasienLoading) {
-                  return formTambahAntrean(state.daftarPoli);
-                } else if (state is StateTambahAntreanSubmitPasienFailed) {
-                  return formTambahAntrean(state.daftarPoli);
-                } else if (state is StateTambahAntreanPilihJenisPasien) {
-                  return formTambahAntrean(state.daftarPoli);
-                } else if (state is StateTambahAntreanFailed) {
+                if (state is StateTambahAntreanGetPoliLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (state is StateTambahAntreanGetPoliFailed) {
                   return Center(
                     child: Text(state.errMessage),
                   );
                 } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return formTambahAntrean(_tambahantreanBloc.daftarPoli);
                 }
               },
             ),

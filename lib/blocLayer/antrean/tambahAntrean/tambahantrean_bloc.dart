@@ -16,14 +16,14 @@ class TambahantreanBloc extends Bloc<TambahantreanEvent, TambahantreanState> {
   int jenisPasien = 0;
   List<Poliklinik> daftarPoli = [];
 
-  TambahantreanBloc() : super(StateTambahAntreanLoading());
+  TambahantreanBloc() : super(StateTambahAntreanGetPoliLoading());
 
   @override
   Stream<TambahantreanState> mapEventToState(
     TambahantreanEvent event,
   ) async* {
     if (event is EventTambahAntreanGetPoli) {
-      yield StateTambahAntreanLoading();
+      yield StateTambahAntreanGetPoliLoading();
       try {
         await RequestApi.getAllPoliklinik().then((snapshot) {
           if (snapshot != null) {
@@ -33,41 +33,38 @@ class TambahantreanBloc extends Bloc<TambahantreanEvent, TambahantreanState> {
                 .toList();
           }
         });
-        yield StateTambahAntreanSuccess(daftarPoli: daftarPoli);
+        yield StateTambahAntreanGetPoliSuccess();
       } catch (e) {
-        yield StateTambahAntreanFailed(errMessage: e.toString());
+        yield StateTambahAntreanGetPoliFailed(errMessage: e.toString());
       }
     }
 
     if (event is EventTambahAntreanSubmitPasien) {
-      yield StateTambahAntreanSubmitPasienLoading(daftarPoli: daftarPoli);
+      yield StateTambahAntreanSubmitPasienLoading();
       try {
         var resultValidasi = await RequestApi.validasiPasien(event.pasien);
         var response = ApiResponse.fromJson(resultValidasi);
         if(response.success){
           await RequestApi.registerPasien(event.pasien);
-          yield StateTambahAntreanSubmitPasienSuccess(
-              message: "Data pasien telah masuk!", daftarPoli: daftarPoli);
+          yield StateTambahAntreanSubmitPasienSuccess();
         } else {
           yield StateTambahAntreanSubmitPasienFailed(
-              errMessage: response.message, daftarPoli: daftarPoli);
+              errMessage: response.message);
         }
       } catch (e) {
         yield StateTambahAntreanSubmitPasienFailed(
-            errMessage: e.toString(), daftarPoli: daftarPoli);
+            errMessage: e.toString());
       }
     }
 
     if (event is EventTambahAntreanRadioUmum) {
       jenisPasien = 0;
-      yield StateTambahAntreanPilihJenisPasien(
-          daftarPoli: daftarPoli, isUmum: jenisPasien);
+      yield StateTambahAntreanPilihJenisPasien(isUmum: jenisPasien);
     }
 
     if (event is EventTambahAntreanRadioBPJS) {
       jenisPasien = 1;
-      yield StateTambahAntreanPilihJenisPasien(
-          daftarPoli: daftarPoli, isUmum: jenisPasien);
+      yield StateTambahAntreanPilihJenisPasien(isUmum: jenisPasien);
     }
 
     if (event is EventTambahAntreanSubmitPoliTujuan) {
@@ -75,7 +72,7 @@ class TambahantreanBloc extends Bloc<TambahantreanEvent, TambahantreanState> {
     }
 
     if (event is EventTambahAntreanSubmitAntreanBaru) {
-      yield StateTambahAntreanSubmitPasienLoading(daftarPoli: daftarPoli);
+      yield StateTambahAntreanSubmitPasienLoading();
       username = event.username;
       try {
         /*
@@ -112,7 +109,7 @@ class TambahantreanBloc extends Bloc<TambahantreanEvent, TambahantreanState> {
         }
          */
       } catch (e) {
-        yield StateTambahAntreanFailed(errMessage: e.toString());
+        yield StateTambahAntreanGetPoliFailed(errMessage: e.toString());
       }
     }
   }
