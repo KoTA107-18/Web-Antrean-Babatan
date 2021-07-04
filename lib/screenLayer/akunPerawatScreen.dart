@@ -62,6 +62,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
           bloc: _akunPerawatBloc,
           builder: (context, state) {
             if (state is AkunPerawatStateSuccess) {
+              nomor = 0;
               return Container(
                   padding: EdgeInsets.all(20.0),
                   child:
