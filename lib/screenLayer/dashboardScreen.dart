@@ -10,6 +10,8 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final DashboardBloc dashboardBloc = DashboardBloc();
+  var sizeWidth = 0;
+
   String dateSlug = ""
       "${DateTime.now().year.toString()}/"
       "${DateTime.now().month.toString().padLeft(2, '0')}/"
@@ -25,11 +27,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return GridView.builder(
       itemCount: daftarPoli.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, childAspectRatio: 1.7),
+          crossAxisCount: (sizeWidth < 1765) ? 2 : 3, childAspectRatio: 1.7),
       itemBuilder: (context, index) {
         return Container(
-          margin: EdgeInsets.only(right: 8, top: 8, bottom: 8, left: 4),
-          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+          margin: EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8)),
             color: (daftarPoli[index].statusPoli == 1)
@@ -46,67 +48,63 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text("Poliklinik :",
-                        style:
-                            TextStyle(color: Colors.grey[600], fontSize: 14)),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 12.0),
-                    child: Text(
-                      daftarPoli[index].namaPoli,
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Total Antrean",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Text(daftarPoli[index].totalAntrean.toString()),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Antrean Sementara",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Text(daftarPoli[index].antreanSementara.toString()),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Nomor Antrean Saat Ini",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Text(daftarPoli[index].nomorAntrean.toString()),
-                      ],
-                    ),
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Poliklinik :",
+                    style:
+                        TextStyle(color: Colors.grey[600], fontSize: 14)),
               ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 12.0),
+                child: Text(
+                  daftarPoli[index].namaPoli,
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Total Antrean",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Text(daftarPoli[index].totalAntrean.toString()),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Antrean Sementara",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Text(daftarPoli[index].antreanSementara.toString()),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Nomor Antrean Saat Ini",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Text(daftarPoli[index].nomorAntrean.toString()),
+                  ],
+                ),
+              )
             ],
           ),
         );
@@ -171,6 +169,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    sizeWidth = MediaQuery.of(context).size.width as int;
+    print(sizeWidth.toString());
     return BlocProvider(
         create: (_) => dashboardBloc,
         child: Scaffold(
