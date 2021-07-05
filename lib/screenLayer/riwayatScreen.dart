@@ -134,13 +134,10 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                                                   DataCell(Text(
                                                       (nomor += 1).toString())),
                                                   DataCell(Text(i.namaLengkap)),
-                                                  DataCell(Text(i.tglLahir)),
+                                                  DataCell(Text((i.tglLahir == null) ? "-" : i.tglLahir)),
                                                   DataCell(
-                                                      Text(i.kepalaKeluarga)),
-                                                  DataCell(Text(
-                                                      (i.tipeBooking == 1)
-                                                          ? "Booking"
-                                                          : "Umum")),
+                                                      Text((i.kepalaKeluarga == null) ? "-" : i.kepalaKeluarga)),
+                                                  DataCell(Text((i.jenisPasien == 0) ? "Umum" : "BPJS")),
                                                   DataCell(Row(
                                                     children: [
                                                       IconButton(
@@ -225,7 +222,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(pasien.username),
+                  child: Text((pasien.username == null) ? "-" : pasien.username),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -235,7 +232,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(pasien.namaLengkap),
+                  child: Text((pasien.namaLengkap == null) ? "-" : pasien.namaLengkap),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -245,7 +242,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(pasien.noHandphone),
+                  child: Text((pasien.noHandphone == null) ? "-" : pasien.noHandphone),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -255,7 +252,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(pasien.kepalaKeluarga),
+                  child: Text((pasien.kepalaKeluarga == null) ? "-" : pasien.kepalaKeluarga),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -265,7 +262,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(pasien.tglLahir),
+                  child: Text((pasien.tglLahir == null) ? "-" : pasien.tglLahir),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -275,7 +272,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(pasien.alamat),
+                  child: Text((pasien.alamat == null) ? "-" : pasien.alamat),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -285,7 +282,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text("Umum"),
+                  child: Text((pasien.jenisPasien == 0) ? "Umum" : "BPJS"),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -315,7 +312,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(pasien.tipeBooking.toString()),
+                  child: Text((pasien.tipeBooking == 0) ? "Non Booking" : "Booking"),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -325,17 +322,17 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(pasien.tglPelayanan),
+                  child: Text((pasien.tglPelayanan == null) ? "-" : pasien.tglPelayanan),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Jam Daftar Antrean',
+                  child: Text('Waktu Daftar Antrean',
                       style: TextStyle(
                           fontSize: 16.0, fontWeight: FontWeight.bold)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(pasien.waktuDaftarAntrean),
+                  child: Text((pasien.waktuDaftarAntrean == null) ? "-" : pasien.waktuDaftarAntrean),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -345,7 +342,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(pasien.jamBooking),
+                  child: Text((pasien.jamBooking == null) ? "-" : pasien.jamBooking),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -355,7 +352,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.jamMulaiDilayani == null) ? "00:00:00" : pasien.jamMulaiDilayani.toString()),
+                  child: Text((pasien.jamMulaiDilayani == null) ? "-" : pasien.jamMulaiDilayani.toString()),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -365,7 +362,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.jamSelesaiDilayani == null) ? "00:00:00" : pasien.jamSelesaiDilayani.toString()),
+                  child: Text((pasien.jamSelesaiDilayani == null) ? "-" : pasien.jamSelesaiDilayani.toString()),
                 ),
               ],
             ),
