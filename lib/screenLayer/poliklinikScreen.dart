@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_antrean_babatan/blocLayer/poliklinik/poliklinik_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/model/hari.dart';
@@ -202,24 +203,34 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
     TextEditingController _nama = TextEditingController();
     TextEditingController _desc = TextEditingController();
     TextEditingController _rataRata = TextEditingController();
+    TextEditingController _batasBooking = TextEditingController();
+    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    bool isClickValidated = false;
 
     void submitPoliklinik() {
-      List<Jadwal> resultHari = [];
-      for(var i in hariPelayanan){
-        if(i.status){
-          resultHari.add(Jadwal(idPoli: 0,
-              hari: i.kodeHari,
-              jamBukaBooking: i.jamBukaBookingInput.text.toString(),
-              jamTutupBooking: i.jamTutupBookingInput.text.toString()));
+      setState(() {
+        isClickValidated = true;
+      });
+      if(_formKey.currentState.validate()){
+        List<Jadwal> resultHari = [];
+        for(var i in hariPelayanan){
+          if(i.status){
+            resultHari.add(Jadwal(idPoli: 0,
+                hari: i.kodeHari,
+                jamBukaBooking: i.jamBukaBookingInput.text.toString(),
+                jamTutupBooking: i.jamTutupBookingInput.text.toString()));
+          }
         }
+        Poliklinik dataPoliklinik = Poliklinik(
+            namaPoli: _nama.text.toString(),
+            descPoli: _desc.text.toString(),
+            jadwal: resultHari,
+            rerataWaktuPelayanan: int.parse(_rataRata.text.toString()),
+            batasBooking: int.parse(_batasBooking.text.toString()));
+        _poliklinikBloc
+            .add(EventPoliklinikAddSubmitPoli(dataPoliklinik: dataPoliklinik));
+        Navigator.pop(context);
       }
-      Poliklinik dataPoliklinik = Poliklinik(
-          namaPoli: _nama.text.toString(),
-          descPoli: _desc.text.toString(),
-          jadwal: resultHari,
-          rerataWaktuPelayanan: int.parse(_rataRata.text.toString()));
-      _poliklinikBloc
-          .add(EventPoliklinikAddSubmitPoli(dataPoliklinik: dataPoliklinik));
     }
 
     showDialog(
@@ -237,117 +248,173 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
               content: Container(
                 width: MediaQuery.of(context).size.width / 2,
                 height: MediaQuery.of(context).size.height / 2,
-                child: ListView(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text('Nama Poliklinik',
-                          style: TextStyle(
-                              fontSize: 16.0, fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: textFieldModified(
-                        label: "Nama Poliklinik",
-                        hint: "Masukkan nama Poliklinik",
-                        controller: _nama,
+                child: Form(
+                  autovalidateMode: (isClickValidated)
+                      ? AutovalidateMode.onUserInteraction
+                      : AutovalidateMode.disabled,
+                  key: _formKey,
+                  child: ListView(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text('Nama Poliklinik',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text('Deskripsi Poliklinik',
-                          style: TextStyle(
-                              fontSize: 16.0, fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: textFieldModified(
-                        label: "Deskripsi Poliklinik",
-                        hint: "Masukkan deskripsi Poliklinik",
-                        controller: _desc,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text('Rata Rata Waktu Pelayanan Poliklinik',
-                          style: TextStyle(
-                              fontSize: 16.0, fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: textFieldModified(
-                        label: "Rata - Rata Waktu Pelayanan",
-                        hint: "Masukkan perkiraan durasi dalam satuan menit",
-                        controller: _rataRata,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text('Hari Pelayanan Poliklinik',
-                          style: TextStyle(
-                              fontSize: 16.0, fontWeight: FontWeight.bold)),
-                    ),
-                    for (var i in hariPelayanan)
-                      Container(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Row(
-                                children: [
-                                  Checkbox(
-                                    value: i.status,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        i.status = value;
-                                      });
-                                    },
-                                  ),
-                                  Text(i.hari)
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              flex: 4,
-                              child: textFieldModified(
-                                  controller: i.jamBukaBookingInput,
-                                  label: "Buka",
-                                  isEnabled: false),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: IconButton(
-                                icon: Icon(Icons.update),
-                                onPressed: () {
-                                  if(i.status){
-                                    _selectTime(context, i.jamBukaBookingInput);
-                                  }
-                                },
-                              ),
-                            ),
-                            Expanded(
-                              flex: 4,
-                              child: textFieldModified(
-                                  controller: i.jamTutupBookingInput,
-                                  label: "Tutup",
-                                  isEnabled: false),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: IconButton(
-                                icon: Icon(Icons.update),
-                                onPressed: () {
-                                  if(i.status){
-                                    _selectTime(context, i.jamTutupBookingInput);
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: textFieldModified(
+                          label: "Nama Poliklinik",
+                          hint: "Masukkan nama Poliklinik",
+                          controller: _nama,
+                          validatorFunc: (value) {
+                            if (value.isEmpty) {
+                              return "Harus diisi";
+                            } else {
+                              return null;
+                            }
+                          },
                         ),
-                      )
-                  ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text('Deskripsi Poliklinik',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: textFieldModified(
+                          label: "Deskripsi Poliklinik",
+                          hint: "Masukkan deskripsi Poliklinik",
+                          controller: _desc,
+                          validatorFunc: (value) {
+                            if (value.isEmpty) {
+                              return "Harus diisi";
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text('Rata Rata Waktu Pelayanan Poliklinik',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: textFieldModified(
+                          label: "Rata - Rata Waktu Pelayanan",
+                          hint: "Masukkan perkiraan durasi dalam satuan menit",
+                          controller: _rataRata,
+                          formatter: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'[0-9]')),
+                          ],
+                          validatorFunc: (value) {
+                            if (value.isEmpty) {
+                              return "Harus diisi";
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text('Batas Hari Maksimal Booking',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: textFieldModified(
+                          label: "Batas Hari Maksimal Booking",
+                          hint: "Masukkan batas hari maksimal booking dalam satuan hari",
+                          controller: _batasBooking,
+                          formatter: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'[0-9]')),
+                          ],
+                          validatorFunc: (value) {
+                            if (value.isEmpty) {
+                              return "Harus diisi";
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text('Hari Pelayanan Poliklinik',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ),
+                      for (var i in hariPelayanan)
+                        Container(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Row(
+                                  children: [
+                                    Checkbox(
+                                      value: i.status,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          i.status = value;
+                                        });
+                                      },
+                                    ),
+                                    Text(i.hari)
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 4,
+                                child: textFieldModified(
+                                    controller: i.jamBukaBookingInput,
+                                    label: "Buka",
+                                    isEnabled: false),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: IconButton(
+                                  icon: Icon(Icons.update),
+                                  onPressed: () {
+                                    if(i.status){
+                                      _selectTime(context, i.jamBukaBookingInput);
+                                    }
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                flex: 4,
+                                child: textFieldModified(
+                                    controller: i.jamTutupBookingInput,
+                                    label: "Tutup",
+                                    isEnabled: false),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: IconButton(
+                                  icon: Icon(Icons.update),
+                                  onPressed: () {
+                                    if(i.status){
+                                      _selectTime(context, i.jamTutupBookingInput);
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                    ],
+                  ),
                 ),
               ),
               actions: <Widget>[
@@ -361,7 +428,6 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    Navigator.pop(context);
                     submitPoliklinik();
                   },
                 ),
@@ -388,9 +454,13 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
     TextEditingController _nama = TextEditingController();
     TextEditingController _deskripsi = TextEditingController();
     TextEditingController _ratarata = TextEditingController();
+    TextEditingController _batasBooking = TextEditingController();
+    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    bool isClickValidated = false;
     _nama.text = poliklinik.namaPoli;
     _deskripsi.text = poliklinik.descPoli;
     _ratarata.text = poliklinik.rerataWaktuPelayanan.toString();
+    _batasBooking.text = poliklinik.batasBooking.toString();
 
     List<HariPelayanan> hariPelayanan = [
       HariPelayanan(
@@ -430,23 +500,30 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
     }
 
     void submitPoliklinik() {
-      List<Jadwal> resultHari = [];
-      for(var i in hariPelayanan){
-        if(i.status){
-          resultHari.add(Jadwal(idPoli: 0,
-              hari: i.kodeHari,
-              jamBukaBooking: i.jamBukaBookingInput.text.toString(),
-              jamTutupBooking: i.jamTutupBookingInput.text.toString()));
+      setState(() {
+        isClickValidated = true;
+      });
+      if(_formKey.currentState.validate()){
+        List<Jadwal> resultHari = [];
+        for(var i in hariPelayanan){
+          if(i.status){
+            resultHari.add(Jadwal(idPoli: 0,
+                hari: i.kodeHari,
+                jamBukaBooking: i.jamBukaBookingInput.text.toString(),
+                jamTutupBooking: i.jamTutupBookingInput.text.toString()));
+          }
         }
+        Poliklinik dataPoliklinik = Poliklinik(
+            idPoli: poliklinik.idPoli,
+            namaPoli: _nama.text.toString(),
+            descPoli: _deskripsi.text.toString(),
+            jadwal: resultHari,
+            statusPoli: poliklinik.statusPoli,
+            rerataWaktuPelayanan: int.parse(_ratarata.text.toString()),
+            batasBooking: int.parse(_batasBooking.text.toString()));
+        _poliklinikBloc.add(EventPoliklinikEditSubmitPoli(dataPoliklinik: dataPoliklinik));
+        Navigator.pop(context);
       }
-      Poliklinik dataPoliklinik = Poliklinik(
-          idPoli: poliklinik.idPoli,
-          namaPoli: _nama.text.toString(),
-          descPoli: _deskripsi.text.toString(),
-          jadwal: resultHari,
-          statusPoli: poliklinik.statusPoli,
-          rerataWaktuPelayanan: int.parse(_ratarata.text.toString()));
-      _poliklinikBloc.add(EventPoliklinikEditSubmitPoli(dataPoliklinik: dataPoliklinik));
     }
 
     showDialog(
@@ -464,121 +541,141 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
               content: Container(
                 width: MediaQuery.of(context).size.width / 2,
                 height: MediaQuery.of(context).size.height / 2,
-                child: ListView(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text('Nama Poliklinik',
-                          style: TextStyle(
-                              fontSize: 16.0, fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: textFieldModified(
-                        label: "Nama Poliklinik",
-                        hint: "Masukkan nama Poliklinik",
-                        controller: _nama,
+                child: Form(
+                  autovalidateMode: (isClickValidated)
+                      ? AutovalidateMode.onUserInteraction
+                      : AutovalidateMode.disabled,
+                  key: _formKey,
+                  child: ListView(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text('Nama Poliklinik',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text('Deskripsi Poliklinik',
-                          style: TextStyle(
-                              fontSize: 16.0, fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: textFieldModified(
-                        label: "Deskripsi Poliklinik",
-                        hint: "Masukkan deskripsi Poliklinik",
-                        controller: _deskripsi,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text('Rata Rata Waktu Pelayanan Poliklinik',
-                          style: TextStyle(
-                              fontSize: 16.0, fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: textFieldModified(
-                        label: "Rata - Rata Waktu Pelayanan",
-                        hint: "Masukkan perkiraan durasi dalam satuan menit",
-                        controller: _ratarata,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text('Hari Pelayanan Poliklinik',
-                          style: TextStyle(
-                              fontSize: 16.0, fontWeight: FontWeight.bold)),
-                    ),
-                    for (var i in hariPelayanan)
-                      Container(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Row(
-                                children: [
-                                  Checkbox(
-                                    value: i.status,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        i.status = value;
-                                        if(i.status == false){
-                                          i.jamTutupBookingInput.clear();
-                                          i.jamBukaBookingInput.clear();
-                                        }
-                                      });
-                                    },
-                                  ),
-                                  Text(i.hari)
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              flex: 4,
-                              child: textFieldModified(
-                                  controller: i.jamBukaBookingInput,
-                                  label: "Buka",
-                                  isEnabled: false),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: IconButton(
-                                icon: Icon(Icons.update),
-                                onPressed: () {
-                                  if(i.status){
-                                    _selectTime(context, i.jamBukaBookingInput);
-                                  }
-                                },
-                              ),
-                            ),
-                            Expanded(
-                              flex: 4,
-                              child: textFieldModified(
-                                  controller: i.jamTutupBookingInput,
-                                  label: "Tutup",
-                                  isEnabled: false),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: IconButton(
-                                icon: Icon(Icons.update),
-                                onPressed: () {
-                                  if(i.status){
-                                    _selectTime(context, i.jamTutupBookingInput);
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: textFieldModified(
+                          label: "Nama Poliklinik",
+                          hint: "Masukkan nama Poliklinik",
+                          controller: _nama,
                         ),
-                      )
-                  ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text('Deskripsi Poliklinik',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: textFieldModified(
+                          label: "Deskripsi Poliklinik",
+                          hint: "Masukkan deskripsi Poliklinik",
+                          controller: _deskripsi,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text('Rata Rata Waktu Pelayanan Poliklinik',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: textFieldModified(
+                          label: "Rata - Rata Waktu Pelayanan",
+                          hint: "Masukkan perkiraan durasi dalam satuan menit",
+                          controller: _ratarata,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text('Batas Hari Maksimal Booking',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: textFieldModified(
+                          label: "Batas Hari Maksimal Booking",
+                          hint: "Masukkan batas hari maksimal booking dalam satuan hari",
+                          controller: _batasBooking,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text('Hari Pelayanan Poliklinik',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ),
+                      for (var i in hariPelayanan)
+                        Container(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Row(
+                                  children: [
+                                    Checkbox(
+                                      value: i.status,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          i.status = value;
+                                          if(i.status == false){
+                                            i.jamTutupBookingInput.clear();
+                                            i.jamBukaBookingInput.clear();
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    Text(i.hari)
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 4,
+                                child: textFieldModified(
+                                    controller: i.jamBukaBookingInput,
+                                    label: "Buka",
+                                    isEnabled: false),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: IconButton(
+                                  icon: Icon(Icons.update),
+                                  onPressed: () {
+                                    if(i.status){
+                                      _selectTime(context, i.jamBukaBookingInput);
+                                    }
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                flex: 4,
+                                child: textFieldModified(
+                                    controller: i.jamTutupBookingInput,
+                                    label: "Tutup",
+                                    isEnabled: false),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: IconButton(
+                                  icon: Icon(Icons.update),
+                                  onPressed: () {
+                                    if(i.status){
+                                      _selectTime(context, i.jamTutupBookingInput);
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                    ],
+                  ),
                 ),
               ),
               actions: <Widget>[
@@ -592,7 +689,6 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    Navigator.pop(context);
                     submitPoliklinik();
                   },
                 ),
@@ -713,6 +809,17 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: Text(poliklinik.rerataWaktuPelayanan.toString() +
                           " Menit"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Batas Hari Maksimal Booking',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text(poliklinik.batasBooking.toString() +
+                          " Hari"),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),

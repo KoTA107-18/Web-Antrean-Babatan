@@ -6,6 +6,7 @@ class Poliklinik {
   String descPoli;
   int statusPoli;
   int rerataWaktuPelayanan;
+  int batasBooking;
   List<Jadwal> jadwal;
 
   Poliklinik(
@@ -14,6 +15,7 @@ class Poliklinik {
         this.descPoli,
         this.statusPoli = 0,
         this.rerataWaktuPelayanan,
+        this.batasBooking,
         this.jadwal});
 
   Poliklinik.fromJson(Map<String, dynamic> json) {
@@ -22,6 +24,7 @@ class Poliklinik {
     descPoli = json['desc_poli'];
     statusPoli = json['status_poli'];
     rerataWaktuPelayanan = json['rerata_waktu_pelayanan'];
+    batasBooking = json['batas_booking'];
     if (json['jadwal'] != null) {
       jadwal = new List<Jadwal>();
       json['jadwal'].forEach((v) {
@@ -37,6 +40,7 @@ class Poliklinik {
     data['desc_poli'] = this.descPoli;
     data['status_poli'] = this.statusPoli;
     data['rerata_waktu_pelayanan'] = this.rerataWaktuPelayanan;
+    data['batas_booking'] = this.batasBooking;
     if (this.jadwal != null) {
       data['jadwal'] = this.jadwal.map((v) => v.toJson()).toList();
     }
