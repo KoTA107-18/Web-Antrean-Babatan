@@ -156,11 +156,27 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
     ]);
   }
 
-  Future _selectTime(BuildContext context, TextEditingController _timeController) async {
-    TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
+  Future _selectTimeOpen(BuildContext context, TextEditingController _timeController) async {
+    TimeOfDay selectedTime = TimeOfDay(hour: 08, minute: 00);
     final TimeOfDay picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay(hour: 00, minute: 00),
+      initialTime: TimeOfDay(hour: 08, minute: 00),
+    );
+    if (picked != null)
+      setState(() {
+        selectedTime = picked;
+        var _hour = selectedTime.hour.toString().padLeft(2, '0');
+        var _minute = selectedTime.minute.toString().padLeft(2, '0');
+        var _time = _hour + ':' + _minute;
+        _timeController.text = _time;
+      });
+  }
+
+  Future _selectTimeClose(BuildContext context, TextEditingController _timeController) async {
+    TimeOfDay selectedTime = TimeOfDay(hour: 15, minute: 00);
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: 15, minute: 00),
     );
     if (picked != null)
       setState(() {
@@ -387,7 +403,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                                   icon: Icon(Icons.update),
                                   onPressed: () {
                                     if(i.status){
-                                      _selectTime(context, i.jamBukaBookingInput);
+                                      _selectTimeOpen(context, i.jamBukaBookingInput);
                                     }
                                   },
                                 ),
@@ -405,7 +421,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                                   icon: Icon(Icons.update),
                                   onPressed: () {
                                     if(i.status){
-                                      _selectTime(context, i.jamTutupBookingInput);
+                                      _selectTimeClose(context, i.jamTutupBookingInput);
                                     }
                                   },
                                 ),
@@ -648,7 +664,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                                   icon: Icon(Icons.update),
                                   onPressed: () {
                                     if(i.status){
-                                      _selectTime(context, i.jamBukaBookingInput);
+                                      _selectTimeOpen(context, i.jamBukaBookingInput);
                                     }
                                   },
                                 ),
@@ -666,7 +682,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                                   icon: Icon(Icons.update),
                                   onPressed: () {
                                     if(i.status){
-                                      _selectTime(context, i.jamTutupBookingInput);
+                                      _selectTimeClose(context, i.jamTutupBookingInput);
                                     }
                                   },
                                 ),
