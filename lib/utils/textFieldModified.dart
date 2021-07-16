@@ -6,7 +6,8 @@ TextFormField textFieldModified(
     {String label,
       bool isEnabled = true,
       String hint,
-      Icon icon,
+      Widget icon,
+      Widget suffixIcon,
       TextEditingController controller,
       TextInputType typeKeyboard,
       FormFieldValidator<String> validatorFunc,
@@ -23,6 +24,7 @@ TextFormField textFieldModified(
           labelText: label,
           hintText: hint,
           prefixIcon: icon,
+          suffixIcon: suffixIcon,
           disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16.0),
               borderSide: BorderSide(color: Colors.grey)),
