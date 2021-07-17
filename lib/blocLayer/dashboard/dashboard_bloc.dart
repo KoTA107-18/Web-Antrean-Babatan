@@ -41,6 +41,29 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       }
     }
 
+    if (event is EventDashboardGetPoliSilent) {
+      List<InfoPoliklinik> daftarPoliNew = [];
+      try {
+        var roleValue = await SharedPref.getRole();
+        if(roleValue == SharedPref.administrator){
+          isAdmin = true;
+        }
+
+        await RequestApi.getInfoPoliklinik().then((snapshot) {
+          if (snapshot != null) {
+            var resultSnapshot = snapshot as List;
+            daftarPoliNew = resultSnapshot
+                .map((aJson) => InfoPoliklinik.fromJson(aJson))
+                .toList();
+            daftarPoli = daftarPoliNew;
+          }
+        });
+        yield StateDashboardSuccess(daftarPoli: daftarPoli);
+      } catch (e) {
+        yield StateDashboardSuccess(daftarPoli: daftarPoli);
+      }
+    }
+
     if (event is EventDashboardChangeStatusPoli) {
       if (daftarPoli[event.indexPoli].statusPoli == 1) {
         daftarPoli[event.indexPoli].statusPoli = 0;

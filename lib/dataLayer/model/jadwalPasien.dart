@@ -59,7 +59,7 @@ class JadwalPasien {
     namaLengkap = json['nama_lengkap'].toString();
     alamat = json['alamat'].toString();
     tglLahir = json['tgl_lahir'].toString();
-    jenisPasien = int.parse(json['jenis_pasien']);
+    jenisPasien = (json['jenis_pasien'] == null) ? 0 : 1;
   }
 
   Map<String, dynamic> toJson() {

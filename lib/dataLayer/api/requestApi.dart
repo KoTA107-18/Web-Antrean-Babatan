@@ -209,6 +209,7 @@ class RequestApi {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(dataPoliklinik.toJson()));
+    print(result.body.toString());
     if (result.statusCode == 200) {
       return true;
     } else {

@@ -7,6 +7,8 @@ abstract class DashboardEvent {
 
 class EventDashboardGetPoli extends DashboardEvent {}
 
+class EventDashboardGetPoliSilent extends DashboardEvent {}
+
 class EventDashboardBukaPortal extends DashboardEvent {}
 
 class EventDashboardTutupPortal extends DashboardEvent {}
