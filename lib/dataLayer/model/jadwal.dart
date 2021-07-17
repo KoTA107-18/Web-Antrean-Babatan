@@ -7,10 +7,10 @@ class Jadwal {
   Jadwal({this.idPoli, this.hari, this.jamBukaBooking, this.jamTutupBooking});
 
   Jadwal.fromJson(Map<String, dynamic> json) {
-    idPoli = json['id_poli'];
-    hari = json['hari'];
-    jamBukaBooking = json['jam_buka_booking'];
-    jamTutupBooking = json['jam_tutup_booking'];
+    idPoli = int.parse(json['id_poli']);
+    hari = json['hari'].toString();
+    jamBukaBooking = json['jam_buka_booking'].toString();
+    jamTutupBooking = json['jam_tutup_booking'].toString();
   }
 
   Map<String, dynamic> toJson() {

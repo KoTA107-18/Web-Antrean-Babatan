@@ -15,12 +15,12 @@ class Perawat {
         this.namaPoli});
 
   Perawat.fromJson(Map<String, dynamic> json) {
-    idPerawat = json['id_perawat'];
-    username = json['username'];
-    password = json['password'];
-    nama = json['nama'];
-    idPoli = json['id_poli'];
-    namaPoli = json['nama_poli'];
+    idPerawat = int.parse(json['id_perawat']);
+    username = json['username'].toString();
+    password = json['password'].toString();
+    nama = json['nama'].toString();
+    idPoli = int.parse(json['id_poli']);
+    namaPoli = json['nama_poli'].toString();
   }
 
   Map<String, dynamic> toJson() {

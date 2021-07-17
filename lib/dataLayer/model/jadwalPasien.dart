@@ -41,25 +41,25 @@ class JadwalPasien {
         this.jenisPasien});
 
   JadwalPasien.fromJson(Map<String, dynamic> json) {
-    nomorAntrean = json['nomor_antrean'];
-    tipeBooking = json['tipe_booking'];
-    tglPelayanan = json['tgl_pelayanan'];
-    jamBooking = json['jam_booking'];
-    waktuDaftarAntrean = json['waktu_daftar_antrean'];
-    jamMulaiDilayani = json['jam_mulai_dilayani'];
-    jamSelesaiDilayani = json['jam_selesai_dilayani'];
-    statusAntrean = json['status_antrean'];
-    hari = json['hari'];
-    idPoli = json['id_poli'];
-    namaPoli = json['nama_poli'];
-    idPasien = json['id_pasien'];
-    username = json['username'];
-    noHandphone = json['no_handphone'];
-    kepalaKeluarga = json['kepala_keluarga'];
-    namaLengkap = json['nama_lengkap'];
-    alamat = json['alamat'];
-    tglLahir = json['tgl_lahir'];
-    jenisPasien = json['jenis_pasien'];
+    nomorAntrean = int.parse(json['nomor_antrean']);
+    tipeBooking = int.parse(json['tipe_booking']);
+    tglPelayanan = json['tgl_pelayanan'].toString();
+    jamBooking = json['jam_booking'].toString();
+    waktuDaftarAntrean = json['waktu_daftar_antrean'].toString();
+    jamMulaiDilayani = json['jam_mulai_dilayani'].toString();
+    jamSelesaiDilayani = json['jam_selesai_dilayani'].toString();
+    statusAntrean = int.parse(json['status_antrean']);
+    hari = json['hari'].toString();
+    idPoli = int.parse(json['id_poli']);
+    namaPoli = json['nama_poli'].toString();
+    idPasien = int.parse(json['id_pasien']);
+    username = json['username'].toString();
+    noHandphone = json['no_handphone'].toString();
+    kepalaKeluarga = json['kepala_keluarga'].toString();
+    namaLengkap = json['nama_lengkap'].toString();
+    alamat = json['alamat'].toString();
+    tglLahir = json['tgl_lahir'].toString();
+    jenisPasien = int.parse(json['jenis_pasien']);
   }
 
   Map<String, dynamic> toJson() {

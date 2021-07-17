@@ -15,12 +15,12 @@ class InfoPoliklinik {
         this.namaPoli});
 
   InfoPoliklinik.fromJson(Map<String, dynamic> json) {
-    totalAntrean = json['total_antrean'];
-    antreanSementara = json['antrean_sementara'];
-    nomorAntrean = json['nomor_antrean'];
-    idPoli = json['id_poli'];
-    statusPoli = json['status_poli'];
-    namaPoli = json['nama_poli'];
+    totalAntrean = int.parse(json['total_antrean']);
+    antreanSementara = int.parse(json['antrean_sementara']);
+    nomorAntrean = int.parse(json['nomor_antrean']);
+    idPoli = int.parse(json['id_poli']);
+    statusPoli = int.parse(json['status_poli']);
+    namaPoli = json['nama_poli'].toString();
   }
 
   Map<String, dynamic> toJson() {

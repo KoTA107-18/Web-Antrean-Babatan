@@ -7,10 +7,10 @@ import 'package:web_antrean_babatan/dataLayer/model/perawat.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
 
 class RequestApi {
-  static final String apiUrl = "rest-api-babatan.herokuapp.com";
+  static final String apiUrl = "apibabatan.kota107.xyz";
 
   static Future<bool> registerPasien(Pasien pasien) async {
-    var result = await http.post(Uri.http(apiUrl, 'api/pasien/register'),
+    var result = await http.post(Uri.https(apiUrl, 'api/pasien/register'),
         body: pasien.toJson());
     if (result.statusCode == 201) {
       return true;
@@ -20,7 +20,7 @@ class RequestApi {
   }
 
   static Future validasiPasien(Pasien pasien) async {
-    var uri = Uri.http(apiUrl, 'pasien/validasi');
+    var uri = Uri.https(apiUrl, 'pasien/validasi');
     var result = await http.post(uri,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',

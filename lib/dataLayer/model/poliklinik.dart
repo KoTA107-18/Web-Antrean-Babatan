@@ -19,12 +19,12 @@ class Poliklinik {
         this.jadwal});
 
   Poliklinik.fromJson(Map<String, dynamic> json) {
-    idPoli = json['id_poli'];
-    namaPoli = json['nama_poli'];
-    descPoli = json['desc_poli'];
-    statusPoli = json['status_poli'];
-    rerataWaktuPelayanan = json['rerata_waktu_pelayanan'];
-    batasBooking = json['batas_booking'];
+    idPoli = int.parse(json['id_poli']);
+    namaPoli = json['nama_poli'].toString();
+    descPoli = json['desc_poli'].toString();
+    statusPoli = int.parse(json['status_poli']);
+    rerataWaktuPelayanan = int.parse(json['rerata_waktu_pelayanan']);
+    batasBooking = int.parse(json['batas_booking']);
     if (json['jadwal'] != null) {
       jadwal = new List<Jadwal>();
       json['jadwal'].forEach((v) {
