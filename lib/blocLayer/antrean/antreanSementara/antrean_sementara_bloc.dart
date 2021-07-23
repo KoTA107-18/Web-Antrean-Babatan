@@ -13,6 +13,7 @@ part 'antrean_sementara_state.dart';
 class AntreanSementaraBloc extends Bloc<AntreanSementaraEvent, AntreanSementaraState> {
   AntreanSementaraBloc() : super(StateAntreanSementaraGetPoliLoading());
   String messageError;
+  String apiToken;
   List<Poliklinik> daftarPoli = [];
 
   @override
@@ -22,9 +23,10 @@ class AntreanSementaraBloc extends Bloc<AntreanSementaraEvent, AntreanSementaraS
     if (event is EventAntreanSementaraGetPoli) {
       yield StateAntreanSementaraGetPoliLoading();
       try {
+        apiToken = await SharedPref.getToken();
         var roleValue = await SharedPref.getRole();
         if(roleValue == SharedPref.administrator){
-          await RequestApi.getAllPoliklinik().then((snapshot) {
+          await RequestApi.getAllPoliklinik(apiToken).then((snapshot) {
             if (snapshot != null) {
               var resultSnapshot = snapshot as List;
               daftarPoli = resultSnapshot

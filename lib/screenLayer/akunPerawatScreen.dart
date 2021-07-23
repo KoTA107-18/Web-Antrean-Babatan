@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_antrean_babatan/blocLayer/akun/daftarAkunPerawat/akun_perawat_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/model/perawat.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
+import 'package:web_antrean_babatan/dataLayer/model/responseGetPerawat.dart';
 import 'package:web_antrean_babatan/utils/color.dart';
 import 'package:web_antrean_babatan/utils/textFieldModified.dart';
 
@@ -83,7 +84,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
   }
 
   ListView tabelAkunPerawat(
-      List<Perawat> daftarPerawat, List<Poliklinik> daftarPoli) {
+      List<ResponseGetPerawat> daftarPerawat, List<Poliklinik> daftarPoli) {
     return ListView(children: <Widget>[
       Container(
         width: double.infinity,
@@ -146,7 +147,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         )),
                         DataCell(Text("*" * akunPerawat.password.length)),
-                        DataCell(Text(akunPerawat.namaPoli)),
+                        DataCell(Text(akunPerawat.poliklinik.namaPoli)),
                         DataCell(Row(
                           children: [
                             IconButton(
@@ -162,7 +163,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
                             IconButton(
                                 icon: Icon(Icons.delete),
                                 onPressed: () {
-                                  deleteAkunPerawat(akunPerawat.idPerawat);
+                                  deleteAkunPerawat(int.parse(akunPerawat.idPerawat));
                                 })
                           ],
                         )),
@@ -173,7 +174,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
     ]);
   }
 
-  infoAkunPerawat(Perawat perawat) {
+  infoAkunPerawat(ResponseGetPerawat perawat) {
     showDialog(
         context: context,
         builder: (context) {
@@ -229,7 +230,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Text(perawat.namaPoli),
+                      child: Text(perawat.poliklinik.namaPoli),
                     ),
                   ],
                 ),
@@ -254,7 +255,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
         });
   }
 
-  editAkunPerawat(List<Poliklinik> daftarPoli, Perawat perawat) {
+  editAkunPerawat(List<Poliklinik> daftarPoli, ResponseGetPerawat perawat) {
     bool isClickValidated = false;
     GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -266,7 +267,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
     _passwordTwo.text = perawat.password;
     TextEditingController _nama = TextEditingController();
     _nama.text = perawat.nama;
-    int idPoliklinik = perawat.idPoli;
+    int idPoliklinik = int.parse(perawat.idPoli);
 
     showDialog(
         context: context,
@@ -408,7 +409,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
                               prefixIcon: Icon(Icons.local_hospital),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16.0))),
-                          value: perawat.idPoli,
+                          value: idPoliklinik,
                           items: daftarPoli.map((value) {
                             return DropdownMenuItem(
                               child: Text(value.namaPoli),
@@ -442,7 +443,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
                       _akunPerawatBloc.add(AkunPerawatEventSubmitEdit(
                           perawat: Perawat(
                               nama: _nama.text.toString(),
-                              idPerawat: perawat.idPerawat,
+                              idPerawat: int.parse(perawat.idPerawat),
                               username: _username.text.toString(),
                               password: _password.text.toString(),
                               idPoli: idPoliklinik)));

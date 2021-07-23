@@ -12,6 +12,7 @@ part 'antrean_selesai_state.dart';
 class AntreanSelesaiBloc extends Bloc<AntreanSelesaiEvent, AntreanSelesaiState> {
   AntreanSelesaiBloc() : super(StateAntreanSelesaiGetPoliLoading());
   String messageError;
+  String apiToken;
   List<Poliklinik> daftarPoli = [];
 
   @override
@@ -21,9 +22,10 @@ class AntreanSelesaiBloc extends Bloc<AntreanSelesaiEvent, AntreanSelesaiState> 
     if (event is EventAntreanSelesaiGetPoli) {
       yield StateAntreanSelesaiGetPoliLoading();
       try {
+        apiToken = await SharedPref.getToken();
         var roleValue = await SharedPref.getRole();
         if(roleValue == SharedPref.administrator){
-          await RequestApi.getAllPoliklinik().then((snapshot) {
+          await RequestApi.getAllPoliklinik(apiToken).then((snapshot) {
             if (snapshot != null) {
               var resultSnapshot = snapshot as List;
               daftarPoli = resultSnapshot

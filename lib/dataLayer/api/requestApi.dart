@@ -149,14 +149,16 @@ class RequestApi {
     }
   }
 
-  static Future getAllPoliklinik() async {
+  static Future getAllPoliklinik(String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/poliklinik
     Method Type : GET
     Desc : Get All Poliklinik in Database
     */
-    var uri = Uri.https(apiUrl, 'poliklinik');
-    var result = await http.get(uri);
+    var uri = Uri.https(apiUrl, 'api/poliklinik');
+    var result = await http.get(uri, headers: {
+      'Authorization': 'bearer $apiToken',
+    });
     if (result.statusCode == 200) {
       return json.decode(result.body);
     } else {
@@ -179,18 +181,19 @@ class RequestApi {
     }
   }
 
-  static Future insertPoliklinik(Poliklinik dataPoliklinik) async {
+  static Future insertPoliklinik(Poliklinik dataPoliklinik, String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/poliklinik
     Method Type : POST
     Desc : Insert Data Poliklinik in Database
     */
-    var uri = Uri.https(apiUrl, 'poliklinik');
+    var uri = Uri.https(apiUrl, 'api/poliklinik/insert');
     var result = await http.post(uri,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
+        headers: {
+          'Authorization': 'bearer $apiToken',
         },
         body: jsonEncode(dataPoliklinik.toJson()));
+    print(result.body);
     if (result.statusCode == 200) {
       return true;
     } else {
@@ -198,17 +201,16 @@ class RequestApi {
     }
   }
 
-  static Future<bool> updatePoliklinik(
-      Poliklinik dataPoliklinik) async {
+  static Future<bool> updatePoliklinik(Poliklinik dataPoliklinik, String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/poliklinik/id
     Method Type : PUT
     Desc : Update Data Poliklinik in Database
     */
-    var uri = Uri.https(apiUrl, 'poliklinik/${dataPoliklinik.idPoli}');
+    var uri = Uri.https(apiUrl, 'api/poliklinik/edit/${dataPoliklinik.idPoli}');
     var result = await http.put(uri,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
+        headers: {
+          'Authorization': 'bearer $apiToken',
         },
         body: jsonEncode(dataPoliklinik.toJson()));
     print(result.body.toString());
@@ -219,7 +221,8 @@ class RequestApi {
     }
   }
 
-  static Future<bool> updateStatus(List<InfoPoliklinik> daftarPoliklinik, String apiToken) async {
+  static Future<bool> updateStatus(
+      List<InfoPoliklinik> daftarPoliklinik, String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/poliklinik/status
     Method Type : PUT
@@ -242,19 +245,21 @@ class RequestApi {
     }
   }
 
-
   /*
     Method for functional Perawat.
   */
 
-  static Future getAllPerawat() async {
+  static Future getAllPerawat(String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/perawat
     Method Type : GET
     Desc : Get All Perawat in Database
     */
-    var uri = Uri.https(apiUrl, 'perawat');
-    var result = await http.get(uri);
+    var uri = Uri.https(apiUrl, 'api/perawat');
+    var result = await http.get(uri, headers: {
+      'Authorization': 'bearer $apiToken',
+    });
+    print(result.body);
     if (result.statusCode == 200) {
       return json.decode(result.body);
     } else {
@@ -277,16 +282,16 @@ class RequestApi {
     }
   }
 
-  static Future<bool> editPerawat(Perawat perawat) async {
+  static Future<bool> editPerawat(Perawat perawat, String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/perawat/id
     Method Type : PUT
     Desc : Edit Account Perawat
     */
-    var uri = Uri.https(apiUrl, 'perawat/${perawat.idPerawat}');
+    var uri = Uri.https(apiUrl, 'api/perawat/edit/${perawat.idPerawat}');
     var result = await http.put(uri,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
+        headers: {
+          'Authorization': 'bearer $apiToken',
         },
         body: jsonEncode(perawat.toJson()));
     print(result.body);
@@ -297,16 +302,16 @@ class RequestApi {
     }
   }
 
-  static Future<bool> addPerawat(Perawat perawat) async {
+  static Future<bool> addPerawat(Perawat perawat, String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/perawat
     Method Type : POST
     Desc : Insert New Account Perawat
     */
-    var uri = Uri.https(apiUrl, 'perawat');
+    var uri = Uri.https(apiUrl, 'api/perawat/insert');
     var result = await http.post(uri,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
+        headers: {
+          'Authorization': 'bearer $apiToken',
         },
         body: jsonEncode(perawat.toJson()));
     print(result.body);
@@ -317,14 +322,16 @@ class RequestApi {
     }
   }
 
-  static Future<bool> deletePerawat(int idPerawat) async {
+  static Future<bool> deletePerawat(int idPerawat, String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/perawat
     Method Type : DELETE
     Desc : Delete Account Perawat
     */
-    var uri = Uri.https(apiUrl, 'perawat/${idPerawat.toString()}');
-    var result = await http.delete(uri);
+    var uri = Uri.https(apiUrl, 'api/perawat/delete/${idPerawat.toString()}');
+    var result = await http.delete(uri, headers: {
+      'Authorization': 'bearer $apiToken',
+    });
     print(result.body);
     if (result.statusCode == 200) {
       return true;
@@ -333,8 +340,7 @@ class RequestApi {
     }
   }
 
-  static Future loginPerawat(
-      String username, String password) async {
+  static Future loginPerawat(String username, String password) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/perawat/login
     Method Type : POST

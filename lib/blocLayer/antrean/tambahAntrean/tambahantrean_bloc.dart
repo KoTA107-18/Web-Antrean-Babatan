@@ -7,6 +7,7 @@ import 'package:web_antrean_babatan/dataLayer/model/apiResponse.dart';
 import 'package:web_antrean_babatan/dataLayer/model/hari.dart';
 import 'package:web_antrean_babatan/dataLayer/model/pasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
+import 'package:web_antrean_babatan/dataLayer/session/sharedPref.dart';
 
 part 'tambahantrean_event.dart';
 part 'tambahantrean_state.dart';
@@ -14,6 +15,7 @@ part 'tambahantrean_state.dart';
 class TambahantreanBloc extends Bloc<TambahantreanEvent, TambahantreanState> {
   String tglLahir;
   Pasien pasien;
+  String apiToken;
   Poliklinik poliklinikTujuan;
   int jenisPasien = 0;
   List<Poliklinik> daftarPoli = [];
@@ -27,7 +29,8 @@ class TambahantreanBloc extends Bloc<TambahantreanEvent, TambahantreanState> {
     if (event is EventTambahAntreanGetPoli) {
       yield StateTambahAntreanGetPoliLoading();
       try {
-        await RequestApi.getAllPoliklinik().then((snapshot) {
+        apiToken = await SharedPref.getToken();
+        await RequestApi.getAllPoliklinik(apiToken).then((snapshot) {
           if (snapshot != null) {
             var resultSnapshot = snapshot as List;
             daftarPoli = resultSnapshot

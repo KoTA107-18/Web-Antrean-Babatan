@@ -9,7 +9,7 @@ class AkunPerawatStateLoading extends AkunPerawatState {}
 
 class AkunPerawatStateSuccess extends AkunPerawatState {
   List<Poliklinik> daftarPoli;
-  List<Perawat> daftarPerawat;
+  List<ResponseGetPerawat> daftarPerawat;
   AkunPerawatStateSuccess({@required this.daftarPoli, this.daftarPerawat});
 }
 

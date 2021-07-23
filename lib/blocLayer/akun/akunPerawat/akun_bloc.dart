@@ -12,6 +12,7 @@ part 'akun_state.dart';
 
 class AkunBloc extends Bloc<AkunEvent, AkunState> {
   var idPerawat = 0;
+  String apiToken;
   List<Poliklinik> daftarPoli = [];
   List<Perawat> daftarPerawat = [];
   AkunBloc() : super(AkunStateLoading());
@@ -23,7 +24,8 @@ class AkunBloc extends Bloc<AkunEvent, AkunState> {
     if(event is AkunEventGetData){
       yield AkunStateLoading();
       try {
-        await RequestApi.getAllPoliklinik().then((snapshot) {
+        apiToken = await SharedPref.getToken();
+        await RequestApi.getAllPoliklinik(apiToken).then((snapshot) {
           if (snapshot != null) {
             var resultSnapshot = snapshot as List;
             daftarPoli = resultSnapshot
@@ -49,8 +51,8 @@ class AkunBloc extends Bloc<AkunEvent, AkunState> {
     if(event is AkunEventSubmitEdit){
       yield AkunStateLoading();
       try {
-        await RequestApi.editPerawat(event.perawat);
-        await RequestApi.getAllPoliklinik().then((snapshot) {
+        await RequestApi.editPerawat(event.perawat, apiToken);
+        await RequestApi.getAllPoliklinik(apiToken).then((snapshot) {
           if (snapshot != null) {
             var resultSnapshot = snapshot as List;
             daftarPoli = resultSnapshot
