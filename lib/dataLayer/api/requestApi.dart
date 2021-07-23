@@ -191,6 +191,7 @@ class RequestApi {
     var result = await http.post(uri,
         headers: {
           'Authorization': 'bearer $apiToken',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(dataPoliklinik.toJson()));
     print(result.body);
@@ -211,6 +212,7 @@ class RequestApi {
     var result = await http.put(uri,
         headers: {
           'Authorization': 'bearer $apiToken',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(dataPoliklinik.toJson()));
     print(result.body.toString());
@@ -292,6 +294,7 @@ class RequestApi {
     var result = await http.put(uri,
         headers: {
           'Authorization': 'bearer $apiToken',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(perawat.toJson()));
     print(result.body);
@@ -312,6 +315,7 @@ class RequestApi {
     var result = await http.post(uri,
         headers: {
           'Authorization': 'bearer $apiToken',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(perawat.toJson()));
     print(result.body);
