@@ -52,7 +52,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
               ],
             ),
             body: BlocBuilder<PoliklinikBloc, PoliklinikState>(
-              bloc: _poliklinikBloc,
+              cubit: _poliklinikBloc,
               builder: (BuildContext context, state) {
                 if (state is StatePoliklinikSuccess) {
                   return Container(

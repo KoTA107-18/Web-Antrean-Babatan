@@ -25,7 +25,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
     return BlocProvider(
       create: (context) => _riwayatKunjunganBloc,
       child: BlocBuilder<RiwayatKunjunganBloc, RiwayatKunjunganState>(
-        bloc: _riwayatKunjunganBloc,
+        cubit: _riwayatKunjunganBloc,
         builder: (context, state) {
           if (state is StateRiwayatGetPoliSuccess) {
             return DefaultTabController(

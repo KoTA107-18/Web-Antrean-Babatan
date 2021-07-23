@@ -5,6 +5,9 @@ class SharedPref {
   static String _poliklinik = "KEY_POLIKLINIK";
   static String _idPerawat = "KEY_ID_PERAWAT";
   static String _role = "KEY_ROLE";
+  static String _tokenKey = "KEY_TOKEN";
+  static String TOKEN_ADMIN = "\$2y\$10\$J6.QXbM4nEiBlwf.OPDy8eTkwVpmHAIh.ImiZM3a8D9vlmF4.ZHyS";
+  static String TOKEN_PERAWAT = "\$2y\$10\$9r6P11c63Vo.tW7QccSkn.WkZ0cHpO6ukmkIxRiuQyVTgJY2ve..K";
   static String administrator = "ADMINISTRATOR";
   static String perawat = "PERAWAT";
 
@@ -13,9 +16,11 @@ class SharedPref {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(_username, username);
     if(choiceRole == 0){
+      prefs.setString(_tokenKey, TOKEN_ADMIN);
       prefs.setString(_role, administrator);
     } else {
       prefs.setString(_role, perawat);
+      prefs.setString(_tokenKey, TOKEN_PERAWAT);
     }
   }
 
@@ -50,6 +55,12 @@ class SharedPref {
   static Future<String> getRole() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String result = prefs.getString(_role);
+    return result;
+  }
+
+  static Future<String> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String result = prefs.getString(_tokenKey);
     return result;
   }
 

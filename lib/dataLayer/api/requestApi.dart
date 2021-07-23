@@ -31,7 +31,7 @@ class RequestApi {
 
   static Future<bool> loginAdministrator(
       String username, String password) async {
-    var uri = Uri.https(apiUrl, 'administrator/login',
+    var uri = Uri.https(apiUrl, 'api/administrator/login',
         {"username": username, "password": password});
     var result = await http.post(uri);
     if (result.statusCode == 200) {
@@ -132,14 +132,16 @@ class RequestApi {
     Method for functional Poliklinik.
   */
 
-  static Future getInfoPoliklinik() async {
+  static Future getInfoPoliklinik(String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/antrean/info
     Method Type : GET
     Desc : Get All Poliklinik in Database
     */
-    var uri = Uri.https(apiUrl, 'antrean/info');
-    var result = await http.get(uri);
+    var uri = Uri.https(apiUrl, 'api/antrean/info');
+    var result = await http.get(uri, headers: {
+      'Authorization': 'bearer $apiToken',
+    });
     if (result.statusCode == 200) {
       return json.decode(result.body);
     } else {
@@ -217,20 +219,20 @@ class RequestApi {
     }
   }
 
-  static Future<bool> updateStatus(List<InfoPoliklinik> daftarPoliklinik) async {
+  static Future<bool> updateStatus(List<InfoPoliklinik> daftarPoliklinik, String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/poliklinik/status
     Method Type : PUT
     Desc : Update Portal Poliklinik in Database
     */
-    var uri = Uri.https(apiUrl, 'poliklinik/status');
+    var uri = Uri.https(apiUrl, 'api/poliklinik/status');
     List data = [];
     for (var i in daftarPoliklinik) {
       data.add({"id_poli": i.idPoli, "status_poli": i.statusPoli});
     }
     var result = await http.put(uri,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
+        headers: {
+          'Authorization': 'bearer $apiToken',
         },
         body: jsonEncode(data));
     if (result.statusCode == 200) {
@@ -338,11 +340,9 @@ class RequestApi {
     Method Type : POST
     Desc : Check Account Perawat
     */
-    var uri = Uri.https(apiUrl, 'perawat/login',
+    var uri = Uri.https(apiUrl, 'api/perawat/login',
         {"username": username, "password": password});
     var result = await http.post(uri);
-    print(username);
-    print(password);
     if (result.statusCode == 200) {
       return jsonDecode(result.body);
     } else {

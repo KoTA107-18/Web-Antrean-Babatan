@@ -66,71 +66,70 @@ class Login extends StatelessWidget {
                     SizedBox(height: 16.0),
                     Container(
                       child: BlocBuilder<LoginBloc, LoginState>(
-                        bloc: _loginBloc,
-                        builder: (context, state){
-                          if(state is StateLoginChooseRole){
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Radio(
-                                  value: 0,
-                                  groupValue: state.chooseRole,
-                                  onChanged: (result) {
-                                    _loginBloc.add(EventLoginChooseAdmin());
-                                  },
-                                ),
-                                Text(
-                                  'Administrator',
-                                  style: new TextStyle(fontSize: 16.0),
-                                ),
-                                Radio(
-                                  value: 1,
-                                  groupValue: state.chooseRole,
-                                  onChanged: (result) {
-                                    _loginBloc.add(EventLoginChoosePerawat());
-                                  },
-                                ),
-                                Text(
-                                  'Perawat',
-                                  style: new TextStyle(
-                                    fontSize: 16.0,
+                          cubit: _loginBloc,
+                          builder: (context, state) {
+                            if (state is StateLoginChooseRole) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Radio(
+                                    value: 0,
+                                    groupValue: state.chooseRole,
+                                    onChanged: (result) {
+                                      _loginBloc.add(EventLoginChooseAdmin());
+                                    },
                                   ),
-                                ),
-                              ],
-                            );
-                          } else {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Radio(
-                                  value: 0,
-                                  groupValue: _loginBloc.choiceRole,
-                                  onChanged: (result) {
-                                    _loginBloc.add(EventLoginChooseAdmin());
-                                  },
-                                ),
-                                Text(
-                                  'Administrator',
-                                  style: new TextStyle(fontSize: 16.0),
-                                ),
-                                Radio(
-                                  value: 1,
-                                  groupValue: _loginBloc.choiceRole,
-                                  onChanged: (result) {
-                                    _loginBloc.add(EventLoginChoosePerawat());
-                                  },
-                                ),
-                                Text(
-                                  'Perawat',
-                                  style: new TextStyle(
-                                    fontSize: 16.0,
+                                  Text(
+                                    'Administrator',
+                                    style: new TextStyle(fontSize: 16.0),
                                   ),
-                                ),
-                              ],
-                            );
-                          }
-                        }
-                      ),
+                                  Radio(
+                                    value: 1,
+                                    groupValue: state.chooseRole,
+                                    onChanged: (result) {
+                                      _loginBloc.add(EventLoginChoosePerawat());
+                                    },
+                                  ),
+                                  Text(
+                                    'Perawat',
+                                    style: new TextStyle(
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Radio(
+                                    value: 0,
+                                    groupValue: _loginBloc.choiceRole,
+                                    onChanged: (result) {
+                                      _loginBloc.add(EventLoginChooseAdmin());
+                                    },
+                                  ),
+                                  Text(
+                                    'Administrator',
+                                    style: new TextStyle(fontSize: 16.0),
+                                  ),
+                                  Radio(
+                                    value: 1,
+                                    groupValue: _loginBloc.choiceRole,
+                                    onChanged: (result) {
+                                      _loginBloc.add(EventLoginChoosePerawat());
+                                    },
+                                  ),
+                                  Text(
+                                    'Perawat',
+                                    style: new TextStyle(
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                          }),
                     ),
                     SizedBox(height: 16.0),
                     Container(
@@ -176,32 +175,32 @@ class Login extends StatelessWidget {
                     ),
                     SizedBox(height: 20.0),
                     BlocBuilder<LoginBloc, LoginState>(
-                        bloc: _loginBloc,
+                        cubit: _loginBloc,
                         builder: (context, state) {
-                      return InkWell(
-                        onTap: () {
-                          authLogin(context);
-                        },
-                        child: Container(
-                          height: 40.0,
-                          child: Material(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: ColorTheme.greenDark,
-                            elevation: 7.0,
-                            child: Center(
-                              child: Text(
-                                'Masuk',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                          return InkWell(
+                            onTap: () {
+                              authLogin(context);
+                            },
+                            child: Container(
+                              height: 40.0,
+                              child: Material(
+                                borderRadius: BorderRadius.circular(20.0),
+                                color: ColorTheme.greenDark,
+                                elevation: 7.0,
+                                child: Center(
+                                  child: Text(
+                                    'Masuk',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      );
-                    }),
+                          );
+                        }),
                     BlocListener<LoginBloc, LoginState>(
-                        bloc: _loginBloc,
+                        cubit: _loginBloc,
                         child: SizedBox.shrink(),
                         listener: (context, state) {
                           if (state is StateLoginSuccess) {
@@ -221,25 +220,25 @@ class Login extends StatelessWidget {
                           }
                         }),
                     BlocBuilder<LoginBloc, LoginState>(
-                        bloc: _loginBloc,
+                        cubit: _loginBloc,
                         builder: (context, state) {
-                      if (state is StateLoginLoading) {
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Container(
-                                child: Center(
-                                  child: LinearProgressIndicator(),
+                          if (state is StateLoginLoading) {
+                            return Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Container(
+                                    child: Center(
+                                      child: LinearProgressIndicator(),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return SizedBox.shrink();
-                      }
-                    })
+                              ],
+                            );
+                          } else {
+                            return SizedBox.shrink();
+                          }
+                        })
                   ],
                 ),
               ),

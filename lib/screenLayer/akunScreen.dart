@@ -32,7 +32,7 @@ class _AkunScreenState extends State<AkunScreen> {
           title: Text("Akun Anda"),
         ),
         body: BlocBuilder<AkunBloc, AkunState>(
-          bloc: _akunBloc,
+          cubit: _akunBloc,
           builder: (context, state) {
             if (state is AkunStateSuccess) {
               return Container(

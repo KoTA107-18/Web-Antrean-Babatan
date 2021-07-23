@@ -341,7 +341,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
     return BlocProvider(
       create: (context) => _tambahantreanBloc,
       child: BlocListener<TambahantreanBloc, TambahantreanState>(
-        bloc: _tambahantreanBloc,
+        cubit: _tambahantreanBloc,
         listener: (context, state) {
           if (state is StateTambahAntreanSubmitPasienSuccess) {
             Navigator.pop(context);
@@ -405,7 +405,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
           body: Container(
             color: Colors.teal[50],
             child: BlocBuilder<TambahantreanBloc, TambahantreanState>(
-              bloc: _tambahantreanBloc,
+              cubit: _tambahantreanBloc,
               builder: (context, state) {
                 if (state is StateTambahAntreanGetPoliLoading) {
                   return Center(
@@ -629,7 +629,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                 Container(
                   padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
                   child: BlocBuilder<TambahantreanBloc, TambahantreanState>(
-                    bloc: _tambahantreanBloc,
+                    cubit: _tambahantreanBloc,
                     builder: (context, state) {
                       if (state is StateTambahAntreanPilihJenisPasien) {
                         return Row(

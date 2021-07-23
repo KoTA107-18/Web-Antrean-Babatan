@@ -11,6 +11,7 @@ part 'dashboard_state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   bool isAdmin = false;
+  String apiToken;
   String messageError;
   List<InfoPoliklinik> daftarPoli = [];
   DashboardBloc() : super(StateDashboardLoading());
@@ -22,12 +23,12 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     if (event is EventDashboardGetPoli) {
       yield StateDashboardLoading();
       try {
+        apiToken = await SharedPref.getToken();
         var roleValue = await SharedPref.getRole();
         if(roleValue == SharedPref.administrator){
           isAdmin = true;
         }
-
-        await RequestApi.getInfoPoliklinik().then((snapshot) {
+        await RequestApi.getInfoPoliklinik(apiToken).then((snapshot) {
           if (snapshot != null) {
             var resultSnapshot = snapshot as List;
             daftarPoli = resultSnapshot
@@ -49,7 +50,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           isAdmin = true;
         }
 
-        await RequestApi.getInfoPoliklinik().then((snapshot) {
+        await RequestApi.getInfoPoliklinik(apiToken).then((snapshot) {
           if (snapshot != null) {
             var resultSnapshot = snapshot as List;
             daftarPoliNew = resultSnapshot
@@ -65,18 +66,18 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     }
 
     if (event is EventDashboardChangeStatusPoli) {
-      if (daftarPoli[event.indexPoli].statusPoli == 1) {
-        daftarPoli[event.indexPoli].statusPoli = 0;
+      if (daftarPoli[event.indexPoli].statusPoli == 1.toString()) {
+        daftarPoli[event.indexPoli].statusPoli = 0.toString();
       } else {
-        daftarPoli[event.indexPoli].statusPoli = 1;
+        daftarPoli[event.indexPoli].statusPoli = 1.toString();
       }
     }
 
     if (event is EventDashboardBukaPortal) {
       yield StateDashboardLoading();
       try {
-        await RequestApi.updateStatus(daftarPoli);
-        await RequestApi.getInfoPoliklinik().then((snapshot) {
+        await RequestApi.updateStatus(daftarPoli, apiToken);
+        await RequestApi.getInfoPoliklinik(apiToken).then((snapshot) {
           if (snapshot != null) {
             var resultSnapshot = snapshot as List;
             daftarPoli = resultSnapshot

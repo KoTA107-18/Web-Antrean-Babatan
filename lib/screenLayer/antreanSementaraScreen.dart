@@ -26,7 +26,7 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
     return BlocProvider(
       create: (context) => _antreanSementaraBloc,
       child: BlocBuilder<AntreanSementaraBloc, AntreanSementaraState>(
-        bloc: _antreanSementaraBloc,
+        cubit: _antreanSementaraBloc,
         builder: (context, state) {
           if (state is StateAntreanSementaraGetPoliSuccess) {
             return DefaultTabController(

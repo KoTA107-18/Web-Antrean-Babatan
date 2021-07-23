@@ -36,7 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           padding: EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: (daftarPoli[index].statusPoli == 1)
+            color: (daftarPoli[index].statusPoli == 1.toString())
                 ? Colors.white
                 : Colors.grey[300],
             boxShadow: [
@@ -76,7 +76,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       "Total Antrean",
                       style: TextStyle(fontSize: 16),
                     ),
-                    Text(daftarPoli[index].totalAntrean.toString()),
+                    (daftarPoli[index].totalAntrean.length == 0) ? Text("0") :
+                    Text(daftarPoli[index].totalAntrean[0].result),
                   ],
                 ),
               ),
@@ -89,7 +90,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       "Antrean Sementara",
                       style: TextStyle(fontSize: 16),
                     ),
-                    Text(daftarPoli[index].antreanSementara.toString()),
+                    (daftarPoli[index].antreanSementara.length == 0) ? Text("0") :
+                    Text(daftarPoli[index].antreanSementara[0].result),
                   ],
                 ),
               ),
@@ -102,7 +104,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       "Nomor Antrean Saat Ini",
                       style: TextStyle(fontSize: 16),
                     ),
-                    Text(daftarPoli[index].nomorAntrean.toString()),
+                    (daftarPoli[index].nomorAntrean.length == 0) ? Text("0") :
+                    Text(daftarPoli[index].nomorAntrean[0].result),
                   ],
                 ),
               )
@@ -175,7 +178,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return BlocProvider(
         create: (_) => dashboardBloc,
         child: BlocListener<DashboardBloc, DashboardState>(
-          bloc: dashboardBloc,
+          cubit: dashboardBloc,
           listener: (context, state) {
             if(state is StateDashboardSuccess){
               Timer.periodic(Duration(milliseconds: 5000), (timer) {
@@ -199,7 +202,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ],
             ),
             body: BlocBuilder<DashboardBloc, DashboardState>(
-              bloc: dashboardBloc,
+              cubit: dashboardBloc,
               builder: (BuildContext context, state) {
                 if (state is StateDashboardLoading) {
                   return Center(child: CircularProgressIndicator());
@@ -303,13 +306,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               onChanged: (value) {
                                                 setState(() {
                                                   if (value) {
-                                                    i.statusPoli = 1;
+                                                    i.statusPoli = 1.toString();
                                                   } else {
-                                                    i.statusPoli = 0;
+                                                    i.statusPoli = 0.toString();
                                                   }
                                                 });
                                               },
-                                              value: (i.statusPoli == 1)
+                                              value: (i.statusPoli == 1.toString())
                                                   ? true
                                                   : false,
                                             )

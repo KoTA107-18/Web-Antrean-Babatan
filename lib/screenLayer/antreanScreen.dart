@@ -47,7 +47,7 @@ class _AntreanScreenState extends State<AntreanScreen> {
     return BlocProvider(
       create: (context) => _antreanBloc,
       child: BlocBuilder<AntreanBloc, AntreanState>(
-        bloc: _antreanBloc,
+        cubit: _antreanBloc,
         builder: (context, state) {
           if (state is StateAntreanGetPoliSuccess) {
             return DefaultTabController(

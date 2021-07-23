@@ -26,7 +26,7 @@ class _AntreanSelesaiScreenState extends State<AntreanSelesaiScreen> {
     return BlocProvider(
       create: (context) => _antreanSelesaiBloc,
       child: BlocBuilder<AntreanSelesaiBloc, AntreanSelesaiState>(
-        bloc: _antreanSelesaiBloc,
+        cubit: _antreanSelesaiBloc,
         builder: (context, state) {
           if (state is StateAntreanSelesaiGetPoliSuccess) {
             return DefaultTabController(

@@ -33,7 +33,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
           title: Text("Daftar Akun Perawat"),
           actions: [
             BlocBuilder<AkunPerawatBloc, AkunPerawatState>(
-                bloc: _akunPerawatBloc,
+                cubit: _akunPerawatBloc,
                 builder: (context, state) {
                   if (state is AkunPerawatStateSuccess) {
                     return Container(
@@ -59,7 +59,7 @@ class _AkunPerawatScreenState extends State<AkunPerawatScreen> {
           ],
         ),
         body: BlocBuilder<AkunPerawatBloc, AkunPerawatState>(
-          bloc: _akunPerawatBloc,
+          cubit: _akunPerawatBloc,
           builder: (context, state) {
             if (state is AkunPerawatStateSuccess) {
               nomor = 0;
