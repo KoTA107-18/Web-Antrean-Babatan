@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:web_antrean_babatan/blocLayer/antrean/antreanSementara/antrean_sementara_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/api/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
+import 'package:web_antrean_babatan/dataLayer/model/responseAntrean.dart';
 import 'package:web_antrean_babatan/dataLayer/model/statusAntrean.dart';
 
 class AntreanSementaraScreen extends StatefulWidget {
@@ -48,15 +49,15 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                               (int index) {
                             return FutureBuilder(
                                 future: RequestApi.getAntreanSementara(
-                                    state.daftarPoli[index].idPoli.toString()),
+                                    state.daftarPoli[index].idPoli.toString(), _antreanSementaraBloc.apiToken),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     nomor = 0;
-                                    List<JadwalPasien> daftarAntrean = [];
+                                    List<ResponseAntrean> daftarAntrean = [];
                                     var resultSnapshot = snapshot.data as List;
                                     daftarAntrean = resultSnapshot
                                         .map(
-                                            (aJson) => JadwalPasien.fromJson(aJson))
+                                            (aJson) => ResponseAntrean.fromJson(aJson))
                                         .toList();
                                     return Container(
                                       color: Colors.teal[50],
@@ -134,11 +135,24 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                                                     cells: [
                                                       DataCell(Text(
                                                           (nomor += 1).toString())),
-                                                      DataCell(Text(i.namaLengkap)),
-                                                      DataCell(Text((i.tglLahir == null) ? "-" : i.tglLahir)),
-                                                      DataCell(
-                                                          Text((i.kepalaKeluarga == null) ? "-" : i.kepalaKeluarga)),
-                                                      DataCell(Text((i.jenisPasien == 0) ? "Umum" : "BPJS")),
+                                                      DataCell(Text(
+                                                          i.pasien.namaLengkap)),
+                                                      DataCell(Text(
+                                                          (i.pasien.tglLahir ==
+                                                              null)
+                                                              ? "-"
+                                                              : i.pasien.tglLahir)),
+                                                      DataCell(Text((i.pasien
+                                                          .kepalaKeluarga ==
+                                                          null)
+                                                          ? "-"
+                                                          : i.pasien
+                                                          .kepalaKeluarga)),
+                                                      DataCell(Text(
+                                                          (i.pasien.jenisPasien ==
+                                                              0.toString())
+                                                              ? "Umum"
+                                                              : "BPJS")),
                                                       DataCell(Row(
                                                         children: [
                                                           IconButton(
@@ -211,7 +225,8 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
     );
   }
 
-  konfirmasiAntreanUtama(BuildContext context, JadwalPasien pasien) {
+  konfirmasiAntreanUtama(BuildContext context, ResponseAntrean pasien) {
+    JadwalPasien jadwal;
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -228,8 +243,13 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                pasien.statusAntrean = StatusAntrean.BELUM_DILAYANI;
-                _antreanSementaraBloc.add(EventAntreanSementaraEditJadwalPasien(pasien: pasien));
+                pasien.statusAntrean = StatusAntrean.BELUM_DILAYANI.toString();
+                jadwal = JadwalPasien(
+                    idPoli: int.parse(pasien.poliklinik.idPoli),
+                    tglPelayanan: pasien.tglPelayanan,
+                    idPasien: int.parse(pasien.idPasien),
+                    statusAntrean: StatusAntrean.BELUM_DILAYANI);
+                _antreanSementaraBloc.add(EventAntreanSementaraEditJadwalPasien(pasien: jadwal));
                 Navigator.pop(context);
               },
             ),
@@ -250,33 +270,19 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
         ));
   }
 
-  editAntrean(BuildContext context, JadwalPasien pasien) {
+  editAntrean(BuildContext context, ResponseAntrean pasien) {
+    JadwalPasien jadwal;
     Map result;
     List<Map> daftarStatus = [
-      {
-        'status' : "Belum Dilayani",
-        'value' : 1
-      },
-      {
-        'status' : "Sedang Dilayani",
-        'value' : 2
-      },
-      {
-        'status' : "Sudah Dilayani",
-        'value' : 3
-      },
-      {
-        'status' : "Dilewati",
-        'value' : 4
-      },
-      {
-        'status' : "Dibatalkan",
-        'value' : 5
-      }
+      {'status': "Belum Dilayani", 'value': 1},
+      {'status': "Sedang Dilayani", 'value': 2},
+      {'status': "Sudah Dilayani", 'value': 3},
+      {'status': "Dilewati", 'value': 4},
+      {'status': "Dibatalkan", 'value': 5}
     ];
 
-    for(var i in daftarStatus){
-      if(i['value'] == pasien.statusAntrean){
+    for (var i in daftarStatus) {
+      if (i['value'] == pasien.statusAntrean) {
         result = i;
       }
     }
@@ -326,8 +332,13 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
               ),
               onPressed: () {
                 pasien.statusAntrean = result["value"];
+                jadwal = JadwalPasien(
+                    idPoli: int.parse(pasien.poliklinik.idPoli),
+                    tglPelayanan: pasien.tglPelayanan,
+                    idPasien: int.parse(pasien.idPasien),
+                    statusAntrean: result["value"]);
                 _antreanSementaraBloc
-                    .add(EventAntreanSementaraEditJadwalPasien(pasien: pasien));
+                    .add(EventAntreanSementaraEditJadwalPasien(pasien: jadwal));
                 Navigator.pop(context);
               },
             ),
@@ -348,7 +359,7 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
         ));
   }
 
-  infoAntrean(BuildContext context, JadwalPasien pasien) {
+  infoAntrean(BuildContext context, ResponseAntrean pasien) {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -372,7 +383,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.username == null) ? "-" : pasien.username),
+                  child: Text((pasien.pasien.username == null)
+                      ? "-"
+                      : pasien.pasien.username),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -382,7 +395,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.namaLengkap == null) ? "-" : pasien.namaLengkap),
+                  child: Text((pasien.pasien.namaLengkap == null)
+                      ? "-"
+                      : pasien.pasien.namaLengkap),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -392,7 +407,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.noHandphone == null) ? "-" : pasien.noHandphone),
+                  child: Text((pasien.pasien.noHandphone == null)
+                      ? "-"
+                      : pasien.pasien.noHandphone),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -402,7 +419,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.kepalaKeluarga == null) ? "-" : pasien.kepalaKeluarga),
+                  child: Text((pasien.pasien.kepalaKeluarga == null)
+                      ? "-"
+                      : pasien.pasien.kepalaKeluarga),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -412,7 +431,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.tglLahir == null) ? "-" : pasien.tglLahir),
+                  child: Text((pasien.pasien.tglLahir == null)
+                      ? "-"
+                      : pasien.pasien.tglLahir),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -422,7 +443,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.alamat == null) ? "-" : pasien.alamat),
+                  child: Text((pasien.pasien.alamat == null)
+                      ? "-"
+                      : pasien.pasien.alamat),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -432,7 +455,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.jenisPasien == 0) ? "Umum" : "BPJS"),
+                  child: Text((pasien.pasien.jenisPasien == 0.toString())
+                      ? "Umum"
+                      : "BPJS"),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -442,7 +467,7 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(pasien.namaPoli),
+                  child: Text(pasien.poliklinik.namaPoli),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -452,7 +477,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.nomorAntrean == null) ? "0" : pasien.nomorAntrean.toString()),
+                  child: Text((pasien.nomorAntrean == null)
+                      ? "0"
+                      : pasien.nomorAntrean.toString()),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -462,7 +489,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.tipeBooking == 0) ? "Non Booking" : "Booking"),
+                  child: Text((pasien.tipeBooking == 0.toString())
+                      ? "Non Booking"
+                      : "Booking"),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -472,7 +501,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.tglPelayanan == null) ? "-" : pasien.tglPelayanan),
+                  child: Text((pasien.tglPelayanan == null)
+                      ? "-"
+                      : pasien.tglPelayanan),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -482,7 +513,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.waktuDaftarAntrean == null) ? "-" : pasien.waktuDaftarAntrean),
+                  child: Text((pasien.waktuDaftarAntrean == null)
+                      ? "-"
+                      : pasien.waktuDaftarAntrean),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -492,7 +525,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.jamBooking == null) ? "-" : pasien.jamBooking),
+                  child: Text((pasien.jamBooking == null)
+                      ? "-"
+                      : pasien.jamBooking),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -502,7 +537,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.jamMulaiDilayani == null) ? "-" : pasien.jamMulaiDilayani.toString()),
+                  child: Text((pasien.jamMulaiDilayani == null)
+                      ? "-"
+                      : pasien.jamMulaiDilayani.toString()),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -512,7 +549,9 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.jamSelesaiDilayani == null) ? "-" : pasien.jamSelesaiDilayani.toString()),
+                  child: Text((pasien.jamSelesaiDilayani == null)
+                      ? "-"
+                      : pasien.jamSelesaiDilayani.toString()),
                 ),
               ],
             ),

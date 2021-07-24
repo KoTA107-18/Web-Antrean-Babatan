@@ -45,9 +45,13 @@ class RequestApi {
     Method for functional Jadwal Pasien.
   */
 
-  static Future getAntreanUtama(String idPoli) async {
-    var uri = Uri.https(apiUrl, 'antrean/poliklinik/utama/$idPoli');
-    var result = await http.get(uri);
+  static Future getAntreanUtama(String idPoli, String apiToken) async {
+    var uri = Uri.https(apiUrl, 'api/antrean/poliklinik/utama/$idPoli');
+    var result = await http.get(uri, headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'bearer $apiToken',
+    });
+    print(result.body);
     if (result.statusCode == 200) {
       return json.decode(result.body);
     } else {
@@ -55,9 +59,12 @@ class RequestApi {
     }
   }
 
-  static Future getAntreanSementara(String idPoli) async {
-    var uri = Uri.https(apiUrl, 'antrean/poliklinik/sementara/$idPoli');
-    var result = await http.get(uri);
+  static Future getAntreanSementara(String idPoli, String apiToken) async {
+    var uri = Uri.https(apiUrl, 'api/antrean/poliklinik/sementara/$idPoli');
+    var result = await http.get(uri, headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'bearer $apiToken',
+    });
     if (result.statusCode == 200) {
       return json.decode(result.body);
     } else {
@@ -75,9 +82,12 @@ class RequestApi {
     }
   }
 
-  static Future getAntreanRiwayat(String idPoli) async {
-    var uri = Uri.https(apiUrl, 'antrean/poliklinik/riwayat/$idPoli');
-    var result = await http.get(uri);
+  static Future getAntreanRiwayat(String idPoli, String apiToken) async {
+    var uri = Uri.https(apiUrl, 'api/antrean/poliklinik/riwayat/$idPoli');
+    var result = await http.get(uri, headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'bearer $apiToken',
+    });
     if (result.statusCode == 200) {
       return json.decode(result.body);
     } else {
@@ -85,11 +95,12 @@ class RequestApi {
     }
   }
 
-  static Future<bool> editAntrean(JadwalPasien data) async {
-    var uri = Uri.https(apiUrl, 'antrean');
+  static Future<bool> editAntrean(JadwalPasien data, String apiToken) async {
+    var uri = Uri.https(apiUrl, 'api/antrean/edit');
     var result = await http.put(uri,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'bearer $apiToken',
         },
         body: jsonEncode(data.toJson()));
     if (result.statusCode == 200) {
@@ -99,11 +110,13 @@ class RequestApi {
     }
   }
 
-  static Future insertAntreanNormal(Map<String, dynamic> data) async {
-    var uri = Uri.https(apiUrl, 'antrean/admin/normal');
+  static Future insertAntreanNormal(
+      Map<String, dynamic> data, String apiToken) async {
+    var uri = Uri.https(apiUrl, 'api/antrean/insert/admin');
     var result = await http.post(uri,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'bearer $apiToken',
         },
         body: jsonEncode(data));
     print(result.body.toString());
@@ -114,13 +127,17 @@ class RequestApi {
     }
   }
 
-  static Future insertAntreanGawat(Map<String, dynamic> data) async {
-    var uri = Uri.https(apiUrl, 'antrean/admin/gawat');
+  static Future insertAntreanGawat(
+      Map<String, dynamic> data, String apiToken) async {
+    var uri = Uri.https(apiUrl, 'api/antrean/insert/admin/gawat');
     var result = await http.post(uri,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'bearer $apiToken',
         },
         body: jsonEncode(data));
+    print(data);
+    print(result.body);
     if (result.statusCode == 200) {
       return true;
     } else {
@@ -181,7 +198,8 @@ class RequestApi {
     }
   }
 
-  static Future insertPoliklinik(Poliklinik dataPoliklinik, String apiToken) async {
+  static Future insertPoliklinik(
+      Poliklinik dataPoliklinik, String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/poliklinik
     Method Type : POST
@@ -202,7 +220,8 @@ class RequestApi {
     }
   }
 
-  static Future<bool> updatePoliklinik(Poliklinik dataPoliklinik, String apiToken) async {
+  static Future<bool> updatePoliklinik(
+      Poliklinik dataPoliklinik, String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/poliklinik/id
     Method Type : PUT

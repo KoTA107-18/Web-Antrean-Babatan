@@ -97,9 +97,9 @@ class TambahantreanBloc extends Bloc<TambahantreanEvent, TambahantreanState> {
       try {
         var result = false;
         if(event.isGawat){
-          result = await RequestApi.insertAntreanGawat(data);
+          result = await RequestApi.insertAntreanGawat(data, apiToken);
         } else {
-          result = await RequestApi.insertAntreanNormal(data);
+          result = await RequestApi.insertAntreanNormal(data, apiToken);
         }
         if(result == true){
           yield StateTambahAntreanSubmitAntreanSuccess();

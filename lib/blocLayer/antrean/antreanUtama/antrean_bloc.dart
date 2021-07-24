@@ -54,7 +54,7 @@ class AntreanBloc extends Bloc<AntreanEvent, AntreanState> {
     if (event is EventAntreanEditJadwalPasien) {
       yield StateAntreanGetPoliLoading();
       try {
-        await RequestApi.editAntrean(event.pasien);
+        await RequestApi.editAntrean(event.pasien, apiToken);
         yield StateAntreanGetPoliSuccess(daftarPoli: daftarPoli);
       } catch (e) {
         yield StateAntreanGetPoliFailed(messageFailed: e.toString());

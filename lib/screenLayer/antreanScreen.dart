@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:web_antrean_babatan/blocLayer/antrean/antreanUtama/antrean_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/api/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
-import 'package:web_antrean_babatan/utils/searchView.dart';
+import 'package:web_antrean_babatan/dataLayer/model/responseAntrean.dart';
 import 'package:web_antrean_babatan/dataLayer/model/statusAntrean.dart';
 
 class AntreanScreen extends StatefulWidget {
@@ -13,7 +13,7 @@ class AntreanScreen extends StatefulWidget {
 }
 
 class _AntreanScreenState extends State<AntreanScreen> {
-  List<JadwalPasien> daftarAntrean = [];
+  List<ResponseAntrean> daftarAntrean = [];
   AntreanBloc _antreanBloc = AntreanBloc();
   String query = '';
   int nomor;
@@ -23,24 +23,6 @@ class _AntreanScreenState extends State<AntreanScreen> {
     _antreanBloc.add(EventAntreanGetPoli());
     super.initState();
   }
-
-  Widget buildSearch(String query, List<JadwalPasien> jadwalPasien) => SearchWidget(
-    text: query,
-    hintText: 'Nama Pasien ...',
-    onChanged: (value) {
-      final result = jadwalPasien.where((jadwal) {
-        final nameLower = jadwal.namaLengkap.toLowerCase();
-        final searchLower = value.toLowerCase();
-
-        return nameLower.contains(searchLower);
-      }).toList();
-
-      setState(() {
-        this.query = value;
-        daftarAntrean = result;
-      });
-    },
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -69,14 +51,15 @@ class _AntreanScreenState extends State<AntreanScreen> {
                           (int index) {
                         return FutureBuilder(
                             future: RequestApi.getAntreanUtama(
-                                state.daftarPoli[index].idPoli.toString()),
+                                state.daftarPoli[index].idPoli.toString(),
+                                _antreanBloc.apiToken),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 nomor = 0;
                                 var resultSnapshot = snapshot.data as List;
                                 daftarAntrean = resultSnapshot
-                                    .map(
-                                        (aJson) => JadwalPasien.fromJson(aJson))
+                                    .map((aJson) =>
+                                        ResponseAntrean.fromJson(aJson))
                                     .toList();
                                 return Container(
                                   color: Colors.teal[50],
@@ -145,22 +128,38 @@ class _AntreanScreenState extends State<AntreanScreen> {
                                         rows: [
                                           for (var i in daftarAntrean)
                                             DataRow(
-                                                color: MaterialStateProperty.resolveWith<Color>(
-                                                        (Set<MaterialState> states) {
-                                                      if (i.statusAntrean == 2) {
-                                                        return Colors.red[100];
-                                                      } else {
-                                                        return Colors.white;
-                                                      }
-                                                    }),
+                                                color: MaterialStateProperty
+                                                    .resolveWith<Color>(
+                                                        (Set<MaterialState>
+                                                            states) {
+                                                  if (i.statusAntrean ==
+                                                      2.toString()) {
+                                                    return Colors.red[100];
+                                                  } else {
+                                                    return Colors.white;
+                                                  }
+                                                }),
                                                 cells: [
                                                   DataCell(Text(
                                                       (nomor += 1).toString())),
-                                                  DataCell(Text(i.namaLengkap)),
-                                                  DataCell(Text((i.tglLahir == null) ? "-" : i.tglLahir)),
-                                                  DataCell(
-                                                      Text((i.kepalaKeluarga == null) ? "-" : i.kepalaKeluarga)),
-                                                  DataCell(Text((i.jenisPasien == 0) ? "Umum" : "BPJS")),
+                                                  DataCell(Text(
+                                                      i.pasien.namaLengkap)),
+                                                  DataCell(Text(
+                                                      (i.pasien.tglLahir ==
+                                                              null)
+                                                          ? "-"
+                                                          : i.pasien.tglLahir)),
+                                                  DataCell(Text((i.pasien
+                                                              .kepalaKeluarga ==
+                                                          null)
+                                                      ? "-"
+                                                      : i.pasien
+                                                          .kepalaKeluarga)),
+                                                  DataCell(Text(
+                                                      (i.pasien.jenisPasien ==
+                                                              0.toString())
+                                                          ? "Umum"
+                                                          : "BPJS")),
                                                   DataCell(Row(
                                                     children: [
                                                       IconButton(
@@ -264,7 +263,8 @@ class _AntreanScreenState extends State<AntreanScreen> {
         ));
   }
 
-  konfirmasiAntreanSementara(BuildContext context, JadwalPasien pasien) {
+  konfirmasiAntreanSementara(BuildContext context, ResponseAntrean pasien) {
+    JadwalPasien jadwal;
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -288,9 +288,14 @@ class _AntreanScreenState extends State<AntreanScreen> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    pasien.statusAntrean = StatusAntrean.DILEWATI;
+                    pasien.statusAntrean = StatusAntrean.DILEWATI.toString();
+                    jadwal = JadwalPasien(
+                        idPoli: int.parse(pasien.poliklinik.idPoli),
+                        tglPelayanan: pasien.tglPelayanan,
+                        idPasien: int.parse(pasien.idPasien),
+                        statusAntrean: StatusAntrean.DILEWATI);
                     _antreanBloc
-                        .add(EventAntreanEditJadwalPasien(pasien: pasien));
+                        .add(EventAntreanEditJadwalPasien(pasien: jadwal));
                     Navigator.pop(context);
                   },
                 ),
@@ -311,33 +316,19 @@ class _AntreanScreenState extends State<AntreanScreen> {
             ));
   }
 
-  editAntrean(BuildContext context, JadwalPasien pasien) {
+  editAntrean(BuildContext context, ResponseAntrean pasien) {
+    JadwalPasien jadwal;
     Map result;
     List<Map> daftarStatus = [
-      {
-        'status' : "Belum Dilayani",
-        'value' : 1
-      },
-      {
-        'status' : "Sedang Dilayani",
-        'value' : 2
-      },
-      {
-        'status' : "Sudah Dilayani",
-        'value' : 3
-      },
-      {
-        'status' : "Dilewati",
-        'value' : 4
-      },
-      {
-        'status' : "Dibatalkan",
-        'value' : 5
-      }
+      {'status': "Belum Dilayani", 'value': 1},
+      {'status': "Sedang Dilayani", 'value': 2},
+      {'status': "Sudah Dilayani", 'value': 3},
+      {'status': "Dilewati", 'value': 4},
+      {'status': "Dibatalkan", 'value': 5}
     ];
 
-    for(var i in daftarStatus){
-      if(i['value'] == pasien.statusAntrean){
+    for (var i in daftarStatus) {
+      if (i['value'] == int.parse(pasien.statusAntrean)) {
         result = i;
       }
     }
@@ -386,9 +377,14 @@ class _AntreanScreenState extends State<AntreanScreen> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    pasien.statusAntrean = result["value"];
+                    pasien.statusAntrean = result["value"].toString();
+                    jadwal = JadwalPasien(
+                        idPoli: int.parse(pasien.poliklinik.idPoli),
+                        tglPelayanan: pasien.tglPelayanan,
+                        idPasien: int.parse(pasien.idPasien),
+                        statusAntrean: int.parse(pasien.statusAntrean));
                     _antreanBloc
-                        .add(EventAntreanEditJadwalPasien(pasien: pasien));
+                        .add(EventAntreanEditJadwalPasien(pasien: jadwal));
                     Navigator.pop(context);
                   },
                 ),
@@ -409,190 +405,218 @@ class _AntreanScreenState extends State<AntreanScreen> {
             ));
   }
 
-  infoAntrean(BuildContext context, JadwalPasien pasien) {
+  infoAntrean(BuildContext context, ResponseAntrean pasien) {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.info),
-              SizedBox(width: 8.0),
-              Text("Info Antrean"),
-            ],
-          ),
-          content: Container(
-            width: MediaQuery.of(context).size.width / 2,
-            height: MediaQuery.of(context).size.height / 2,
-            child: ListView(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Username',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+              title: Row(
+                children: [
+                  Icon(Icons.info),
+                  SizedBox(width: 8.0),
+                  Text("Info Antrean"),
+                ],
+              ),
+              content: Container(
+                width: MediaQuery.of(context).size.width / 2,
+                height: MediaQuery.of(context).size.height / 2,
+                child: ListView(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Username',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.pasien.username == null)
+                          ? "-"
+                          : pasien.pasien.username),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Nama Lengkap',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.pasien.namaLengkap == null)
+                          ? "-"
+                          : pasien.pasien.namaLengkap),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('No Handphone',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.pasien.noHandphone == null)
+                          ? "-"
+                          : pasien.pasien.noHandphone),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Kepala Keluarga',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.pasien.kepalaKeluarga == null)
+                          ? "-"
+                          : pasien.pasien.kepalaKeluarga),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Tanggal Lahir',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.pasien.tglLahir == null)
+                          ? "-"
+                          : pasien.pasien.tglLahir),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Alamat',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.pasien.alamat == null)
+                          ? "-"
+                          : pasien.pasien.alamat),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Jenis Pasien',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.pasien.jenisPasien == 0.toString())
+                          ? "Umum"
+                          : "BPJS"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Poliklinik Tujuan',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text(pasien.poliklinik.namaPoli),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Nomor Antrean',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.nomorAntrean == null)
+                          ? "0"
+                          : pasien.nomorAntrean.toString()),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Tipe Booking',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.tipeBooking == 0.toString())
+                          ? "Non Booking"
+                          : "Booking"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Tanggal Pelayanan',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.tglPelayanan == null)
+                          ? "-"
+                          : pasien.tglPelayanan),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Waktu Daftar Antrean',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.waktuDaftarAntrean == null)
+                          ? "-"
+                          : pasien.waktuDaftarAntrean),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Jam Booking',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.jamBooking == null)
+                          ? "-"
+                          : pasien.jamBooking),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Jam Mulai Dilayani',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.jamMulaiDilayani == null)
+                          ? "-"
+                          : pasien.jamMulaiDilayani.toString()),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text('Jam Selesai Dilayani',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text((pasien.jamSelesaiDilayani == null)
+                          ? "-"
+                          : pasien.jamSelesaiDilayani.toString()),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.username == null) ? "-" : pasien.username),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Nama Lengkap',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.namaLengkap == null) ? "-" : pasien.namaLengkap),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('No Handphone',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.noHandphone == null) ? "-" : pasien.noHandphone),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Kepala Keluarga',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.kepalaKeluarga == null) ? "-" : pasien.kepalaKeluarga),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Tanggal Lahir',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.tglLahir == null) ? "-" : pasien.tglLahir),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Alamat',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.alamat == null) ? "-" : pasien.alamat),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Jenis Pasien',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.jenisPasien == 0) ? "Umum" : "BPJS"),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Poliklinik Tujuan',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(pasien.namaPoli),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Nomor Antrean',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.nomorAntrean == null) ? "0" : pasien.nomorAntrean.toString()),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Tipe Booking',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.tipeBooking == 0) ? "Non Booking" : "Booking"),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Tanggal Pelayanan',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.tglPelayanan == null) ? "-" : pasien.tglPelayanan),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Waktu Daftar Antrean',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.waktuDaftarAntrean == null) ? "-" : pasien.waktuDaftarAntrean),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Jam Booking',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.jamBooking == null) ? "-" : pasien.jamBooking),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Jam Mulai Dilayani',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.jamMulaiDilayani == null) ? "-" : pasien.jamMulaiDilayani.toString()),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text('Jam Selesai Dilayani',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text((pasien.jamSelesaiDilayani == null) ? "-" : pasien.jamSelesaiDilayani.toString()),
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.teal, // background
+                    onPrimary: Colors.white, // foreground
+                  ),
+                  child: Text(
+                    'Tutup',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
               ],
-            ),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.teal, // background
-                onPrimary: Colors.white, // foreground
-              ),
-              child: Text(
-                'Tutup',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ));
+            ));
   }
 }

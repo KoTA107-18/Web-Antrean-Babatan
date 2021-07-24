@@ -54,7 +54,7 @@ class AntreanSementaraBloc extends Bloc<AntreanSementaraEvent, AntreanSementaraS
     if (event is EventAntreanSementaraEditJadwalPasien) {
       yield StateAntreanSementaraGetPoliLoading();
       try {
-        await RequestApi.editAntrean(event.pasien);
+        await RequestApi.editAntrean(event.pasien, apiToken);
         yield StateAntreanSementaraGetPoliSuccess(daftarPoli: daftarPoli);
       } catch (e) {
         yield StateAntreanSementaraGetPoliFailed(messageFailed: e.toString());
