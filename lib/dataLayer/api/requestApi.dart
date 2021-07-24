@@ -183,14 +183,16 @@ class RequestApi {
     }
   }
 
-  static Future getPoliklinik(int id) async {
+  static Future getPoliklinik(int id, String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/poliklinik
     Method Type : GET
     Desc : Get Poliklinik in Database
     */
-    var uri = Uri.https(apiUrl, 'poliklinik/${id.toString()}');
-    var result = await http.get(uri);
+    var uri = Uri.https(apiUrl, 'api/poliklinik/${id.toString()}');
+    var result = await http.get(uri, headers: {
+      'Authorization': 'bearer $apiToken',
+    });
     if (result.statusCode == 200) {
       return json.decode(result.body);
     } else {
@@ -288,14 +290,16 @@ class RequestApi {
     }
   }
 
-  static Future getPerawat(String id) async {
+  static Future getPerawat(String id, String apiToken) async {
     /*
     Endpoint : rest-api-babatan.herokuapp.com/perawat
     Method Type : GET
     Desc : Get Perawat in Database
     */
-    var uri = Uri.https(apiUrl, 'perawat/$id');
-    var result = await http.get(uri);
+    var uri = Uri.https(apiUrl, 'api/perawat/$id');
+    var result = await http.get(uri, headers: {
+      'Authorization': 'bearer $apiToken',
+    });
     if (result.statusCode == 200) {
       return json.decode(result.body);
     } else {

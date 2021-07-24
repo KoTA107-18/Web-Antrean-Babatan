@@ -35,7 +35,7 @@ class AntreanSelesaiBloc extends Bloc<AntreanSelesaiEvent, AntreanSelesaiState> 
           });
         } else {
           var idPoli = await SharedPref.getPoli();
-          await RequestApi.getPoliklinik(idPoli).then((snapshot) {
+          await RequestApi.getPoliklinik(idPoli, apiToken).then((snapshot) {
             if (snapshot != null) {
               var resultSnapshot = snapshot as List;
               daftarPoli = resultSnapshot

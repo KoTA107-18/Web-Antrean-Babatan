@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_antrean_babatan/blocLayer/akun/akunPerawat/akun_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/model/perawat.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
+import 'package:web_antrean_babatan/dataLayer/model/responseGetPerawat.dart';
 import 'package:web_antrean_babatan/utils/textFieldModified.dart';
 
 class AkunScreen extends StatefulWidget {
@@ -55,7 +56,7 @@ class _AkunScreenState extends State<AkunScreen> {
   }
 
   ListView tabelAkunPerawat(
-      List<Perawat> daftarPerawat, List<Poliklinik> daftarPoli) {
+      List<ResponseGetPerawat> daftarPerawat, List<Poliklinik> daftarPoli) {
     return ListView(children: <Widget>[
       Container(
         width: double.infinity,
@@ -118,7 +119,7 @@ class _AkunScreenState extends State<AkunScreen> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 )),
                 DataCell(Text("*" * akunPerawat.password.length)),
-                DataCell(Text(akunPerawat.namaPoli)),
+                DataCell(Text(akunPerawat.poliklinik.namaPoli)),
                 DataCell(Row(
                   children: [
                     IconButton(
@@ -140,7 +141,7 @@ class _AkunScreenState extends State<AkunScreen> {
     ]);
   }
 
-  infoAkunPerawat(Perawat perawat) {
+  infoAkunPerawat(ResponseGetPerawat perawat) {
     showDialog(
         context: context,
         builder: (context) {
@@ -199,7 +200,7 @@ class _AkunScreenState extends State<AkunScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Text(perawat.namaPoli),
+                      child: Text(perawat.poliklinik.namaPoli),
                     ),
                   ],
                 ),
@@ -224,7 +225,7 @@ class _AkunScreenState extends State<AkunScreen> {
         });
   }
 
-  editAkunPerawat(List<Poliklinik> daftarPoli, Perawat perawat) {
+  editAkunPerawat(List<Poliklinik> daftarPoli, ResponseGetPerawat perawat) {
     bool isClickValidated = false;
     GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -236,7 +237,7 @@ class _AkunScreenState extends State<AkunScreen> {
     _passwordTwo.text = perawat.password;
     TextEditingController _nama = TextEditingController();
     _nama.text = perawat.nama;
-    int idPoliklinik = perawat.idPoli;
+    int idPoliklinik = int.parse(perawat.poliklinik.idPoli);
 
     showDialog(
         context: context,
@@ -386,7 +387,7 @@ class _AkunScreenState extends State<AkunScreen> {
                       _akunBloc.add(AkunEventSubmitEdit(
                           perawat: Perawat(
                               nama: _nama.text.toString(),
-                              idPerawat: perawat.idPerawat,
+                              idPerawat: int.parse(perawat.idPerawat),
                               username: _username.text.toString(),
                               password: _password.text.toString(),
                               idPoli: idPoliklinik)));

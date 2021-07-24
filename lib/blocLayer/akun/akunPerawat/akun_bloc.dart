@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 import 'package:web_antrean_babatan/dataLayer/api/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/perawat.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
+import 'package:web_antrean_babatan/dataLayer/model/responseGetPerawat.dart';
 import 'package:web_antrean_babatan/dataLayer/session/sharedPref.dart';
 
 part 'akun_event.dart';
@@ -14,7 +15,7 @@ class AkunBloc extends Bloc<AkunEvent, AkunState> {
   var idPerawat = 0;
   String apiToken;
   List<Poliklinik> daftarPoli = [];
-  List<Perawat> daftarPerawat = [];
+  List<ResponseGetPerawat> daftarPerawat = [];
   AkunBloc() : super(AkunStateLoading());
 
   @override
@@ -34,11 +35,11 @@ class AkunBloc extends Bloc<AkunEvent, AkunState> {
           }
         });
         idPerawat = await SharedPref.getIdPerawat();
-        await RequestApi.getPerawat(idPerawat.toString()).then((snapshot) {
+        await RequestApi.getPerawat(idPerawat.toString(), apiToken).then((snapshot) {
           if (snapshot != null) {
             var resultSnapshot = snapshot as List;
             daftarPerawat = resultSnapshot
-                .map((aJson) => Perawat.fromJson(aJson))
+                .map((aJson) => ResponseGetPerawat.fromJson(aJson))
                 .toList();
           }
         });
@@ -60,11 +61,11 @@ class AkunBloc extends Bloc<AkunEvent, AkunState> {
                 .toList();
           }
         });
-        await RequestApi.getPerawat(idPerawat.toString()).then((snapshot) {
+        await RequestApi.getPerawat(idPerawat.toString(), apiToken).then((snapshot) {
           if (snapshot != null) {
             var resultSnapshot = snapshot as List;
             daftarPerawat = resultSnapshot
-                .map((aJson) => Perawat.fromJson(aJson))
+                .map((aJson) => ResponseGetPerawat.fromJson(aJson))
                 .toList();
           }
         });
