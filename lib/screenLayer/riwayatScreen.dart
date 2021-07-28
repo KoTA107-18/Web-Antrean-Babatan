@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:web_antrean_babatan/blocLayer/antrean/riwayatKunjungan/riwayat_kunjungan_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/api/requestApi.dart';
-import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/responseAntrean.dart';
 
 class RiwayatScreen extends StatefulWidget {

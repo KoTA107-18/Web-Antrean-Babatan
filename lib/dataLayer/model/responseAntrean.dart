@@ -7,7 +7,7 @@ class ResponseAntrean {
   String jamBooking;
   String waktuDaftarAntrean;
   String jamMulaiDilayani;
-  Null jamSelesaiDilayani;
+  String jamSelesaiDilayani;
   String statusAntrean;
   String hari;
   Pasien pasien;
@@ -72,13 +72,13 @@ class ResponseAntrean {
 
 class Pasien {
   int idPasien;
-  Null username;
-  Null noHandphone;
-  Null kepalaKeluarga;
+  String username;
+  String noHandphone;
+  String kepalaKeluarga;
   String namaLengkap;
-  Null alamat;
-  Null tglLahir;
-  Null jenisPasien;
+  String alamat;
+  String tglLahir;
+  int jenisPasien;
 
   Pasien(
       {this.idPasien,

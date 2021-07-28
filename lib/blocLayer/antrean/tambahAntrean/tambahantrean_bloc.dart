@@ -92,6 +92,8 @@ class TambahantreanBloc extends Bloc<TambahantreanEvent, TambahantreanState> {
         'no_handphone' : pasien.noHandphone,
         'id_poli' : poliklinikTujuan.idPoli,
         'jenis_pasien' : jenisPasien,
+        'latitude' : 0,
+        'longitude' : 0,
         'hari' : convertNumDayToCode(DateTime.now().weekday)
       };
       try {
