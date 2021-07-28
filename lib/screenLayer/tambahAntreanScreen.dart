@@ -56,6 +56,8 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
             namaLengkap: _namaLengkap.text,
             password: _password.text,
             alamat: _alamat.text,
+            latitude: 0.toString(),
+            longitude: 0.toString(),
             tglLahir: _tglLahir.text);
         _tambahantreanBloc.add(EventTambahAntreanSubmitPasien(pasien: _pasien));
         //Navigator.pop(context);

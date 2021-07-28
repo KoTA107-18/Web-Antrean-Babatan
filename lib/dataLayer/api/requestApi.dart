@@ -10,8 +10,13 @@ class RequestApi {
   static final String apiUrl = "apibabatan.kota107.xyz";
 
   static Future<bool> registerPasien(Pasien pasien) async {
-    var result = await http.post(Uri.https(apiUrl, 'api/pasien/register'),
-        body: pasien.toJson());
+    var result = await http.post(
+      Uri.https(apiUrl, 'api/pasien/register'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(pasien.toJson()),
+    );
     if (result.statusCode == 201) {
       return true;
     } else {
@@ -20,7 +25,7 @@ class RequestApi {
   }
 
   static Future validasiPasien(Pasien pasien) async {
-    var uri = Uri.https(apiUrl, 'pasien/validasi');
+    var uri = Uri.https(apiUrl, 'api/pasien/validasi');
     var result = await http.post(uri,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
