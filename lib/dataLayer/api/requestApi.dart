@@ -176,6 +176,7 @@ class RequestApi {
     var result = await http.get(uri, headers: {
       'Authorization': 'bearer $apiToken',
     });
+    print(result.body);
     if (result.statusCode == 200) {
       return json.decode(result.body);
     } else {
@@ -261,6 +262,8 @@ class RequestApi {
           'Authorization': 'bearer $apiToken',
         },
         body: jsonEncode(data));
+    print(result.statusCode);
+    print(result.body);
     if (result.statusCode == 200) {
       return true;
     } else {
@@ -282,7 +285,6 @@ class RequestApi {
     var result = await http.get(uri, headers: {
       'Authorization': 'bearer $apiToken',
     });
-    print(result.body);
     if (result.statusCode == 200) {
       return json.decode(result.body);
     } else {

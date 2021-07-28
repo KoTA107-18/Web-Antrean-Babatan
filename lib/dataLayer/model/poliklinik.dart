@@ -1,51 +1,49 @@
-import 'jadwal.dart';
+import 'dart:convert';
+
+import 'package:web_antrean_babatan/dataLayer/model/jadwal.dart';
+
+List<Poliklinik> poliklinikFromJson(String str) => List<Poliklinik>.from(json.decode(str).map((x) => Poliklinik.fromJson(x)));
+
+String poliklinikToJson(List<Poliklinik> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Poliklinik {
+  Poliklinik({
+    this.idPoli,
+    this.namaPoli,
+    this.descPoli,
+    this.statusPoli,
+    this.rerataWaktuPelayanan,
+    this.batasBooking,
+    this.jadwal,
+  });
+
   int idPoli;
   String namaPoli;
   String descPoli;
-  int statusPoli;
-  int rerataWaktuPelayanan;
-  int batasBooking;
+  String statusPoli;
+  String rerataWaktuPelayanan;
+  String batasBooking;
   List<Jadwal> jadwal;
 
-  Poliklinik(
-      {this.idPoli = 0,
-        this.namaPoli,
-        this.descPoli,
-        this.statusPoli = 0,
-        this.rerataWaktuPelayanan,
-        this.batasBooking,
-        this.jadwal});
+  factory Poliklinik.fromJson(Map<String, dynamic> json) => Poliklinik(
+    idPoli: json["id_poli"],
+    namaPoli: json["nama_poli"],
+    descPoli: json["desc_poli"],
+    statusPoli: json["status_poli"],
+    rerataWaktuPelayanan: json["rerata_waktu_pelayanan"],
+    batasBooking: json["batas_booking"],
+    jadwal: List<Jadwal>.from(json["jadwal"].map((x) => Jadwal.fromJson(x))),
+  );
 
-  Poliklinik.fromJson(Map<String, dynamic> json) {
-    idPoli = int.parse(json['id_poli']);
-    namaPoli = json['nama_poli'].toString();
-    descPoli = json['desc_poli'].toString();
-    statusPoli = int.parse(json['status_poli']);
-    rerataWaktuPelayanan = int.parse(json['rerata_waktu_pelayanan']);
-    batasBooking = int.parse(json['batas_booking']);
-    if (json['jadwal'] != null) {
-      jadwal = new List<Jadwal>();
-      json['jadwal'].forEach((v) {
-        jadwal.add(new Jadwal.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id_poli'] = this.idPoli;
-    data['nama_poli'] = this.namaPoli;
-    data['desc_poli'] = this.descPoli;
-    data['status_poli'] = this.statusPoli;
-    data['rerata_waktu_pelayanan'] = this.rerataWaktuPelayanan;
-    data['batas_booking'] = this.batasBooking;
-    if (this.jadwal != null) {
-      data['jadwal'] = this.jadwal.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "id_poli": idPoli,
+    "nama_poli": namaPoli,
+    "desc_poli": descPoli,
+    "status_poli": statusPoli,
+    "rerata_waktu_pelayanan": rerataWaktuPelayanan,
+    "batas_booking": batasBooking,
+    "jadwal": List<dynamic>.from(jadwal.map((x) => x.toJson())),
+  };
 
   String jadwalToString(){
     String daftarHari = "";

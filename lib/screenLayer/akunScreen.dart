@@ -237,7 +237,7 @@ class _AkunScreenState extends State<AkunScreen> {
     _passwordTwo.text = perawat.password;
     TextEditingController _nama = TextEditingController();
     _nama.text = perawat.nama;
-    int idPoliklinik = int.parse(perawat.poliklinik.idPoli);
+    int idPoliklinik = int.parse(perawat.poliklinik.idPoli.toString());
 
     showDialog(
         context: context,

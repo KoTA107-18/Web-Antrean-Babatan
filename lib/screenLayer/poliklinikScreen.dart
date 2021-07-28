@@ -241,8 +241,8 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
             namaPoli: _nama.text.toString(),
             descPoli: _desc.text.toString(),
             jadwal: resultHari,
-            rerataWaktuPelayanan: int.parse(_rataRata.text.toString()),
-            batasBooking: int.parse(_batasBooking.text.toString()));
+            rerataWaktuPelayanan: _rataRata.text,
+            batasBooking: _batasBooking.text);
         confirmDialog(dataPoliklinik, true);
         // _poliklinikBloc.add(EventPoliklinikAddSubmitPoli(dataPoliklinik: dataPoliklinik));
         // Navigator.pop(context);
@@ -565,8 +565,8 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
             descPoli: _deskripsi.text.toString(),
             jadwal: resultHari,
             statusPoli: poliklinik.statusPoli,
-            rerataWaktuPelayanan: int.parse(_ratarata.text.toString()),
-            batasBooking: int.parse(_batasBooking.text.toString()));
+            rerataWaktuPelayanan: _ratarata.text,
+            batasBooking: _batasBooking.text);
         confirmDialog(dataPoliklinik, false);
         // _poliklinikBloc.add(EventPoliklinikEditSubmitPoli(dataPoliklinik: dataPoliklinik));
         // Navigator.pop(context);
@@ -1065,7 +1065,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: Text(poliklinik.rerataWaktuPelayanan.toString() +
-                          " Menit (${(60/poliklinik.rerataWaktuPelayanan).floor().toString()} Orang / Jam)."),
+                          " Menit (${(60/int.parse(poliklinik.rerataWaktuPelayanan)).floor().toString()} Orang / Jam)."),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),

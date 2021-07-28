@@ -1,4 +1,23 @@
+// To parse this JSON data, do
+//
+//     final responseGetPerawat = responseGetPerawatFromJson(jsonString);
+
+import 'dart:convert';
+
+List<ResponseGetPerawat> responseGetPerawatFromJson(String str) => List<ResponseGetPerawat>.from(json.decode(str).map((x) => ResponseGetPerawat.fromJson(x)));
+
+String responseGetPerawatToJson(List<ResponseGetPerawat> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
 class ResponseGetPerawat {
+  ResponseGetPerawat({
+    this.idPerawat,
+    this.username,
+    this.password,
+    this.nama,
+    this.idPoli,
+    this.poliklinik,
+  });
+
   String idPerawat;
   String username;
   String password;
@@ -6,54 +25,41 @@ class ResponseGetPerawat {
   String idPoli;
   PoliklinikPerawat poliklinik;
 
-  ResponseGetPerawat(
-      {this.idPerawat,
-        this.username,
-        this.password,
-        this.nama,
-        this.idPoli,
-        this.poliklinik});
+  factory ResponseGetPerawat.fromJson(Map<String, dynamic> json) => ResponseGetPerawat(
+    idPerawat: json["id_perawat"],
+    username: json["username"],
+    password: json["password"],
+    nama: json["nama"],
+    idPoli: json["id_poli"],
+    poliklinik: PoliklinikPerawat.fromJson(json["poliklinik"]),
+  );
 
-  ResponseGetPerawat.fromJson(Map<String, dynamic> json) {
-    idPerawat = json['id_perawat'];
-    username = json['username'];
-    password = json['password'];
-    nama = json['nama'];
-    idPoli = json['id_poli'];
-    poliklinik = json['poliklinik'] != null
-        ? new PoliklinikPerawat.fromJson(json['poliklinik'])
-        : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id_perawat'] = this.idPerawat;
-    data['username'] = this.username;
-    data['password'] = this.password;
-    data['nama'] = this.nama;
-    data['id_poli'] = this.idPoli;
-    if (this.poliklinik != null) {
-      data['poliklinik'] = this.poliklinik.toJson();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "id_perawat": idPerawat,
+    "username": username,
+    "password": password,
+    "nama": nama,
+    "id_poli": idPoli,
+    "poliklinik": poliklinik.toJson(),
+  };
 }
 
 class PoliklinikPerawat {
-  String idPoli;
+  PoliklinikPerawat({
+    this.idPoli,
+    this.namaPoli,
+  });
+
+  int idPoli;
   String namaPoli;
 
-  PoliklinikPerawat({this.idPoli, this.namaPoli});
+  factory PoliklinikPerawat.fromJson(Map<String, dynamic> json) => PoliklinikPerawat(
+    idPoli: json["id_poli"],
+    namaPoli: json["nama_poli"],
+  );
 
-  PoliklinikPerawat.fromJson(Map<String, dynamic> json) {
-    idPoli = json['id_poli'];
-    namaPoli = json['nama_poli'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id_poli'] = this.idPoli;
-    data['nama_poli'] = this.namaPoli;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "id_poli": idPoli,
+    "nama_poli": namaPoli,
+  };
 }

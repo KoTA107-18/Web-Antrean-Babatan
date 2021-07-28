@@ -25,6 +25,7 @@ class AkunPerawatBloc extends Bloc<AkunPerawatEvent, AkunPerawatState> {
       yield AkunPerawatStateLoading();
       try {
         apiToken = await SharedPref.getToken();
+        print(apiToken);
         await RequestApi.getAllPoliklinik(apiToken).then((snapshot) {
           if (snapshot != null) {
             var resultSnapshot = snapshot as List;
@@ -42,6 +43,7 @@ class AkunPerawatBloc extends Bloc<AkunPerawatEvent, AkunPerawatState> {
                 .toList();
           }
         });
+        print("BINGO");
         yield AkunPerawatStateSuccess(daftarPoli: daftarPoli, daftarPerawat: daftarPerawat);
       } catch (e) {
         yield AkunPerawatStateFailed(messageFailed: e.toString());
