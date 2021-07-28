@@ -290,8 +290,8 @@ class _AntreanScreenState extends State<AntreanScreen> {
                   onPressed: () {
                     pasien.statusAntrean = StatusAntrean.DILEWATI.toString();
                     jadwal = JadwalPasien(
-                        idPoli: int.parse(pasien.poliklinik.idPoli),
-                        tglPelayanan: pasien.tglPelayanan,
+                        idPoli: int.parse(pasien.poliklinik.idPoli.toString()),
+                        tglPelayanan: pasien.tglPelayanan.toString(),
                         idPasien: int.parse(pasien.idPasien),
                         statusAntrean: StatusAntrean.DILEWATI);
                     _antreanBloc
@@ -379,8 +379,8 @@ class _AntreanScreenState extends State<AntreanScreen> {
                   onPressed: () {
                     pasien.statusAntrean = result["value"].toString();
                     jadwal = JadwalPasien(
-                        idPoli: int.parse(pasien.poliklinik.idPoli),
-                        tglPelayanan: pasien.tglPelayanan,
+                        idPoli: int.parse(pasien.poliklinik.idPoli.toString()),
+                        tglPelayanan: pasien.tglPelayanan.toString(),
                         idPasien: int.parse(pasien.idPasien),
                         statusAntrean: int.parse(pasien.statusAntrean));
                     _antreanBloc

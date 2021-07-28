@@ -242,6 +242,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
             descPoli: _desc.text.toString(),
             jadwal: resultHari,
             rerataWaktuPelayanan: _rataRata.text,
+            statusPoli: 0.toString(),
             batasBooking: _batasBooking.text);
         confirmDialog(dataPoliklinik, true);
         // _poliklinikBloc.add(EventPoliklinikAddSubmitPoli(dataPoliklinik: dataPoliklinik));

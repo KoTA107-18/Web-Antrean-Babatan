@@ -1,26 +1,4 @@
-import 'dart:convert';
-
-List<ResponseAntrean> responseAntreanFromJson(String str) => List<ResponseAntrean>.from(json.decode(str).map((x) => ResponseAntrean.fromJson(x)));
-
-String responseAntreanToJson(List<ResponseAntrean> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
 class ResponseAntrean {
-  ResponseAntrean({
-    this.idPoli,
-    this.idPasien,
-    this.nomorAntrean,
-    this.tipeBooking,
-    this.tglPelayanan,
-    this.jamBooking,
-    this.waktuDaftarAntrean,
-    this.jamMulaiDilayani,
-    this.jamSelesaiDilayani,
-    this.statusAntrean,
-    this.hari,
-    this.pasien,
-    this.poliklinik,
-  });
-
   String idPoli;
   String idPasien;
   String nomorAntrean;
@@ -29,105 +7,129 @@ class ResponseAntrean {
   String jamBooking;
   String waktuDaftarAntrean;
   String jamMulaiDilayani;
-  String jamSelesaiDilayani;
+  Null jamSelesaiDilayani;
   String statusAntrean;
   String hari;
-  PasienAntrean pasien;
-  PoliklinikAntrean poliklinik;
+  Pasien pasien;
+  Poliklinik poliklinik;
 
-  factory ResponseAntrean.fromJson(Map<String, dynamic> json) => ResponseAntrean(
-    idPoli: json["id_poli"],
-    idPasien: json["id_pasien"],
-    nomorAntrean: json["nomor_antrean"],
-    tipeBooking: json["tipe_booking"],
-    tglPelayanan: json["tgl_pelayanan"],
-    jamBooking: json["jam_booking"],
-    waktuDaftarAntrean: json["waktu_daftar_antrean"],
-    jamMulaiDilayani: json["jam_mulai_dilayani"],
-    jamSelesaiDilayani: json["jam_selesai_dilayani"],
-    statusAntrean: json["status_antrean"],
-    hari: json["hari"],
-    pasien: PasienAntrean.fromJson(json["pasien"]),
-    poliklinik: PoliklinikAntrean.fromJson(json["poliklinik"]),
-  );
+  ResponseAntrean(
+      {this.idPoli,
+        this.idPasien,
+        this.nomorAntrean,
+        this.tipeBooking,
+        this.tglPelayanan,
+        this.jamBooking,
+        this.waktuDaftarAntrean,
+        this.jamMulaiDilayani,
+        this.jamSelesaiDilayani,
+        this.statusAntrean,
+        this.hari,
+        this.pasien,
+        this.poliklinik});
 
-  Map<String, dynamic> toJson() => {
-    "id_poli": idPoli,
-    "id_pasien": idPasien,
-    "nomor_antrean": nomorAntrean,
-    "tipe_booking": tipeBooking,
-    "tgl_pelayanan": tglPelayanan,
-    "jam_booking": jamBooking,
-    "waktu_daftar_antrean": waktuDaftarAntrean,
-    "jam_mulai_dilayani": jamMulaiDilayani,
-    "jam_selesai_dilayani": jamSelesaiDilayani,
-    "status_antrean": statusAntrean,
-    "hari": hari,
-    "pasien": pasien.toJson(),
-    "poliklinik": poliklinik.toJson(),
-  };
+  ResponseAntrean.fromJson(Map<String, dynamic> json) {
+    idPoli = json['id_poli'];
+    idPasien = json['id_pasien'];
+    nomorAntrean = json['nomor_antrean'];
+    tipeBooking = json['tipe_booking'];
+    tglPelayanan = json['tgl_pelayanan'];
+    jamBooking = json['jam_booking'];
+    waktuDaftarAntrean = json['waktu_daftar_antrean'];
+    jamMulaiDilayani = json['jam_mulai_dilayani'];
+    jamSelesaiDilayani = json['jam_selesai_dilayani'];
+    statusAntrean = json['status_antrean'];
+    hari = json['hari'];
+    pasien =
+    json['pasien'] != null ? new Pasien.fromJson(json['pasien']) : null;
+    poliklinik = json['poliklinik'] != null
+        ? new Poliklinik.fromJson(json['poliklinik'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id_poli'] = this.idPoli;
+    data['id_pasien'] = this.idPasien;
+    data['nomor_antrean'] = this.nomorAntrean;
+    data['tipe_booking'] = this.tipeBooking;
+    data['tgl_pelayanan'] = this.tglPelayanan;
+    data['jam_booking'] = this.jamBooking;
+    data['waktu_daftar_antrean'] = this.waktuDaftarAntrean;
+    data['jam_mulai_dilayani'] = this.jamMulaiDilayani;
+    data['jam_selesai_dilayani'] = this.jamSelesaiDilayani;
+    data['status_antrean'] = this.statusAntrean;
+    data['hari'] = this.hari;
+    if (this.pasien != null) {
+      data['pasien'] = this.pasien.toJson();
+    }
+    if (this.poliklinik != null) {
+      data['poliklinik'] = this.poliklinik.toJson();
+    }
+    return data;
+  }
 }
 
-class PasienAntrean {
-  PasienAntrean({
-    this.idPasien,
-    this.username,
-    this.noHandphone,
-    this.kepalaKeluarga,
-    this.namaLengkap,
-    this.alamat,
-    this.tglLahir,
-    this.jenisPasien,
-  });
-
-  String idPasien;
-  String username;
-  String noHandphone;
-  String kepalaKeluarga;
+class Pasien {
+  int idPasien;
+  Null username;
+  Null noHandphone;
+  Null kepalaKeluarga;
   String namaLengkap;
-  String alamat;
-  String tglLahir;
-  String jenisPasien;
+  Null alamat;
+  Null tglLahir;
+  Null jenisPasien;
 
-  factory PasienAntrean.fromJson(Map<String, dynamic> json) => PasienAntrean(
-    idPasien: json["id_pasien"],
-    username: json["username"],
-    noHandphone: json["no_handphone"],
-    kepalaKeluarga: json["kepala_keluarga"],
-    namaLengkap: json["nama_lengkap"],
-    alamat: json["alamat"],
-    tglLahir: json["tgl_lahir"],
-    jenisPasien: json["jenis_pasien"],
-  );
+  Pasien(
+      {this.idPasien,
+        this.username,
+        this.noHandphone,
+        this.kepalaKeluarga,
+        this.namaLengkap,
+        this.alamat,
+        this.tglLahir,
+        this.jenisPasien});
 
-  Map<String, dynamic> toJson() => {
-    "id_pasien": idPasien,
-    "username": username,
-    "no_handphone": noHandphone,
-    "kepala_keluarga": kepalaKeluarga,
-    "nama_lengkap": namaLengkap,
-    "alamat": alamat,
-    "tgl_lahir": tglLahir,
-    "jenis_pasien": jenisPasien,
-  };
+  Pasien.fromJson(Map<String, dynamic> json) {
+    idPasien = json['id_pasien'];
+    username = json['username'];
+    noHandphone = json['no_handphone'];
+    kepalaKeluarga = json['kepala_keluarga'];
+    namaLengkap = json['nama_lengkap'];
+    alamat = json['alamat'];
+    tglLahir = json['tgl_lahir'];
+    jenisPasien = json['jenis_pasien'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id_pasien'] = this.idPasien;
+    data['username'] = this.username;
+    data['no_handphone'] = this.noHandphone;
+    data['kepala_keluarga'] = this.kepalaKeluarga;
+    data['nama_lengkap'] = this.namaLengkap;
+    data['alamat'] = this.alamat;
+    data['tgl_lahir'] = this.tglLahir;
+    data['jenis_pasien'] = this.jenisPasien;
+    return data;
+  }
 }
 
-class PoliklinikAntrean {
-  PoliklinikAntrean({
-    this.idPoli,
-    this.namaPoli,
-  });
-
-  String idPoli;
+class Poliklinik {
+  int idPoli;
   String namaPoli;
 
-  factory PoliklinikAntrean.fromJson(Map<String, dynamic> json) => PoliklinikAntrean(
-    idPoli: json["id_poli"],
-    namaPoli: json["nama_poli"],
-  );
+  Poliklinik({this.idPoli, this.namaPoli});
 
-  Map<String, dynamic> toJson() => {
-    "id_poli": idPoli,
-    "nama_poli": namaPoli,
-  };
+  Poliklinik.fromJson(Map<String, dynamic> json) {
+    idPoli = json['id_poli'];
+    namaPoli = json['nama_poli'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id_poli'] = this.idPoli;
+    data['nama_poli'] = this.namaPoli;
+    return data;
+  }
 }

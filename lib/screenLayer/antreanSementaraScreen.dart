@@ -245,8 +245,8 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
               onPressed: () {
                 pasien.statusAntrean = StatusAntrean.BELUM_DILAYANI.toString();
                 jadwal = JadwalPasien(
-                    idPoli: int.parse(pasien.poliklinik.idPoli),
-                    tglPelayanan: pasien.tglPelayanan,
+                    idPoli: int.parse(pasien.poliklinik.idPoli.toString()),
+                    tglPelayanan: pasien.tglPelayanan.toString(),
                     idPasien: int.parse(pasien.idPasien),
                     statusAntrean: StatusAntrean.BELUM_DILAYANI);
                 _antreanSementaraBloc.add(EventAntreanSementaraEditJadwalPasien(pasien: jadwal));
@@ -282,7 +282,7 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
     ];
 
     for (var i in daftarStatus) {
-      if (i['value'] == pasien.statusAntrean) {
+      if (i['value'] == int.parse(pasien.statusAntrean)) {
         result = i;
       }
     }
@@ -331,12 +331,12 @@ class _AntreanSementaraScreenState extends State<AntreanSementaraScreen> {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                pasien.statusAntrean = result["value"];
+                pasien.statusAntrean = result["value"].toString();
                 jadwal = JadwalPasien(
-                    idPoli: int.parse(pasien.poliklinik.idPoli),
-                    tglPelayanan: pasien.tglPelayanan,
+                    idPoli: int.parse(pasien.poliklinik.idPoli.toString()),
+                    tglPelayanan: pasien.tglPelayanan.toString(),
                     idPasien: int.parse(pasien.idPasien),
-                    statusAntrean: result["value"]);
+                    statusAntrean: int.parse(pasien.statusAntrean));
                 _antreanSementaraBloc
                     .add(EventAntreanSementaraEditJadwalPasien(pasien: jadwal));
                 Navigator.pop(context);
