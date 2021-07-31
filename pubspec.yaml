@@ -34,6 +34,9 @@ dependencies:
   flutter_bloc:
   lottie:
   responsive_builder:
+  timer_builder: ^2.0.0
+  intl: ^0.17.0
+  google_fonts: ^2.1.0
 
 dev_dependencies:
   flutter_test:
