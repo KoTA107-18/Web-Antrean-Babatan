@@ -1,11 +1,13 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:web_antrean_babatan/blocLayer/akun/akunPerawat/akun_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/model/perawat.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
 import 'package:web_antrean_babatan/dataLayer/model/responseGetPerawat.dart';
+import 'package:web_antrean_babatan/utils/constants/animations.dart';
+import 'package:web_antrean_babatan/utils/constants/colors.dart';
 import 'package:web_antrean_babatan/utils/textFieldModified.dart';
 
 class AkunScreen extends StatefulWidget {
@@ -27,124 +29,204 @@ class _AkunScreenState extends State<AkunScreen> {
     return BlocProvider(
       create: (_) => _akunBloc,
       child: Scaffold(
-        backgroundColor: Colors.teal[50],
-        appBar: AppBar(
-          leading: Icon(Icons.switch_account),
-          title: Text("Akun Anda"),
-        ),
-        body: BlocBuilder<AkunBloc, AkunState>(
-          cubit: _akunBloc,
-          builder: (context, state) {
-            if (state is AkunStateSuccess) {
-              return Container(
-                  padding: EdgeInsets.all(20.0),
-                  child:
-                  tabelAkunPerawat(state.daftarPerawat, state.daftarPoli));
-            } else if (state is AkunStateFailed) {
-              return Center(
-                child: Text(state.messageFailed),
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
+        backgroundColor: AppColors.colorMap[50],
+        body: Container(
+          padding: EdgeInsets.all(20.0),
+          child: SafeArea(
+            child: BlocBuilder<AkunBloc, AkunState>(
+              bloc: _akunBloc,
+              builder: (context, state) {
+                if (state is AkunStateSuccess) {
+                  return tabelAkunPerawat(
+                      state.daftarPerawat, state.daftarPoli);
+                } else if (state is AkunStateFailed) {
+                  return Center(
+                    child: Text(state.messageFailed),
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
+          ),
         ),
       ),
     );
   }
 
-  ListView tabelAkunPerawat(
+  tabelAkunPerawat(
       List<ResponseGetPerawat> daftarPerawat, List<Poliklinik> daftarPoli) {
-    return ListView(children: <Widget>[
-      Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(3),
-          color: Colors.teal[300],
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0x29000000),
-              offset: Offset(0, 3),
-              blurRadius: 6,
+    double cellWidth = 1481;
+    return Row(children: <Widget>[
+      Expanded(
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: AppColors.white,
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0x29000000),
+                offset: Offset(0, 3),
+                blurRadius: 6,
+              ),
+            ],
+          ),
+          child: HorizontalDataTable(
+            leftHandSideColumnWidth: cellWidth * 9 / 30,
+            rightHandSideColumnWidth: cellWidth * 21 / 30,
+            isFixedHeader: true,
+            headerWidgets:
+                getTitleWidget(cellWidth * 9 / 30, cellWidth * 21 / 30),
+            leftSideItemBuilder: (context, index) => generateFirstColumnRow(
+                context, index, daftarPerawat, daftarPoli, cellWidth * 9 / 30),
+            rightSideItemBuilder: (context, index) =>
+                generateRightHandSideColumnRow(context, index, daftarPerawat,
+                    daftarPoli, (cellWidth * 21 / 30)),
+            itemCount: daftarPerawat.length,
+            rowSeparatorWidget: const Divider(
+              color: Colors.black45,
+              height: 1.0,
+              thickness: 0.0,
             ),
-          ],
-        ),
-        child: DataTable(
-          showBottomBorder: true,
-          columns: [
-            DataColumn(
-                label: Text('ID',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-            DataColumn(
-                label: Text('Username',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-            DataColumn(
-                label: Text('Password',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-            DataColumn(
-                label: Text('Poliklinik',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-            DataColumn(
-                label: Text('Aksi',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-          ],
-          rows: daftarPerawat
-              .map((akunPerawat) => DataRow(
-              color: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                    return Colors.white;
-                  }),
-              cells: [
-                DataCell(Text(akunPerawat.idPerawat.toString())),
-                DataCell(Text(
-                  akunPerawat.username,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                )),
-                DataCell(Text("*" * akunPerawat.password.length)),
-                DataCell(Text(akunPerawat.poliklinik.namaPoli)),
-                DataCell(Row(
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.info),
-                        onPressed: () {
-                          infoAkunPerawat(akunPerawat);
-                        }),
-                    IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () {
-                          editAkunPerawat(daftarPoli, akunPerawat);
-                        }),
-                  ],
-                )),
-              ]))
-              .toList(),
+            leftHandSideColBackgroundColor: AppColors.white,
+            rightHandSideColBackgroundColor: AppColors.white,
+            verticalScrollbarStyle: const ScrollbarStyle(
+              isAlwaysShown: true,
+              thickness: 4.0,
+              radius: Radius.circular(5.0),
+            ),
+            horizontalScrollbarStyle: const ScrollbarStyle(
+              isAlwaysShown: true,
+              thickness: 4.0,
+              radius: Radius.circular(5.0),
+            ),
+          ),
         ),
       ),
     ]);
   }
 
+  Widget getTitleItemWidget(String label, double width) {
+    return Container(
+      child: Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
+      height: 56,
+      width: width,
+      padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+      alignment: Alignment.centerLeft,
+    );
+  }
+
+  List<Widget> getTitleWidget(double leftColumn, double rightColumn) {
+    return [
+      Row(
+        children: [
+          getTitleItemWidget('ID', leftColumn * 2 / 9),
+          getTitleItemWidget('Username', leftColumn * 7 / 9),
+        ],
+      ),
+      getTitleItemWidget('Password', rightColumn / 3),
+      getTitleItemWidget('Poliklinik', rightColumn / 3),
+      getTitleItemWidget('Aksi', rightColumn / 3),
+    ];
+  }
+
+  Widget generateFirstColumnRow(
+      BuildContext context,
+      int index,
+      List<ResponseGetPerawat> daftarPerawat,
+      List<Poliklinik> daftarPoli,
+      double width) {
+    return Row(
+      children: [
+        Container(
+          child: Text(daftarPerawat[index].idPerawat.toString()),
+          color: AppColors.white,
+          width: width * 2 / 9,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          child: Text(
+            daftarPerawat[index].username,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          color: AppColors.white,
+          width: width * 7 / 9,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        )
+      ],
+    );
+  }
+
+  Widget generateRightHandSideColumnRow(
+      BuildContext context,
+      int index,
+      List<ResponseGetPerawat> daftarPerawat,
+      List<Poliklinik> daftarPoli,
+      double width) {
+    return Row(
+      children: <Widget>[
+        Container(
+          child: Text(
+            '*' * daftarPerawat[index].password.length,
+          ),
+          color: AppColors.white,
+          width: width / 3,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          child: Text(daftarPerawat[index].poliklinik.namaPoli),
+          color: AppColors.white,
+          width: width / 3,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                  icon: Icon(Icons.info),
+                  onPressed: () {
+                    infoAkunPerawat(daftarPerawat[index]);
+                  }),
+              IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    editAkunPerawat(daftarPoli, daftarPerawat[index]);
+                  }),
+            ],
+          ),
+          color: AppColors.white,
+          width: width / 3,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+      ],
+    );
+  }
+
   infoAkunPerawat(ResponseGetPerawat perawat) {
-    showDialog(
+    showGeneralDialog(
         context: context,
-        builder: (context) {
+        barrierLabel: '',
+        barrierDismissible: true,
+        transitionDuration: const Duration(milliseconds: 600),
+        transitionBuilder: (context, _animation, _secondaryAnimation, _child) {
+          return Animations.fromTop(_animation, _secondaryAnimation, _child);
+        },
+        pageBuilder: (_animation, _secondaryAnimation, _child) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Row(
@@ -206,18 +288,24 @@ class _AkunScreenState extends State<AkunScreen> {
                 ),
               ),
               actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: AppColors.primaryColor, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Tutup',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: Text(
-                    'Tutup',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 )
               ],
             );
@@ -239,9 +327,15 @@ class _AkunScreenState extends State<AkunScreen> {
     _nama.text = perawat.nama;
     int idPoliklinik = int.parse(perawat.poliklinik.idPoli.toString());
 
-    showDialog(
+    showGeneralDialog(
         context: context,
-        builder: (context) {
+        barrierLabel: '',
+        barrierDismissible: true,
+        transitionDuration: const Duration(milliseconds: 600),
+        transitionBuilder: (context, _animation, _secondaryAnimation, _child) {
+          return Animations.fromTop(_animation, _secondaryAnimation, _child);
+        },
+        pageBuilder: (_animation, _secondaryAnimation, _child) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Row(
@@ -269,7 +363,7 @@ class _AkunScreenState extends State<AkunScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                             hint: 'Isi nama anda',
                             icon: Icon(Icons.person),
                             formatter: [
@@ -293,7 +387,7 @@ class _AkunScreenState extends State<AkunScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                             hint: 'Kombinasi huruf dan angka.',
                             icon: Icon(Icons.person),
                             formatter: [
@@ -319,7 +413,7 @@ class _AkunScreenState extends State<AkunScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                             hint: 'Isi password anda',
                             icon: Icon(Icons.vpn_key),
                             formatter: [
@@ -345,7 +439,7 @@ class _AkunScreenState extends State<AkunScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                             hint: 'Isi kembali password anda',
                             icon: Icon(Icons.vpn_key),
                             formatter: [
@@ -370,43 +464,55 @@ class _AkunScreenState extends State<AkunScreen> {
                 ),
               ),
               actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: AppColors.primaryColor, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Ubah',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isClickValidated = true;
+                      });
+                      if (_formKey.currentState.validate()) {
+                        _akunBloc.add(AkunEventSubmitEdit(
+                            perawat: Perawat(
+                                nama: _nama.text.toString(),
+                                idPerawat: int.parse(perawat.idPerawat),
+                                username: _username.text.toString(),
+                                password: _password.text.toString(),
+                                idPoli: idPoliklinik)));
+                        Navigator.pop(context);
+                      }
+                    },
                   ),
-                  child: Text(
-                    'Ubah',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isClickValidated = true;
-                    });
-                    if (_formKey.currentState.validate()) {
-                      _akunBloc.add(AkunEventSubmitEdit(
-                          perawat: Perawat(
-                              nama: _nama.text.toString(),
-                              idPerawat: int.parse(perawat.idPerawat),
-                              username: _username.text.toString(),
-                              password: _password.text.toString(),
-                              idPoli: idPoliklinik)));
-                      Navigator.pop(context);
-                    }
-                  },
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.grey, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: Text(
-                    'Tidak',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 ),
               ],
             );

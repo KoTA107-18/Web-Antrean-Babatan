@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_antrean_babatan/blocLayer/dashboard/dashboard_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/model/infoPoliklinik.dart';
+import 'package:web_antrean_babatan/utils/constants/animations.dart';
 import 'package:web_antrean_babatan/utils/constants/colors.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -15,192 +17,184 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final DashboardBloc dashboardBloc = DashboardBloc();
   var sizeWidth = 0;
 
-  String dateSlug = ""
-      "${DateTime.now().year.toString()}/"
-      "${DateTime.now().month.toString().padLeft(2, '0')}/"
-      "${DateTime.now().day.toString().padLeft(2, '0')}";
-
   @override
   void initState() {
     dashboardBloc.add(EventDashboardGetPoli());
     super.initState();
   }
 
-  cardTextStyle(double fontSize, FontWeight fontWeight) {
-    return TextStyle(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: AppColors.colorMap[900]);
-  }
-
   cardPoli(List<InfoPoliklinik> daftarPoli) {
-    return GridView.builder(
+    return StaggeredGridView.countBuilder(
+      staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+      crossAxisCount: (sizeWidth >= 1400)
+          ? 4
+          : (sizeWidth >= 1200)
+              ? 3
+              : (sizeWidth >= 768)
+                  ? 2
+                  : 1,
       itemCount: daftarPoli.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: (sizeWidth > 1440)
-            ? 3
-            : (sizeWidth > 768)
-                ? 2
-                : 1,
-        childAspectRatio: 1.5,
-      ),
-      itemBuilder: (context, index) {
-        return Container(
-          margin: EdgeInsets.all(10.0),
-          padding: EdgeInsets.all(20.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: (daftarPoli[index].statusPoli == 1.toString())
-                ? AppColors.white
-                : AppColors.colorMap[900].withOpacity(0.2),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(.15),
-                blurRadius: 6,
-                offset: Offset(0.5, 0.5),
-                spreadRadius: 2,
-              ),
-            ],
-          ),
+      itemBuilder: (context, index) => Card(
+        color: (daftarPoli[index].statusPoli == 1.toString())
+            ? AppColors.white
+            : AppColors.white.withOpacity(0.4),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: AppColors.primaryColor, width: 1.0),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Poliklinik :",
-                    style: TextStyle(color: Colors.grey[600], fontSize: 16)),
+              Center(
+                child: Text(
+                  'Poliklinik',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 12.0),
+              Center(
                 child: Text(
                   daftarPoli[index].namaPoli,
-                  style: cardTextStyle(20, FontWeight.bold),
+                  style: TextStyle(fontSize: 20),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Total Antrean",
-                      style: cardTextStyle(18, FontWeight.w500),
-                    ),
+              SizedBox(
+                height: 16,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total Antrean',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Text(
                     (daftarPoli[index].totalAntrean.length == 0)
-                        ? Text(
-                            "0",
-                            style: cardTextStyle(18, FontWeight.w500),
-                          )
-                        : Text(
-                            daftarPoli[index].totalAntrean[0].result,
-                            style: cardTextStyle(18, FontWeight.w500),
-                          ),
-                  ],
-                ),
+                        ? '0'
+                        : daftarPoli[index].totalAntrean[0].result,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
               ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Antrean Sementara",
-                      style: cardTextStyle(18, FontWeight.w500),
-                    ),
+              SizedBox(
+                height: 7,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Antrean Sementara',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Text(
                     (daftarPoli[index].antreanSementara.length == 0)
-                        ? Text(
-                            "0",
-                            style: cardTextStyle(18, FontWeight.w500),
-                          )
-                        : Text(
-                            daftarPoli[index].antreanSementara[0].result,
-                            style: cardTextStyle(18, FontWeight.w500),
-                          ),
-                  ],
-                ),
+                        ? '0'
+                        : daftarPoli[index].antreanSementara[0].result,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
               ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Nomor Antrean Saat Ini",
-                      style: cardTextStyle(18, FontWeight.w500),
-                    ),
+              SizedBox(
+                height: 7,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Nomor Antrean Saat Ini',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Text(
                     (daftarPoli[index].nomorAntrean.length == 0)
-                        ? Text(
-                            "0",
-                            style: cardTextStyle(18, FontWeight.w500),
-                          )
-                        : Text(
-                            daftarPoli[index].nomorAntrean[0].result,
-                            style: cardTextStyle(18, FontWeight.w500),
-                          ),
-                  ],
-                ),
-              )
+                        ? '0'
+                        : daftarPoli[index].nomorAntrean[0].result,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
             ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
   _portalDialog(BuildContext context, bool isOpen) {
-    showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              title: (isOpen) ? Text("Buka Portal") : Text("Tutup Portal"),
-              content: (isOpen)
-                  ? Text("Anda yakin membuka portal Puskesmas yang dipilih?")
-                  : Text("Anda yakin menutup portal Puskesmas yang dipilih?"),
-              actions: <Widget>[
-                (isOpen)
-                    ? ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.teal, // background
-                          onPrimary: Colors.white, // foreground
-                        ),
-                        child: Text(
-                          'Ya',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {
-                          dashboardBloc.add(EventDashboardBukaPortal());
-                          Navigator.pop(context);
-                        },
-                      )
-                    : ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.red, // background
-                          onPrimary: Colors.white, // foreground
-                        ),
-                        child: Text(
-                          'Ya',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {
-                          dashboardBloc.add(EventDashboardTutupPortal());
-                          Navigator.pop(context);
-                        },
+    showGeneralDialog(
+      context: context,
+      barrierLabel: '',
+      barrierDismissible: true,
+      transitionDuration: const Duration(milliseconds: 600),
+      transitionBuilder: (context, _animation, _secondaryAnimation, _child) {
+        return Animations.fromTop(_animation, _secondaryAnimation, _child);
+      },
+      pageBuilder: (_animation, _secondaryAnimation, _child) => AlertDialog(
+        title: (isOpen) ? Text("Buka Portal") : Text("Tutup Portal"),
+        content: (isOpen)
+            ? Text("Anda yakin membuka portal Puskesmas yang dipilih?")
+            : Text("Anda yakin menutup portal Puskesmas yang dipilih?"),
+        actions: <Widget>[
+          Container(
+            margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+            child: (isOpen)
+                ? ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: AppColors.primaryColor, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Ya',
+                        style: TextStyle(color: Colors.white),
                       ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey, // background
-                    onPrimary: Colors.white, // foreground
+                    ),
+                    onPressed: () {
+                      dashboardBloc.add(EventDashboardBukaPortal());
+                      Navigator.pop(context);
+                    },
+                  )
+                : ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Ya',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      dashboardBloc.add(EventDashboardTutupPortal());
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: Text(
-                    'Tidak',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.grey, // background
+                onPrimary: Colors.white, // foreground
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Tidak',
+                  style: TextStyle(color: Colors.white),
                 ),
-              ],
-            ));
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey();
@@ -212,7 +206,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return BlocProvider(
       create: (_) => dashboardBloc,
       child: BlocListener<DashboardBloc, DashboardState>(
-        cubit: dashboardBloc,
+        bloc: dashboardBloc,
         listener: (context, state) {
           if (state is StateDashboardSuccess) {
             Timer.periodic(Duration(milliseconds: 5000), (timer) {
@@ -221,7 +215,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           }
         },
         child: BlocBuilder<DashboardBloc, DashboardState>(
-          cubit: dashboardBloc,
+          bloc: dashboardBloc,
           builder: (BuildContext context, state) {
             if (state is StateDashboardLoading) {
               return Center(child: CircularProgressIndicator());
@@ -256,19 +250,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     children: [
                                       Container(
                                         child: Center(
-                                          child: Text('Portal Pendaftaran',
-                                              style: TextStyle(
-                                                  fontSize: 18.0,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.teal)),
+                                          child: Text(
+                                            'Portal Pendaftaran',
+                                            style: TextStyle(
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: AppColors.primaryColor),
+                                          ),
                                         ),
                                       ),
                                       Container(
                                         child: Center(
-                                          child: Text('Puskesmas Babatan',
-                                              style: TextStyle(
-                                                  fontSize: 14.0,
-                                                  color: Colors.teal)),
+                                          child: Text(
+                                            'Puskesmas Babatan',
+                                            style: TextStyle(
+                                                fontSize: 14.0,
+                                                color: AppColors.primaryColor),
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -282,10 +280,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     Expanded(
                                       flex: 2,
                                       child: ElevatedButton(
-                                          onPressed: () {
-                                            _portalDialog(context, true);
-                                          },
-                                          child: Text("Buka Portal")),
+                                        onPressed: () {
+                                          _portalDialog(context, true);
+                                        },
+                                        child: Text("Buka Portal"),
+                                      ),
                                     ),
                                     SizedBox(width: 8.0),
                                     Expanded(
@@ -338,9 +337,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 body: Row(
                   children: [
                     Expanded(
-                      flex: 3,
                       child: Container(
-                        padding: EdgeInsets.all(10),
+                        padding: EdgeInsets.all(15),
                         child: cardPoli(state.daftarPoli),
                       ),
                     ),

@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:web_antrean_babatan/blocLayer/login/login_bloc.dart';
-import 'package:web_antrean_babatan/utils/color.dart';
+import 'package:web_antrean_babatan/utils/constants/colors.dart';
 import 'package:web_antrean_babatan/utils/textFieldModified.dart';
 
 import 'mainScreen.dart';
@@ -23,7 +23,7 @@ class Login extends StatelessWidget {
       create: (context) => _loginBloc,
       child: Scaffold(
         body: Container(
-          color: ColorTheme.greenDark,
+          color: AppColors.colorMap[800],
           child: Center(
             child: Container(
               decoration: BoxDecoration(
@@ -53,20 +53,21 @@ class Login extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 32.0,
                                 fontWeight: FontWeight.bold,
-                                color: ColorTheme.greenDark)),
+                                color: AppColors.colorMap[800])),
                       ),
                     ),
                     Container(
                       child: Center(
                         child: Text('Antrean Online Puskesmas Babatan',
                             style: TextStyle(
-                                fontSize: 16.0, color: ColorTheme.greenDark)),
+                                fontSize: 16.0,
+                                color: AppColors.colorMap[800])),
                       ),
                     ),
                     SizedBox(height: 16.0),
                     Container(
                       child: BlocBuilder<LoginBloc, LoginState>(
-                          cubit: _loginBloc,
+                          bloc: _loginBloc,
                           builder: (context, state) {
                             if (state is StateLoginChooseRole) {
                               return Row(
@@ -132,50 +133,66 @@ class Login extends StatelessWidget {
                           }),
                     ),
                     SizedBox(height: 16.0),
-                    Container(
-                      child: textFieldModified(
-                          label: 'Username',
-                          hint: 'Kombinasi huruf dan angka.',
-                          icon: Icon(Icons.person),
-                          formatter: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp('[a-zA-Z0-9]')),
-                          ],
-                          validatorFunc: (value) {
-                            if (value.isEmpty) {
-                              return "Harus diisi";
-                            } else if (value.length < 4) {
-                              return "Minimum 4 karakter";
-                            } else {
-                              return null;
-                            }
-                          },
-                          controller: _username),
-                    ),
-                    SizedBox(height: 20.0),
-                    Container(
-                      child: textFieldModified(
-                          label: 'Password',
-                          hint: 'Isi password anda',
-                          icon: Icon(Icons.vpn_key),
-                          formatter: [
-                            FilteringTextInputFormatter.deny(RegExp('[ ]')),
-                          ],
-                          isPasword: true,
-                          validatorFunc: (value) {
-                            if (value.isEmpty) {
-                              return "Harus diisi";
-                            } else if (value.length < 4) {
-                              return "Minimum 4 karakter";
-                            } else {
-                              return null;
-                            }
-                          },
-                          controller: _password),
+                    BlocBuilder<LoginBloc, LoginState>(
+                      bloc: _loginBloc,
+                      builder: (context, state) {
+                        return Container(
+                          child: TextFieldModified(
+                              label: 'Username',
+                              hint: 'Kombinasi huruf dan angka.',
+                              icon: Icon(Icons.person),
+                              formatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp('[a-zA-Z0-9]')),
+                              ],
+                              validatorFunc: (value) {
+                                if (value.isEmpty) {
+                                  return "Harus diisi";
+                                } else if (value.length < 4) {
+                                  return "Minimum 4 karakter";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              onFieldSubmitted: (value) {
+                                authLogin(context);
+                              },
+                              controller: _username),
+                        );
+                      },
                     ),
                     SizedBox(height: 20.0),
                     BlocBuilder<LoginBloc, LoginState>(
-                        cubit: _loginBloc,
+                      bloc: _loginBloc,
+                      builder: (context, state) {
+                        return Container(
+                          child: TextFieldModified(
+                              label: 'Password',
+                              hint: 'Isi password anda',
+                              icon: Icon(Icons.vpn_key),
+                              formatter: [
+                                FilteringTextInputFormatter.deny(RegExp('[ ]')),
+                              ],
+                              isPasword: true,
+                              validatorFunc: (value) {
+                                if (value.isEmpty) {
+                                  return "Harus diisi";
+                                } else if (value.length < 4) {
+                                  return "Minimum 4 karakter";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              onFieldSubmitted: (value) {
+                                authLogin(context);
+                              },
+                              controller: _password),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 20.0),
+                    BlocBuilder<LoginBloc, LoginState>(
+                        bloc: _loginBloc,
                         builder: (context, state) {
                           return InkWell(
                             onTap: () {
@@ -185,7 +202,7 @@ class Login extends StatelessWidget {
                               height: 40.0,
                               child: Material(
                                 borderRadius: BorderRadius.circular(20.0),
-                                color: ColorTheme.greenDark,
+                                color: AppColors.colorMap[800],
                                 elevation: 7.0,
                                 child: Center(
                                   child: Text(
@@ -200,7 +217,7 @@ class Login extends StatelessWidget {
                           );
                         }),
                     BlocListener<LoginBloc, LoginState>(
-                        cubit: _loginBloc,
+                        bloc: _loginBloc,
                         child: SizedBox.shrink(),
                         listener: (context, state) {
                           if (state is StateLoginSuccess) {
@@ -220,7 +237,7 @@ class Login extends StatelessWidget {
                           }
                         }),
                     BlocBuilder<LoginBloc, LoginState>(
-                        cubit: _loginBloc,
+                        bloc: _loginBloc,
                         builder: (context, state) {
                           if (state is StateLoginLoading) {
                             return Column(

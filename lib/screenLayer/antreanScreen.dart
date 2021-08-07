@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:lottie/lottie.dart';
 import 'package:web_antrean_babatan/blocLayer/antrean/antreanUtama/antrean_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/api/requestApi.dart';
 import 'package:web_antrean_babatan/dataLayer/model/jadwalPasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/responseAntrean.dart';
 import 'package:web_antrean_babatan/dataLayer/model/statusAntrean.dart';
+import 'package:web_antrean_babatan/utils/constants/animations.dart';
+import 'package:web_antrean_babatan/utils/constants/colors.dart';
 
 class AntreanScreen extends StatefulWidget {
   @override
@@ -29,21 +33,48 @@ class _AntreanScreenState extends State<AntreanScreen> {
     return BlocProvider(
       create: (context) => _antreanBloc,
       child: BlocBuilder<AntreanBloc, AntreanState>(
-        cubit: _antreanBloc,
+        bloc: _antreanBloc,
         builder: (context, state) {
           if (state is StateAntreanGetPoliSuccess) {
             return DefaultTabController(
                 length: state.daftarPoli.length,
                 child: Scaffold(
-                    appBar: AppBar(
-                      leading: Icon(Icons.people),
-                      title: Text("Daftar Antrean"),
-                      bottom: TabBar(
-                        isScrollable: true,
-                        tabs: List<Widget>.generate(state.daftarPoli.length,
-                            (int index) {
-                          return Tab(text: state.daftarPoli[index].namaPoli);
-                        }),
+                    appBar: PreferredSize(
+                      preferredSize: Size.fromHeight(kToolbarHeight - 3),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryColor,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: SafeArea(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Expanded(child: Container()),
+                              TabBar(
+                                indicatorColor: AppColors.colorMap[50],
+                                labelStyle: GoogleFonts.notoSans(),
+                                unselectedLabelStyle: GoogleFonts.notoSans(),
+                                isScrollable: true,
+                                tabs: List<Widget>.generate(
+                                  state.daftarPoli.length,
+                                  (int index) {
+                                    return Tab(
+                                        text: state.daftarPoli[index].namaPoli);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                     body: TabBarView(
@@ -62,140 +93,38 @@ class _AntreanScreenState extends State<AntreanScreen> {
                                         ResponseAntrean.fromJson(aJson))
                                     .toList();
                                 return Container(
-                                  color: Colors.teal[50],
+                                  color: AppColors.colorMap[50],
                                   padding: EdgeInsets.all(20.0),
-                                  child: ListView(children: <Widget>[
-                                    Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(3),
-                                        color: Colors.teal[300],
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: const Color(0x29000000),
-                                            offset: Offset(0, 3),
-                                            blurRadius: 6,
+                                  child: SafeArea(
+                                    child: Row(children: <Widget>[
+                                      Expanded(
+                                        child: Container(
+                                          width: double.infinity,
+                                          padding: EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            color: AppColors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: const Color(0x29000000),
+                                                offset: Offset(0, 3),
+                                                blurRadius: 6,
+                                              ),
+                                            ],
                                           ),
-                                        ],
+                                          child:
+                                              tabelDaftarAntrean(daftarAntrean),
+                                        ),
                                       ),
-                                      child: DataTable(
-                                        showBottomBorder: true,
-                                        columns: [
-                                          DataColumn(
-                                              label: Text('No',
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white))),
-                                          DataColumn(
-                                              label: Text('Nama',
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white))),
-                                          DataColumn(
-                                              label: Text('Tanggal Lahir',
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white))),
-                                          DataColumn(
-                                              label: Text('Kepala Keluarga',
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white))),
-                                          DataColumn(
-                                              label: Text('Jenis',
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white))),
-                                          DataColumn(
-                                              label: Text('Aksi',
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white))),
-                                        ],
-                                        rows: [
-                                          for (var i in daftarAntrean)
-                                            DataRow(
-                                                color: MaterialStateProperty
-                                                    .resolveWith<Color>(
-                                                        (Set<MaterialState>
-                                                            states) {
-                                                  if (i.statusAntrean ==
-                                                      2.toString()) {
-                                                    return Colors.red[100];
-                                                  } else {
-                                                    return Colors.white;
-                                                  }
-                                                }),
-                                                cells: [
-                                                  DataCell(Text(
-                                                      (nomor += 1).toString())),
-                                                  DataCell(Text(
-                                                      i.pasien.namaLengkap)),
-                                                  DataCell(Text(
-                                                      (i.pasien.tglLahir ==
-                                                              null)
-                                                          ? "-"
-                                                          : i.pasien.tglLahir)),
-                                                  DataCell(Text((i.pasien
-                                                              .kepalaKeluarga ==
-                                                          null)
-                                                      ? "-"
-                                                      : i.pasien
-                                                          .kepalaKeluarga)),
-                                                  DataCell(Text(
-                                                      (i.pasien.jenisPasien ==
-                                                              0.toString())
-                                                          ? "Umum"
-                                                          : "BPJS")),
-                                                  DataCell(Row(
-                                                    children: [
-                                                      IconButton(
-                                                          icon: Icon(Icons
-                                                              .access_time_sharp),
-                                                          onPressed: () {
-                                                            konfirmasiAntreanSementara(
-                                                                context, i);
-                                                          }),
-                                                      IconButton(
-                                                          icon:
-                                                              Icon(Icons.edit),
-                                                          onPressed: () {
-                                                            editAntrean(
-                                                                context, i);
-                                                          }),
-                                                      IconButton(
-                                                          icon:
-                                                              Icon(Icons.info),
-                                                          onPressed: () {
-                                                            infoAntrean(
-                                                                context, i);
-                                                          })
-                                                    ],
-                                                  )),
-                                                ])
-                                        ],
-                                      ),
-                                    ),
-                                  ]),
+                                    ]),
+                                  ),
                                 );
                               } else if (snapshot.data == null &&
                                   snapshot.connectionState ==
                                       ConnectionState.done) {
                                 return Container(
-                                  color: Colors.teal[50],
+                                  color: AppColors.colorMap[50],
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -215,7 +144,7 @@ class _AntreanScreenState extends State<AntreanScreen> {
                                 );
                               } else {
                                 return Container(
-                                  color: Colors.teal[50],
+                                  color: AppColors.colorMap[50],
                                   child: Center(
                                     child: CircularProgressIndicator(),
                                   ),
@@ -235,39 +164,200 @@ class _AntreanScreenState extends State<AntreanScreen> {
     );
   }
 
+  tabelDaftarAntrean(List<ResponseAntrean> daftarAntrean) {
+    double cellWidth = 1481;
+    return HorizontalDataTable(
+      leftHandSideColumnWidth: cellWidth * 12 / 36,
+      rightHandSideColumnWidth: cellWidth * 24 / 36,
+      isFixedHeader: true,
+      headerWidgets: getTitleWidget(cellWidth * 12 / 36, cellWidth * 24 / 36),
+      leftSideItemBuilder: (context, index) => generateFirstColumnRow(
+          context, index, daftarAntrean, cellWidth * 12 / 36),
+      rightSideItemBuilder: (context, index) => generateRightHandSideColumnRow(
+          context, index, daftarAntrean, cellWidth * 24 / 36),
+      itemCount: daftarAntrean.length,
+      rowSeparatorWidget: const Divider(
+        color: Colors.black45,
+        height: 1.0,
+        thickness: 0.0,
+      ),
+      leftHandSideColBackgroundColor: AppColors.white,
+      rightHandSideColBackgroundColor: AppColors.white,
+      verticalScrollbarStyle: const ScrollbarStyle(
+        isAlwaysShown: true,
+        thickness: 4.0,
+        radius: Radius.circular(5.0),
+      ),
+      horizontalScrollbarStyle: const ScrollbarStyle(
+        isAlwaysShown: true,
+        thickness: 4.0,
+        radius: Radius.circular(5.0),
+      ),
+    );
+  }
+
+  Widget getTitleItemWidget(String label, double width) {
+    return Container(
+      child: Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
+      height: 56,
+      width: width,
+      padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+      alignment: Alignment.centerLeft,
+    );
+  }
+
+  List<Widget> getTitleWidget(double leftColumn, double rightColumn) {
+    return [
+      Row(
+        children: [
+          getTitleItemWidget('No', leftColumn * 4 / 12),
+          getTitleItemWidget('Nama', leftColumn * 8 / 12)
+        ],
+      ),
+      getTitleItemWidget('Tanggal Lahir', rightColumn * 8 / 24),
+      getTitleItemWidget('Kepala Keluarga', rightColumn * 8 / 24),
+      getTitleItemWidget('Jenis', rightColumn * 4 / 24),
+      getTitleItemWidget('Aksi', rightColumn * 4 / 24),
+    ];
+  }
+
+  Widget generateFirstColumnRow(BuildContext context, int index,
+      List<ResponseAntrean> daftarAntrean, double width) {
+    return Row(
+      children: [
+        Container(
+          child: Text((index + 1).toString()),
+          color: (daftarAntrean[index].statusAntrean == 2.toString())
+              ? AppColors.colorMap[900].withOpacity(0.4)
+              : AppColors.white,
+          width: width * 4 / 12,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          child: Text(daftarAntrean[index].pasien.namaLengkap),
+          color: (daftarAntrean[index].statusAntrean == 2.toString())
+              ? AppColors.colorMap[900].withOpacity(0.4)
+              : AppColors.white,
+          width: width * 8 / 12,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+      ],
+    );
+  }
+
+  Widget generateRightHandSideColumnRow(BuildContext context, int index,
+      List<ResponseAntrean> daftarAntrean, double width) {
+    return Row(
+      children: <Widget>[
+        Container(
+          child: Text(
+            (daftarAntrean[index].pasien.tglLahir == null)
+                ? '-'
+                : daftarAntrean[index].pasien.tglLahir,
+          ),
+          color: (daftarAntrean[index].statusAntrean == 2.toString())
+              ? AppColors.colorMap[900].withOpacity(0.4)
+              : AppColors.white,
+          width: width * 8 / 24,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          child: Text(
+            (daftarAntrean[index].pasien.kepalaKeluarga == null)
+                ? '-'
+                : daftarAntrean[index].pasien.kepalaKeluarga,
+          ),
+          color: (daftarAntrean[index].statusAntrean == 2.toString())
+              ? AppColors.colorMap[900].withOpacity(0.4)
+              : AppColors.white,
+          width: width * 8 / 24,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          child: Text(
+            (daftarAntrean[index].pasien.jenisPasien == 0) ? "Umum" : "BPJS",
+          ),
+          color: (daftarAntrean[index].statusAntrean == 2.toString())
+              ? AppColors.colorMap[900].withOpacity(0.4)
+              : AppColors.white,
+          width: width * 4 / 24,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          child: Row(
+            children: [
+              IconButton(
+                  icon: Icon(Icons.access_time_sharp),
+                  onPressed: () {
+                    konfirmasiAntreanSementara(context, daftarAntrean[index]);
+                  }),
+              IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    editAntrean(context, daftarAntrean[index]);
+                  }),
+              IconButton(
+                  icon: Icon(Icons.info),
+                  onPressed: () {
+                    infoAntrean(context, daftarAntrean[index]);
+                  })
+            ],
+          ),
+          color: (daftarAntrean[index].statusAntrean == 2.toString())
+              ? AppColors.colorMap[900].withOpacity(0.4)
+              : AppColors.white,
+          width: width * 4 / 24,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+      ],
+    );
+  }
+
   Scaffold failedScreen(String messageFailed) {
     return Scaffold(
-        appBar: AppBar(
-          leading: Icon(Icons.people),
-          title: Text("Daftar Antrean"),
+      body: Container(
+        color: AppColors.colorMap[50],
+        child: Center(
+          child: Text(messageFailed),
         ),
-        body: Container(
-          color: Colors.teal[50],
-          child: Center(
-            child: Text(messageFailed),
-          ),
-        ));
+      ),
+    );
   }
 
   Scaffold loadingScreen() {
     return Scaffold(
-        appBar: AppBar(
-          leading: Icon(Icons.people),
-          title: Text("Daftar Antrean"),
+      body: Container(
+        color: AppColors.colorMap[50],
+        child: Center(
+          child: CircularProgressIndicator(),
         ),
-        body: Container(
-          color: Colors.teal[50],
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ));
+      ),
+    );
   }
 
   konfirmasiAntreanSementara(BuildContext context, ResponseAntrean pasien) {
     JadwalPasien jadwal;
-    showDialog(
+    showGeneralDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        barrierLabel: '',
+        barrierDismissible: true,
+        transitionDuration: const Duration(milliseconds: 600),
+        transitionBuilder: (context, _animation, _secondaryAnimation, _child) {
+          return Animations.fromTop(_animation, _secondaryAnimation, _child);
+        },
+        pageBuilder: (_animation, _secondaryAnimation, _child) => AlertDialog(
               title: Row(
                 children: [
                   Icon(Icons.access_time_sharp),
@@ -278,39 +368,52 @@ class _AntreanScreenState extends State<AntreanScreen> {
               content: Text(
                   "Anda yakin memindahkan pasien yang dipilih ke Antrean Sementara?"),
               actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: AppColors.primaryColor, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Ya',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      pasien.statusAntrean = StatusAntrean.DILEWATI.toString();
+                      jadwal = JadwalPasien(
+                          idPoli:
+                              int.parse(pasien.poliklinik.idPoli.toString()),
+                          tglPelayanan: pasien.tglPelayanan.toString(),
+                          idPasien: int.parse(pasien.idPasien),
+                          statusAntrean: StatusAntrean.DILEWATI);
+                      _antreanBloc
+                          .add(EventAntreanEditJadwalPasien(pasien: jadwal));
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: Text(
-                    'Ya',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    pasien.statusAntrean = StatusAntrean.DILEWATI.toString();
-                    jadwal = JadwalPasien(
-                        idPoli: int.parse(pasien.poliklinik.idPoli.toString()),
-                        tglPelayanan: pasien.tglPelayanan.toString(),
-                        idPasien: int.parse(pasien.idPasien),
-                        statusAntrean: StatusAntrean.DILEWATI);
-                    _antreanBloc
-                        .add(EventAntreanEditJadwalPasien(pasien: jadwal));
-                    Navigator.pop(context);
-                  },
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.grey, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: Text(
-                    'Tidak',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 ),
               ],
             ));
@@ -332,9 +435,15 @@ class _AntreanScreenState extends State<AntreanScreen> {
         result = i;
       }
     }
-    showDialog(
+    showGeneralDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        barrierLabel: '',
+        barrierDismissible: true,
+        transitionDuration: const Duration(milliseconds: 600),
+        transitionBuilder: (context, _animation, _secondaryAnimation, _child) {
+          return Animations.fromTop(_animation, _secondaryAnimation, _child);
+        },
+        pageBuilder: (_animation, _secondaryAnimation, _child) => AlertDialog(
               title: Row(
                 children: [
                   Icon(Icons.edit),
@@ -367,48 +476,67 @@ class _AntreanScreenState extends State<AntreanScreen> {
                 ),
               ),
               actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: AppColors.primaryColor, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Ya',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      pasien.statusAntrean = result["value"].toString();
+                      jadwal = JadwalPasien(
+                          idPoli:
+                              int.parse(pasien.poliklinik.idPoli.toString()),
+                          tglPelayanan: pasien.tglPelayanan.toString(),
+                          idPasien: int.parse(pasien.idPasien),
+                          statusAntrean: int.parse(pasien.statusAntrean));
+                      _antreanBloc
+                          .add(EventAntreanEditJadwalPasien(pasien: jadwal));
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: Text(
-                    'Ya',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    pasien.statusAntrean = result["value"].toString();
-                    jadwal = JadwalPasien(
-                        idPoli: int.parse(pasien.poliklinik.idPoli.toString()),
-                        tglPelayanan: pasien.tglPelayanan.toString(),
-                        idPasien: int.parse(pasien.idPasien),
-                        statusAntrean: int.parse(pasien.statusAntrean));
-                    _antreanBloc
-                        .add(EventAntreanEditJadwalPasien(pasien: jadwal));
-                    Navigator.pop(context);
-                  },
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.grey, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: Text(
-                    'Tidak',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 ),
               ],
             ));
   }
 
   infoAntrean(BuildContext context, ResponseAntrean pasien) {
-    showDialog(
+    showGeneralDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        barrierLabel: '',
+        barrierDismissible: true,
+        transitionDuration: const Duration(milliseconds: 600),
+        transitionBuilder: (context, _animation, _secondaryAnimation, _child) {
+          return Animations.fromTop(_animation, _secondaryAnimation, _child);
+        },
+        pageBuilder: (_animation, _secondaryAnimation, _child) => AlertDialog(
               title: Row(
                 children: [
                   Icon(Icons.info),
@@ -603,18 +731,24 @@ class _AntreanScreenState extends State<AntreanScreen> {
                 ),
               ),
               actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: AppColors.primaryColor, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Tutup',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: Text(
-                    'Tutup',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 ),
               ],
             ));

@@ -14,7 +14,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Website Antrian Babatan',
       theme: AppTheme.lightTheme.copyWith(
-          textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)),
+        textTheme: GoogleFonts.notoSansTextTheme(Theme.of(context).textTheme),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
       home: SplashScreen(),
     );
   }

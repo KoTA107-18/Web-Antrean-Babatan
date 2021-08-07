@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:web_antrean_babatan/blocLayer/navbar/navbar_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/session/sharedPref.dart';
-import 'package:web_antrean_babatan/utils/color.dart';
+import 'package:web_antrean_babatan/utils/constants/animations.dart';
 import 'package:web_antrean_babatan/utils/constants/colors.dart';
 import '../loginScreen.dart';
 
@@ -194,14 +194,12 @@ class _SideMenuState extends State<SideMenu> {
           color: AppColors.black.withOpacity(0.05),
           child: ListTile(
             horizontalTitleGap: 0.0,
-            leading: Icon(
-              Icons.account_box_rounded,
-              color: AppColors.iconSideMenu,
-            ),
             title: Text(
               "Perawat",
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: AppColors.textSideMenu,
+                fontSize: 25,
               ),
             ),
           ),
@@ -258,46 +256,69 @@ class _SideMenuState extends State<SideMenu> {
   }
 
   _showMaterialDialog(BuildContext context) {
-    showDialog(
+    showGeneralDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      barrierLabel: '',
+      barrierDismissible: true,
+      transitionDuration: const Duration(milliseconds: 600),
+      transitionBuilder: (context, _animation, _secondaryAnimation, _child) {
+        return Animations.fromTop(_animation, _secondaryAnimation, _child);
+      },
+      pageBuilder: (_animation, _secondaryAnimation, _child) => AlertDialog(
         title: Text("Keluar"),
         content: Text("Anda yakin keluar dari aplikasi?"),
         actions: <Widget>[
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.teal, // background
-              onPrimary: Colors.white, // foreground
-            ),
-            child: Text(
-              'Ya',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              SharedPref.deleteSharedPref().then((value) {
-                Fluttertoast.showToast(
-                    gravity: ToastGravity.CENTER,
-                    backgroundColor: ColorTheme.greenDark,
-                    msg: "Logout berhasil!",
-                    toastLength: Toast.LENGTH_SHORT);
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => Login()));
-              });
-            },
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.grey, // background
-              onPrimary: Colors.white, // foreground
-            ),
-            child: Text(
-              'Tidak',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                margin: EdgeInsets.only(bottom: 16.0, left: 16.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: AppColors.primaryColor, // background
+                    onPrimary: Colors.white, // foreground
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Ya',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  onPressed: () {
+                    SharedPref.deleteSharedPref().then((value) {
+                      Fluttertoast.showToast(
+                          gravity: ToastGravity.CENTER,
+                          backgroundColor: AppColors.colorMap[800],
+                          msg: "Logout berhasil!",
+                          toastLength: Toast.LENGTH_SHORT);
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => Login()));
+                    });
+                  },
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.grey, // background
+                    onPrimary: Colors.white, // foreground
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Tidak',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );
