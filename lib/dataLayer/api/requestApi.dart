@@ -262,9 +262,11 @@ class RequestApi {
     for (var i in daftarPoliklinik) {
       data.add({"id_poli": i.idPoli, "status_poli": i.statusPoli});
     }
+    print(data);
     var result = await http.put(uri,
         headers: {
           'Authorization': 'bearer $apiToken',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(data));
     print(result.statusCode);

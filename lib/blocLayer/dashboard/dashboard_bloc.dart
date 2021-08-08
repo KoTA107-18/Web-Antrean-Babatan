@@ -56,7 +56,17 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
             daftarPoliNew = resultSnapshot
                 .map((aJson) => InfoPoliklinik.fromJson(aJson))
                 .toList();
-            daftarPoli = daftarPoliNew;
+            if(daftarPoli.length == daftarPoliNew.length){
+              for(var i=0; i<daftarPoli.length; i++){
+                daftarPoli[i].idPoli = daftarPoliNew[i].idPoli;
+                daftarPoli[i].namaPoli = daftarPoliNew[i].namaPoli;
+                daftarPoli[i].totalAntrean = daftarPoliNew[i].totalAntrean;
+                daftarPoli[i].antreanSementara = daftarPoliNew[i].antreanSementara;
+                daftarPoli[i].nomorAntrean = daftarPoliNew[i].nomorAntrean;
+              }
+            } else {
+              daftarPoli = daftarPoliNew;
+            }
           }
         });
         yield StateDashboardSuccess(daftarPoli: daftarPoli);
