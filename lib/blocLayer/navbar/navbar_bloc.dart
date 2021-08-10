@@ -19,58 +19,80 @@ part 'navbar_state.dart';
 
 class NavbarBloc extends Bloc<NavbarEvent, NavbarState> {
   NavbarBloc() : super(NavbarStateLoadingGetRole());
-   bool isAdmin = false;
+  bool isAdmin = false;
 
   @override
   Stream<NavbarState> mapEventToState(
     NavbarEvent event,
   ) async* {
-    if(event is NavbarEventGetRole){
+    if (event is NavbarEventGetRole) {
       yield NavbarStateLoadingGetRole();
-      await SharedPref.getRole().then((value){
-        if(value == SharedPref.administrator){
+      await SharedPref.getRole().then((value) {
+        if (value == SharedPref.administrator) {
           isAdmin = true;
         } else {
           isAdmin = false;
         }
       });
-      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: DashboardScreen());
+      yield NavbarStateSuccessGetRole(
+          isAdmin: isAdmin, title: 'Dashboard', page: DashboardScreen());
     }
 
-    if(event is NavbarEventLoadDashboard){
-      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: DashboardScreen());
+    if (event is NavbarEventLoadDashboard) {
+      yield NavbarStateSuccessGetRole(
+          isAdmin: isAdmin, title: 'Dashboard', page: DashboardScreen());
     }
 
-    if(event is NavbarEventLoadAntrean){
-      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: AntreanScreen());
+    if (event is NavbarEventLoadAntrean) {
+      yield NavbarStateSuccessGetRole(
+          isAdmin: isAdmin, title: 'Daftar Antrean', page: AntreanScreen());
     }
 
-    if(event is NavbarEventLoadAntreanSementara){
-      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: AntreanSementaraScreen());
+    if (event is NavbarEventLoadAntreanSementara) {
+      yield NavbarStateSuccessGetRole(
+          isAdmin: isAdmin,
+          title: 'Daftar Antrean Sementara',
+          page: AntreanSementaraScreen());
     }
 
-    if(event is NavbarEventLoadAntreanSelesai){
-      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: AntreanSelesaiScreen());
+    if (event is NavbarEventLoadAntreanSelesai) {
+      yield NavbarStateSuccessGetRole(
+          isAdmin: isAdmin,
+          title: 'Daftar Antrean Selesai',
+          page: AntreanSelesaiScreen());
     }
 
-    if(event is NavbarEventLoadAkun){
-      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: AkunScreen());
+    if (event is NavbarEventLoadAkun) {
+      yield NavbarStateSuccessGetRole(
+          isAdmin: isAdmin, title: 'Akun Anda', page: AkunScreen());
     }
 
-    if(event is NavbarEventLoadTambahAntrean){
-      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: TambahAntreanScreen());
+    if (event is NavbarEventLoadTambahAntrean) {
+      yield NavbarStateSuccessGetRole(
+          isAdmin: isAdmin,
+          title: 'Tambah Antrean',
+          page: TambahAntreanScreen());
     }
 
-    if(event is NavbarEventLoadPoliklinik){
-      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: PoliklinikScreen());
+    if (event is NavbarEventLoadPoliklinik) {
+      yield NavbarStateSuccessGetRole(
+          isAdmin: isAdmin,
+          title: 'Daftar Poliklinik',
+          page: PoliklinikScreen());
     }
 
-    if(event is NavbarEventLoadRiwayat){
-      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: RiwayatScreen());
+    if (event is NavbarEventLoadRiwayat) {
+      yield NavbarStateSuccessGetRole(
+          isAdmin: isAdmin,
+          title: 'Daftar Riwayat Kunjungan',
+          page: RiwayatScreen());
     }
 
-    if(event is NavbarEventLoadAkunPerawat){
-      yield NavbarStateSuccessGetRole(isAdmin: isAdmin, page: AkunPerawatScreen());
+    if (event is NavbarEventLoadAkunPerawat) {
+      yield NavbarStateSuccessGetRole(
+          isAdmin: isAdmin,
+          title: 'Daftar Akun Perawat',
+          page: AkunPerawatScreen());
     }
   }
 }

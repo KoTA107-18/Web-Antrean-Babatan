@@ -5,8 +5,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:web_antrean_babatan/blocLayer/antrean/tambahAntrean/tambahantrean_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/model/pasien.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
-import 'package:web_antrean_babatan/utils/color.dart';
+import 'package:web_antrean_babatan/utils/constants/animations.dart';
+import 'package:web_antrean_babatan/utils/constants/colors.dart';
 import 'package:web_antrean_babatan/utils/loading.dart';
+import 'package:web_antrean_babatan/utils/scrollColumnExpandable.dart';
 import 'package:web_antrean_babatan/utils/textFieldModified.dart';
 
 class TambahAntreanScreen extends StatefulWidget {
@@ -16,6 +18,7 @@ class TambahAntreanScreen extends StatefulWidget {
 
 class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
   TambahantreanBloc _tambahantreanBloc = TambahantreanBloc();
+  var sizeWidth = 0;
 
   Future _selectDate(BuildContext context) async {
     DateTime selectedDate = DateTime.now();
@@ -64,9 +67,15 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
       }
     }
 
-    showDialog(
+    showGeneralDialog(
         context: context,
-        builder: (context) {
+        barrierLabel: '',
+        barrierDismissible: true,
+        transitionDuration: const Duration(milliseconds: 600),
+        transitionBuilder: (context, _animation, _secondaryAnimation, _child) {
+          return Animations.fromTop(_animation, _secondaryAnimation, _child);
+        },
+        pageBuilder: (_animation, _secondaryAnimation, _child) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Row(
@@ -94,7 +103,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                             hint: 'Isi nama anda',
                             icon: Icon(Icons.person),
                             formatter: [
@@ -121,7 +130,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                         child: Row(
                           children: [
                             Flexible(
-                              child: textFieldModified(
+                              child: TextFieldModified(
                                   isEnabled: false,
                                   hint: 'Tanggal Lahir',
                                   icon: Icon(Icons.date_range),
@@ -150,7 +159,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                             hint: 'Isi alamat rumah anda',
                             icon: Icon(Icons.map),
                             validatorFunc: (value) {
@@ -170,7 +179,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                             hint: 'Isi nama kepala keluarga anda',
                             icon: Icon(Icons.person),
                             formatter: [
@@ -194,7 +203,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                             hint: 'Kombinasi huruf dan angka.',
                             icon: Icon(Icons.person),
                             formatter: [
@@ -220,7 +229,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                             hint: 'Isi password anda',
                             icon: Icon(Icons.vpn_key),
                             formatter: [
@@ -246,7 +255,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                             hint: 'Isi kembali password anda',
                             icon: Icon(Icons.vpn_key),
                             formatter: [
@@ -274,7 +283,7 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                             hint: 'Isi dengan nomor seluler anda',
                             icon: Icon(Icons.call),
                             typeKeyboard: TextInputType.number,
@@ -300,31 +309,43 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
                 ),
               ),
               actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: AppColors.primaryColor, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Tambah',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      verifiedInput();
+                    },
                   ),
-                  child: Text(
-                    'Tambah',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    verifiedInput();
-                  },
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.grey, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: Text(
-                    'Tidak',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 ),
               ],
             );
@@ -340,10 +361,12 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    sizeWidth = MediaQuery.of(context).size.width as int;
+    print(sizeWidth.toString());
     return BlocProvider(
       create: (context) => _tambahantreanBloc,
       child: BlocListener<TambahantreanBloc, TambahantreanState>(
-        cubit: _tambahantreanBloc,
+        bloc: _tambahantreanBloc,
         listener: (context, state) {
           if (state is StateTambahAntreanSubmitPasienSuccess) {
             Navigator.pop(context);
@@ -382,45 +405,25 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
           }
         },
         child: Scaffold(
-          appBar: AppBar(
-            leading: Icon(Icons.local_hospital),
-            title: Text("Tambah Antrean"),
-            actions: [
-              Container(
-                padding: EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.white, // background
-                    onPrimary: ColorTheme.greenDark, // foreground
-                  ),
-                  child: Text(
-                    'Buat Akun Pasien',
-                    style: TextStyle(color: ColorTheme.greenDark),
-                  ),
-                  onPressed: () {
-                    buatAkun();
-                  },
-                ),
-              )
-            ],
-          ),
           body: Container(
-            color: Colors.teal[50],
-            child: BlocBuilder<TambahantreanBloc, TambahantreanState>(
-              cubit: _tambahantreanBloc,
-              builder: (context, state) {
-                if (state is StateTambahAntreanGetPoliLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state is StateTambahAntreanGetPoliFailed) {
-                  return Center(
-                    child: Text(state.errMessage),
-                  );
-                } else {
-                  return formTambahAntrean(_tambahantreanBloc.daftarPoli);
-                }
-              },
+            color: AppColors.colorMap[50],
+            child: SafeArea(
+              child: BlocBuilder<TambahantreanBloc, TambahantreanState>(
+                bloc: _tambahantreanBloc,
+                builder: (context, state) {
+                  if (state is StateTambahAntreanGetPoliLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is StateTambahAntreanGetPoliFailed) {
+                    return Center(
+                      child: Text(state.errMessage),
+                    );
+                  } else {
+                    return formTambahAntrean(_tambahantreanBloc.daftarPoli);
+                  }
+                },
+              ),
             ),
           ),
         ),
@@ -428,336 +431,440 @@ class _TambahAntreanScreenState extends State<TambahAntreanScreen> {
     );
   }
 
-  Row formTambahAntrean(List<Poliklinik> daftarPoli) {
+  formTambahAntrean(List<Poliklinik> daftarPoli) {
     DateTime selectedDate = DateTime.now();
     TextEditingController _namaLengkap = TextEditingController();
     TextEditingController _tglLahir = TextEditingController();
     TextEditingController _alamat = TextEditingController();
     TextEditingController _kepalaKeluarga = TextEditingController();
     TextEditingController _nomorHandphone = TextEditingController();
-    return Row(
+    return ScrollColumnExpandable(
       children: [
-        Expanded(
-          flex: 2,
-          child: Container(
-            color: Colors.white,
-            margin: EdgeInsets.all(8.0),
-            padding: EdgeInsets.all(8.0),
-            child: ListView(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-                  child: Text('Nama Lengkap',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-                  child: textFieldModified(
-                      hint: 'Isi nama anda',
-                      icon: Icon(Icons.person),
-                      formatter: [
-                        FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]')),
-                      ],
-                      validatorFunc: (value) {
-                        if (value.isEmpty) {
-                          return "Harus diisi";
-                        } else {
-                          return null;
-                        }
-                      },
-                      controller: _namaLengkap),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-                  child: Text('Tanggal Lahir',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-                  child: Row(
-                    children: [
-                      BlocBuilder<TambahantreanBloc, TambahantreanState>(
-                        builder: (context, state) {
-                          if (state is StateTambahAntreanPilihTanggal) {
-                            _tglLahir.text = _tambahantreanBloc.tglLahir;
-                            return Flexible(
-                              child: textFieldModified(
-                                  isEnabled: false,
-                                  hint: 'Tanggal Lahir',
-                                  icon: Icon(Icons.date_range),
-                                  controller: _tglLahir),
-                            );
-                          } else {
-                            _tglLahir.text = _tambahantreanBloc.tglLahir;
-                            return Flexible(
-                              child: textFieldModified(
-                                  isEnabled: false,
-                                  hint: 'Tanggal Lahir',
-                                  icon: Icon(Icons.date_range),
-                                  controller: _tglLahir),
-                            );
-                          }
-                        },
-                      ),
-                      SizedBox(width: 16.0),
-                      ElevatedButton(
-                          onPressed: () {
-                            _selectDate(context).then((value) {
-                              selectedDate = value;
-                              _tglLahir.text =
-                                  "${selectedDate.year.toString()}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
-                              _tambahantreanBloc.add(
-                                  EventTambahAntreanPilihTanggal(
-                                      tanggal: _tglLahir.text));
-                            });
-                          },
-                          child: Icon(Icons.date_range))
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-                  child: Text('Alamat Lengkap',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-                  child: textFieldModified(
-                      hint: 'Isi alamat rumah anda',
-                      icon: Icon(Icons.map),
-                      controller: _alamat),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-                  child: Text('Nama Kepala Keluarga',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-                  child: textFieldModified(
-                      hint: 'Isi nama kepala keluarga anda',
-                      icon: Icon(Icons.person),
-                      formatter: [
-                        FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]')),
-                      ],
-                      controller: _kepalaKeluarga),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-                  child: Text('Nomor Seluler',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-                  child: textFieldModified(
-                      hint: 'Isi dengan nomor seluler anda',
-                      icon: Icon(Icons.call),
-                      typeKeyboard: TextInputType.number,
-                      formatter: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      ],
-                      controller: _nomorHandphone),
-                )
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Container(
-            color: Colors.white,
-            margin: EdgeInsets.all(8.0),
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.all(8.0),
+                padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        'asset/LogoPuskesmas.png',
-                        width: 64,
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: AppColors.primaryColor, // background
+                        onPrimary: AppColors.colorMap[50], // foreground
                       ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          child: Center(
-                            child: Text('Portal Pendaftaran',
-                                style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.teal)),
-                          ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Buat Akun Pasien',
+                          style: TextStyle(color: AppColors.colorMap[50]),
                         ),
-                        Container(
-                          child: Center(
-                            child: Text('Puskesmas Babatan',
-                                style: TextStyle(
-                                    fontSize: 14.0, color: Colors.teal)),
-                          ),
-                        ),
-                      ],
+                      ),
+                      onPressed: () {
+                        buatAkun();
+                      },
                     ),
                   ],
                 ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-                  child: DropdownButtonFormField(
-                    decoration: InputDecoration(
-                        labelText: "Pilih Poliklinik yang dituju",
-                        prefixIcon: Icon(Icons.local_hospital),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16.0))),
-                    items: daftarPoli.map((value) {
-                      return DropdownMenuItem(
-                        child: Text(value.namaPoli),
-                        value: value,
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      _tambahantreanBloc.add(EventTambahAntreanSubmitPoliTujuan(
-                          poliklinik: value));
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                  child: BlocBuilder<TambahantreanBloc, TambahantreanState>(
-                    cubit: _tambahantreanBloc,
-                    builder: (context, state) {
-                      if (state is StateTambahAntreanPilihJenisPasien) {
-                        return Row(
-                          children: [
-                            Radio(
-                              value: 0,
-                              groupValue: state.isUmum,
-                              onChanged: (result) {
-                                _tambahantreanBloc
-                                    .add(EventTambahAntreanRadioUmum());
-                              },
-                            ),
-                            Text(
-                              'Umum',
-                              style: new TextStyle(fontSize: 16.0),
-                            ),
-                            Radio(
-                              value: 1,
-                              groupValue: state.isUmum,
-                              onChanged: (result) {
-                                _tambahantreanBloc
-                                    .add(EventTambahAntreanRadioBPJS());
-                              },
-                            ),
-                            Text(
-                              'BPJS',
-                              style: new TextStyle(
-                                fontSize: 16.0,
-                              ),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return Row(
-                          children: [
-                            Radio(
-                              value: 0,
-                              groupValue: _tambahantreanBloc.jenisPasien,
-                              onChanged: (result) {
-                                _tambahantreanBloc
-                                    .add(EventTambahAntreanRadioUmum());
-                              },
-                            ),
-                            Text(
-                              'Umum',
-                              style: new TextStyle(fontSize: 16.0),
-                            ),
-                            Radio(
-                              value: 1,
-                              groupValue: _tambahantreanBloc.jenisPasien,
-                              onChanged: (result) {
-                                _tambahantreanBloc
-                                    .add(EventTambahAntreanRadioBPJS());
-                              },
-                            ),
-                            Text(
-                              'BPJS',
-                              style: new TextStyle(
-                                fontSize: 16.0,
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              if (_tambahantreanBloc.poliklinikTujuan == null ||
-                                  _namaLengkap.text == "") {
-                                Fluttertoast.showToast(
-                                  msg: "Lengkapi form!",
-                                  gravity: ToastGravity.CENTER,
-                                );
-                              } else {
-                                var pasien = Pasien(
-                                    noHandphone: _nomorHandphone.text,
-                                    kepalaKeluarga: _kepalaKeluarga.text,
-                                    namaLengkap: _namaLengkap.text,
-                                    alamat: _alamat.text,
-                                    tglLahir: _tglLahir.text);
-                                _tambahantreanBloc.add(EventTambahAntreanSubmitAntreanBaru(pasien: pasien, isGawat: false));
-                              }
-
-                            },
-                            child: Text("Antrean Normal")),
-                      ),
-                      SizedBox(width: 8.0),
-                      Expanded(
-                        flex: 2,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.red, // background
-                              onPrimary: Colors.white, // foreground
-                            ),
-                            onPressed: () {
-                              if (_tambahantreanBloc.poliklinikTujuan == null ||
-                                  _namaLengkap.text == "") {
-                                Fluttertoast.showToast(
-                                  msg: "Lengkapi form!",
-                                  gravity: ToastGravity.CENTER,
-                                );
-                              } else {
-                                var pasien = Pasien(
-                                    noHandphone: _nomorHandphone.text,
-                                    kepalaKeluarga: _kepalaKeluarga.text,
-                                    namaLengkap: _namaLengkap.text,
-                                    alamat: _alamat.text,
-                                    tglLahir: _tglLahir.text);
-                                _tambahantreanBloc.add(EventTambahAntreanSubmitAntreanBaru(pasien: pasien, isGawat: true));
-                              }
-                            },
-                            child: Text("Antrean Gawat")),
+              ),
+            ),
+          ],
+        ),
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Container(
+                  margin: EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: AppColors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0x29000000),
+                        offset: Offset(0, 3),
+                        blurRadius: 6,
                       ),
                     ],
                   ),
-                )
-              ],
-            ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                        child: Text('Nama Lengkap',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                        child: TextFieldModified(
+                            hint: 'Isi nama anda',
+                            icon: Icon(Icons.person),
+                            formatter: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp('[a-zA-Z ]')),
+                            ],
+                            validatorFunc: (value) {
+                              if (value.isEmpty) {
+                                return "Harus diisi";
+                              } else {
+                                return null;
+                              }
+                            },
+                            controller: _namaLengkap),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                        child: Text('Tanggal Lahir',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                        child: Row(
+                          children: [
+                            BlocBuilder<TambahantreanBloc, TambahantreanState>(
+                              builder: (context, state) {
+                                if (state is StateTambahAntreanPilihTanggal) {
+                                  _tglLahir.text = _tambahantreanBloc.tglLahir;
+                                  return Flexible(
+                                    child: TextFieldModified(
+                                        isEnabled: false,
+                                        hint: 'Tanggal Lahir',
+                                        icon: Icon(Icons.date_range),
+                                        controller: _tglLahir),
+                                  );
+                                } else {
+                                  _tglLahir.text = _tambahantreanBloc.tglLahir;
+                                  return Flexible(
+                                    child: TextFieldModified(
+                                        isEnabled: false,
+                                        hint: 'Tanggal Lahir',
+                                        icon: Icon(Icons.date_range),
+                                        controller: _tglLahir),
+                                  );
+                                }
+                              },
+                            ),
+                            SizedBox(width: 16.0),
+                            ElevatedButton(
+                                onPressed: () {
+                                  _selectDate(context).then((value) {
+                                    selectedDate = value;
+                                    _tglLahir.text =
+                                        "${selectedDate.year.toString()}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
+                                    _tambahantreanBloc.add(
+                                        EventTambahAntreanPilihTanggal(
+                                            tanggal: _tglLahir.text));
+                                  });
+                                },
+                                child: Icon(Icons.date_range))
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                        child: Text('Alamat Lengkap',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                        child: TextFieldModified(
+                            hint: 'Isi alamat rumah anda',
+                            icon: Icon(Icons.map),
+                            controller: _alamat),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                        child: Text('Nama Kepala Keluarga',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                        child: TextFieldModified(
+                            hint: 'Isi nama kepala keluarga anda',
+                            icon: Icon(Icons.person),
+                            formatter: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp('[a-zA-Z ]')),
+                            ],
+                            controller: _kepalaKeluarga),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                        child: Text('Nomor Seluler',
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+                        child: TextFieldModified(
+                            hint: 'Isi dengan nomor seluler anda',
+                            icon: Icon(Icons.call),
+                            typeKeyboard: TextInputType.number,
+                            formatter: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
+                            ],
+                            controller: _nomorHandphone),
+                      ),
+                      (sizeWidth >= 992)
+                          ? SizedBox.shrink()
+                          : Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  16.0, 16.0, 16.0, 0),
+                              child: Text('Poliklinik',
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                      (sizeWidth >= 992)
+                          ? SizedBox.shrink()
+                          : Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+                              child: kolomKanan(
+                                  daftarPoli,
+                                  _namaLengkap,
+                                  _nomorHandphone,
+                                  _kepalaKeluarga,
+                                  _alamat,
+                                  _tglLahir),
+                            )
+                    ],
+                  ),
+                ),
+              ),
+              (sizeWidth >= 992)
+                  ? Expanded(
+                      child: Container(
+                        margin: EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: AppColors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0x29000000),
+                              offset: Offset(0, 3),
+                              blurRadius: 6,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    'asset/LogoPuskesmas.png',
+                                    width: 64,
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      child: Center(
+                                        child: Text('Portal Pendaftaran',
+                                            style: TextStyle(
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.teal)),
+                                      ),
+                                    ),
+                                    Container(
+                                      child: Center(
+                                        child: Text('Puskesmas Babatan',
+                                            style: TextStyle(
+                                                fontSize: 14.0,
+                                                color: Colors.teal)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            kolomKanan(
+                                daftarPoli,
+                                _namaLengkap,
+                                _nomorHandphone,
+                                _kepalaKeluarga,
+                                _alamat,
+                                _tglLahir),
+                          ],
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  kolomKanan(
+      List<Poliklinik> daftarPoli,
+      TextEditingController _namaLengkap,
+      TextEditingController _nomorHandphone,
+      TextEditingController _kepalaKeluarga,
+      TextEditingController _alamat,
+      TextEditingController _tglLahir) {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+          child: DropdownButtonFormField(
+            decoration: InputDecoration(
+                labelText: "Pilih Poliklinik yang dituju",
+                prefixIcon: Icon(Icons.local_hospital),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16.0))),
+            items: daftarPoli.map((value) {
+              return DropdownMenuItem(
+                child: Text(value.namaPoli),
+                value: value,
+              );
+            }).toList(),
+            onChanged: (value) {
+              _tambahantreanBloc
+                  .add(EventTambahAntreanSubmitPoliTujuan(poliklinik: value));
+            },
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+          child: BlocBuilder<TambahantreanBloc, TambahantreanState>(
+            bloc: _tambahantreanBloc,
+            builder: (context, state) {
+              if (state is StateTambahAntreanPilihJenisPasien) {
+                return Row(
+                  children: [
+                    Radio(
+                      value: 0,
+                      groupValue: state.isUmum,
+                      onChanged: (result) {
+                        _tambahantreanBloc.add(EventTambahAntreanRadioUmum());
+                      },
+                    ),
+                    Text(
+                      'Umum',
+                      style: new TextStyle(fontSize: 16.0),
+                    ),
+                    Radio(
+                      value: 1,
+                      groupValue: state.isUmum,
+                      onChanged: (result) {
+                        _tambahantreanBloc.add(EventTambahAntreanRadioBPJS());
+                      },
+                    ),
+                    Text(
+                      'BPJS',
+                      style: new TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return Row(
+                  children: [
+                    Radio(
+                      value: 0,
+                      groupValue: _tambahantreanBloc.jenisPasien,
+                      onChanged: (result) {
+                        _tambahantreanBloc.add(EventTambahAntreanRadioUmum());
+                      },
+                    ),
+                    Text(
+                      'Umum',
+                      style: new TextStyle(fontSize: 16.0),
+                    ),
+                    Radio(
+                      value: 1,
+                      groupValue: _tambahantreanBloc.jenisPasien,
+                      onChanged: (result) {
+                        _tambahantreanBloc.add(EventTambahAntreanRadioBPJS());
+                      },
+                    ),
+                    Text(
+                      'BPJS',
+                      style: new TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: ElevatedButton(
+                    onPressed: () {
+                      if (_tambahantreanBloc.poliklinikTujuan == null ||
+                          _namaLengkap.text == "") {
+                        Fluttertoast.showToast(
+                          msg: "Lengkapi form!",
+                          gravity: ToastGravity.CENTER,
+                        );
+                      } else {
+                        var pasien = Pasien(
+                            noHandphone: _nomorHandphone.text,
+                            kepalaKeluarga: _kepalaKeluarga.text,
+                            namaLengkap: _namaLengkap.text,
+                            alamat: _alamat.text,
+                            tglLahir: _tglLahir.text);
+                        _tambahantreanBloc.add(
+                            EventTambahAntreanSubmitAntreanBaru(
+                                pasien: pasien, isGawat: false));
+                      }
+                    },
+                    child: Text("Antrean Normal")),
+              ),
+              SizedBox(width: 8.0),
+              Expanded(
+                flex: 2,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    onPressed: () {
+                      if (_tambahantreanBloc.poliklinikTujuan == null ||
+                          _namaLengkap.text == "") {
+                        Fluttertoast.showToast(
+                          msg: "Lengkapi form!",
+                          gravity: ToastGravity.CENTER,
+                        );
+                      } else {
+                        var pasien = Pasien(
+                            noHandphone: _nomorHandphone.text,
+                            kepalaKeluarga: _kepalaKeluarga.text,
+                            namaLengkap: _namaLengkap.text,
+                            alamat: _alamat.text,
+                            tglLahir: _tglLahir.text);
+                        _tambahantreanBloc.add(
+                            EventTambahAntreanSubmitAntreanBaru(
+                                pasien: pasien, isGawat: true));
+                      }
+                    },
+                    child: Text("Antrean Gawat")),
+              ),
+            ],
           ),
         )
       ],

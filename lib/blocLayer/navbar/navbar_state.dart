@@ -9,6 +9,8 @@ class NavbarStateLoadingGetRole extends NavbarState {}
 
 class NavbarStateSuccessGetRole extends NavbarState {
   bool isAdmin;
+  String title;
   Widget page;
-  NavbarStateSuccessGetRole({@required this.isAdmin, Widget this.page});
+  NavbarStateSuccessGetRole(
+      {@required this.isAdmin, String this.title, Widget this.page});
 }

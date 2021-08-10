@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:timer_builder/timer_builder.dart';
 import 'package:web_antrean_babatan/blocLayer/navbar/navbar_bloc.dart';
-import 'package:web_antrean_babatan/dataLayer/session/sharedPref.dart';
-import 'package:web_antrean_babatan/utils/color.dart';
-import 'loginScreen.dart';
+import 'package:web_antrean_babatan/utils/responsiveScaffold.dart';
+import 'components/sideMenu.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -13,6 +14,11 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final NavbarBloc _navbarBloc = NavbarBloc();
+
+  String getSystemTime() {
+    var now = new DateTime.now();
+    return new DateFormat("dd/MM/yyyy HH:mm:ss").format(now);
+  }
 
   @override
   void initState() {
@@ -25,233 +31,39 @@ class _MainScreenState extends State<MainScreen> {
     return BlocProvider(
       create: (_) => _navbarBloc,
       child: Scaffold(
-        body: Row(
-          children: [
-            Container(
-              width: 280.0,
-              color: Colors.white,
-              child: SafeArea(
-                child: BlocBuilder<NavbarBloc, NavbarState>(
-                  builder: (context, state) {
-                    if (state is NavbarStateSuccessGetRole) {
-                      return (state.isAdmin) ? navbarAdmin() : navbarPerawat();
-                    } else {
-                      return SizedBox.shrink();
-                    }
+        body: BlocBuilder<NavbarBloc, NavbarState>(
+          builder: (context, state) {
+            return ResponsiveScaffold(
+              drawer: SideMenu(
+                navbarBloc: _navbarBloc,
+              ),
+              body: (state is NavbarStateSuccessGetRole)
+                  ? state.page
+                  : SizedBox.shrink(),
+              title: (state is NavbarStateSuccessGetRole)
+                  ? Text(
+                      state.title,
+                      style: GoogleFonts.notoSans(),
+                    )
+                  : SizedBox.shrink(),
+              trailing: Container(
+                padding: EdgeInsets.all(16.0),
+                child: TimerBuilder.periodic(
+                  Duration(seconds: 1),
+                  builder: (context) {
+                    return Text(
+                      getSystemTime(),
+                      style: GoogleFonts.notoSans(
+                        fontSize: 18,
+                      ),
+                    );
                   },
                 ),
               ),
-            ),
-            BlocBuilder<NavbarBloc, NavbarState>(
-              builder: (context, state) {
-                if (state is NavbarStateSuccessGetRole) {
-                  return Expanded(
-                    child: state.page,
-                  );
-                } else {
-                  return SizedBox.shrink();
-                }
-              },
-            )
-          ],
+            );
+          },
         ),
       ),
     );
-  }
-
-  ListView navbarAdmin() {
-    return ListView(
-      children: [
-        Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset(
-                'asset/LogoPuskesmas.png',
-                width: 64,
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  child: Center(
-                    child: Text('Selamat Datang',
-                        style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.teal)),
-                  ),
-                ),
-                Container(
-                  child: Center(
-                    child: Text('Puskesmas Babatan',
-                        style: TextStyle(fontSize: 14.0, color: Colors.teal)),
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
-        Card(
-          color: Colors.teal[50],
-          child: ListTile(
-            leading: Icon(Icons.account_box_rounded),
-            title: Text(
-              "Admin",
-            ),
-          ),
-        ),
-        listMenu('Dashboard', Icon(Icons.dashboard), () {
-          _navbarBloc.add(NavbarEventLoadDashboard());
-        }),
-        listMenu('Antrean', Icon(Icons.people), () {
-          _navbarBloc.add(NavbarEventLoadAntrean());
-        }),
-        listMenu('Antrean Sementara', Icon(Icons.people), () {
-          _navbarBloc.add(NavbarEventLoadAntreanSementara());
-        }),
-        listMenu('Tambah Antrean', Icon(Icons.person_add), () {
-          _navbarBloc.add(NavbarEventLoadTambahAntrean());
-        }),
-        listMenu('Poliklinik', Icon(Icons.local_hospital), () {
-          _navbarBloc.add(NavbarEventLoadPoliklinik());
-        }),
-        listMenu('Riwayat Kunjungan', Icon(Icons.history), () {
-          _navbarBloc.add(NavbarEventLoadRiwayat());
-        }),
-        listMenu('Akun Perawat', Icon(Icons.switch_account), () {
-          _navbarBloc.add(NavbarEventLoadAkunPerawat());
-        }),
-        listMenu('Logout', Icon(Icons.logout), () {
-          _showMaterialDialog(context);
-        }),
-      ],
-    );
-  }
-
-  ListView navbarPerawat() {
-    return ListView(
-      children: [
-        Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset(
-                'asset/LogoPuskesmas.png',
-                width: 64,
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  child: Center(
-                    child: Text('Selamat Datang',
-                        style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.teal)),
-                  ),
-                ),
-                Container(
-                  child: Center(
-                    child: Text('Puskesmas Babatan',
-                        style: TextStyle(fontSize: 14.0, color: Colors.teal)),
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
-        Card(
-          color: Colors.teal[50],
-          child: ListTile(
-            leading: Icon(Icons.account_box_rounded),
-            title: Text(
-              "Perawat",
-            ),
-          ),
-        ),
-        listMenu('Dashboard', Icon(Icons.dashboard), () {
-          _navbarBloc.add(NavbarEventLoadDashboard());
-        }),
-        listMenu('Antrean', Icon(Icons.people), () {
-          _navbarBloc.add(NavbarEventLoadAntrean());
-        }),
-        listMenu('Antrean Sementara', Icon(Icons.people), () {
-          _navbarBloc.add(NavbarEventLoadAntreanSementara());
-        }),
-        listMenu('Antrean Selesai', Icon(Icons.people), () {
-          _navbarBloc.add(NavbarEventLoadAntreanSelesai());
-        }),
-        listMenu('Akun', Icon(Icons.people), () {
-          _navbarBloc.add(NavbarEventLoadAkun());
-        }),
-        listMenu('Logout', Icon(Icons.logout), () {
-          _showMaterialDialog(context);
-        }),
-      ],
-    );
-  }
-
-  Card listMenu(String title, Icon icon, Function func) {
-    return Card(
-      child: InkWell(
-        onTap: func,
-        child: ListTile(
-          trailing: Icon(Icons.navigate_next),
-          leading: icon,
-          title: Text(
-            title,
-          ),
-        ),
-      ),
-    );
-  }
-
-  _showMaterialDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              title: Text("Keluar"),
-              content: Text("Anda yakin keluar dari aplikasi?"),
-              actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal, // background
-                    onPrimary: Colors.white, // foreground
-                  ),
-                  child: Text(
-                    'Ya',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    SharedPref.deleteSharedPref().then((value) {
-                      Fluttertoast.showToast(
-                          gravity: ToastGravity.CENTER,
-                          backgroundColor: ColorTheme.greenDark,
-                          msg: "Logout berhasil!",
-                          toastLength: Toast.LENGTH_SHORT);
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => Login()));
-                    });
-                  },
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey, // background
-                    onPrimary: Colors.white, // foreground
-                  ),
-                  child: Text(
-                    'Tidak',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ));
   }
 }

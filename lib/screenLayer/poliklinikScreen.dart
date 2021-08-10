@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:web_antrean_babatan/blocLayer/poliklinik/poliklinik_bloc.dart';
 import 'package:web_antrean_babatan/dataLayer/model/hari.dart';
 import 'package:web_antrean_babatan/dataLayer/model/hariPelayanan.dart';
 import 'package:web_antrean_babatan/dataLayer/model/jadwal.dart';
-import 'package:web_antrean_babatan/utils/color.dart';
 import 'package:web_antrean_babatan/dataLayer/model/poliklinik.dart';
+import 'package:web_antrean_babatan/utils/constants/animations.dart';
+import 'package:web_antrean_babatan/utils/constants/colors.dart';
 import 'package:web_antrean_babatan/utils/textFieldModified.dart';
 
 class PoliklinikScreen extends StatefulWidget {
@@ -26,38 +28,17 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (_) => _poliklinikBloc,
-        child: Scaffold(
-            backgroundColor: Colors.teal[50],
-            appBar: AppBar(
-              leading: Icon(Icons.local_hospital),
-              title: Text("Daftar Poliklinik"),
-              actions: [
-                Container(
-                  padding: EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.white, // background
-                      onPrimary: ColorTheme.greenDark, // foreground
-                    ),
-                    child: Text(
-                      'Tambah Data',
-                      style: TextStyle(color: ColorTheme.greenDark),
-                    ),
-                    onPressed: () {
-                      addDialog();
-                    },
-                  ),
-                )
-              ],
-            ),
-            body: BlocBuilder<PoliklinikBloc, PoliklinikState>(
-              cubit: _poliklinikBloc,
+      create: (_) => _poliklinikBloc,
+      child: Scaffold(
+        backgroundColor: AppColors.colorMap[50],
+        body: Container(
+          padding: EdgeInsets.all(20.0),
+          child: SafeArea(
+            child: BlocBuilder<PoliklinikBloc, PoliklinikState>(
+              bloc: _poliklinikBloc,
               builder: (BuildContext context, state) {
                 if (state is StatePoliklinikSuccess) {
-                  return Container(
-                      padding: EdgeInsets.all(20.0),
-                      child: daftarPoli(state.daftarPoli));
+                  return daftarPoli(state.daftarPoli);
                 } else if (state is StatePoliklinikFailed) {
                   return Center(
                     child: Text(state.messageFailed),
@@ -68,95 +49,200 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                   );
                 }
               },
-            )));
-  }
-
-  ListView daftarPoli(List<Poliklinik> daftarPoli) {
-    return ListView(children: <Widget>[
-      Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(3),
-          color: Colors.teal[300],
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0x29000000),
-              offset: Offset(0, 3),
-              blurRadius: 6,
             ),
-          ],
-        ),
-        child: DataTable(
-          showBottomBorder: true,
-          columns: [
-            DataColumn(
-                label: Text('Nama',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-            DataColumn(
-                label: Text('Jadwal',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-            DataColumn(
-                label: Text('Deskripsi',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-            DataColumn(
-                label: Text('Aksi',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-          ],
-          rows: daftarPoli
-              .map((poliklinik) => DataRow(
-                      color: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        if (poliklinik.statusPoli == 1) {
-                          return Colors.white;
-                        } else {
-                          return Colors.red[100];
-                        }
-                      }),
-                      cells: [
-                        DataCell(Text(poliklinik.namaPoli)),
-                        DataCell(Text(
-                          poliklinik.jadwalToString(),
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )),
-                        DataCell((poliklinik.descPoli.length >= 50)
-                            ? Text(
-                                poliklinik.descPoli.substring(0, 50) + " ...")
-                            : Text(poliklinik.descPoli)),
-                        DataCell(Row(
-                          children: [
-                            IconButton(
-                                icon: Icon(Icons.edit),
-                                onPressed: () {
-                                  editDialog(poliklinik);
-                                }),
-                            IconButton(
-                                icon: Icon(Icons.info),
-                                onPressed: () {
-                                  infoDialog(poliklinik);
-                                })
-                          ],
-                        )),
-                      ]))
-              .toList(),
+          ),
         ),
       ),
-    ]);
+    );
   }
 
-  Future _selectTimeOpen(BuildContext context, TextEditingController _timeController) async {
+  daftarPoli(List<Poliklinik> daftarPoli) {
+    double cellWidth = 1481;
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: AppColors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0x29000000),
+                  offset: Offset(0, 3),
+                  blurRadius: 6,
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: AppColors.primaryColor, // background
+                                onPrimary: AppColors.colorMap[50], // foreground
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Tambah Data',
+                                  style:
+                                      TextStyle(color: AppColors.colorMap[50]),
+                                ),
+                              ),
+                              onPressed: () {
+                                addDialog();
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: Container(
+                    child: HorizontalDataTable(
+                      leftHandSideColumnWidth: cellWidth / 6,
+                      rightHandSideColumnWidth: cellWidth * 5 / 6,
+                      isFixedHeader: true,
+                      headerWidgets: getTitleWidget(
+                          cellWidth / 6, (cellWidth - (cellWidth / 6))),
+                      leftSideItemBuilder: (context, index) =>
+                          generateFirstColumnRow(
+                              context, index, daftarPoli, cellWidth / 6),
+                      rightSideItemBuilder: (context, index) =>
+                          generateRightHandSideColumnRow(context, index,
+                              daftarPoli, (cellWidth - (cellWidth / 6))),
+                      itemCount: daftarPoli.length,
+                      rowSeparatorWidget: const Divider(
+                        color: Colors.black45,
+                        height: 1.0,
+                        thickness: 0.0,
+                      ),
+                      leftHandSideColBackgroundColor: AppColors.white,
+                      rightHandSideColBackgroundColor: AppColors.white,
+                      verticalScrollbarStyle: const ScrollbarStyle(
+                        isAlwaysShown: true,
+                        thickness: 4.0,
+                        radius: Radius.circular(5.0),
+                      ),
+                      horizontalScrollbarStyle: const ScrollbarStyle(
+                        isAlwaysShown: true,
+                        thickness: 4.0,
+                        radius: Radius.circular(5.0),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget getTitleItemWidget(String label, double width) {
+    return Container(
+      child: Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
+      height: 56,
+      width: width,
+      padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+      alignment: Alignment.centerLeft,
+    );
+  }
+
+  List<Widget> getTitleWidget(double leftColumn, double rightColumn) {
+    return [
+      getTitleItemWidget('Nama', leftColumn),
+      getTitleItemWidget('Jadwal', rightColumn * 3 / 12),
+      getTitleItemWidget('Deskripsi', rightColumn * 8 / 12),
+      getTitleItemWidget('Aksi', rightColumn / 12),
+    ];
+  }
+
+  Widget generateFirstColumnRow(BuildContext context, int index,
+      List<Poliklinik> daftarPoli, double width) {
+    return Container(
+      child: Text(daftarPoli[index].namaPoli),
+      color: (daftarPoli[index].statusPoli == 1.toString())
+          ? AppColors.white
+          : AppColors.colorMap[900].withOpacity(0.4),
+      width: width,
+      height: 52,
+      padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+      alignment: Alignment.centerLeft,
+    );
+  }
+
+  Widget generateRightHandSideColumnRow(BuildContext context, int index,
+      List<Poliklinik> daftarPoli, double width) {
+    return Row(
+      children: <Widget>[
+        Container(
+          child: Text(
+            daftarPoli[index].jadwalToString(),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          color: (daftarPoli[index].statusPoli == 1.toString())
+              ? AppColors.white
+              : AppColors.colorMap[900].withOpacity(0.4),
+          width: width * 3 / 12,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          child: Text((daftarPoli[index].descPoli.length >= 50)
+              ? daftarPoli[index].descPoli.substring(0, 50) + " ..."
+              : daftarPoli[index].descPoli),
+          color: (daftarPoli[index].statusPoli == 1.toString())
+              ? AppColors.white
+              : AppColors.colorMap[900].withOpacity(0.4),
+          width: width * 8 / 12,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    editDialog(daftarPoli[index]);
+                  }),
+              IconButton(
+                  icon: Icon(Icons.info),
+                  onPressed: () {
+                    infoDialog(daftarPoli[index]);
+                  })
+            ],
+          ),
+          color: (daftarPoli[index].statusPoli == 1.toString())
+              ? AppColors.white
+              : AppColors.colorMap[900].withOpacity(0.4),
+          width: width / 12,
+          height: 52,
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+      ],
+    );
+  }
+
+  Future _selectTimeOpen(
+      BuildContext context, TextEditingController _timeController) async {
     TimeOfDay selectedTime = TimeOfDay(hour: 08, minute: 00);
     final TimeOfDay picked = await showTimePicker(
       context: context,
@@ -172,7 +258,8 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
       });
   }
 
-  Future _selectTimeClose(BuildContext context, TextEditingController _timeController) async {
+  Future _selectTimeClose(
+      BuildContext context, TextEditingController _timeController) async {
     TimeOfDay selectedTime = TimeOfDay(hour: 15, minute: 00);
     final TimeOfDay picked = await showTimePicker(
       context: context,
@@ -190,30 +277,12 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
 
   addDialog() {
     List<HariPelayanan> hariPelayanan = [
-      HariPelayanan(
-          status: false,
-          hari: "Senin",
-          kodeHari: Hari.SENIN),
-      HariPelayanan(
-          status: false,
-          hari: "Selasa",
-          kodeHari: Hari.SELASA),
-      HariPelayanan(
-          status: false,
-          hari: "Rabu",
-          kodeHari: Hari.RABU),
-      HariPelayanan(
-          status: false,
-          hari: "Kamis",
-          kodeHari: Hari.KAMIS),
-      HariPelayanan(
-          status: false,
-          hari: "Jumat",
-          kodeHari: Hari.JUMAT),
-      HariPelayanan(
-          status: false,
-          hari: "Sabtu",
-          kodeHari: Hari.SABTU),
+      HariPelayanan(status: false, hari: "Senin", kodeHari: Hari.SENIN),
+      HariPelayanan(status: false, hari: "Selasa", kodeHari: Hari.SELASA),
+      HariPelayanan(status: false, hari: "Rabu", kodeHari: Hari.RABU),
+      HariPelayanan(status: false, hari: "Kamis", kodeHari: Hari.KAMIS),
+      HariPelayanan(status: false, hari: "Jumat", kodeHari: Hari.JUMAT),
+      HariPelayanan(status: false, hari: "Sabtu", kodeHari: Hari.SABTU),
     ];
 
     TextEditingController _nama = TextEditingController();
@@ -227,11 +296,12 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
       setState(() {
         isClickValidated = true;
       });
-      if(_formKey.currentState.validate()){
+      if (_formKey.currentState.validate()) {
         List<Jadwal> resultHari = [];
-        for(var i in hariPelayanan){
-          if(i.status){
-            resultHari.add(Jadwal(idPoli: 0,
+        for (var i in hariPelayanan) {
+          if (i.status) {
+            resultHari.add(Jadwal(
+                idPoli: 0,
                 hari: i.kodeHari,
                 jamBukaBooking: i.jamBukaBookingInput.text.toString(),
                 jamTutupBooking: i.jamTutupBookingInput.text.toString()));
@@ -250,9 +320,15 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
       }
     }
 
-    showDialog(
+    showGeneralDialog(
         context: context,
-        builder: (context) {
+        barrierLabel: '',
+        barrierDismissible: true,
+        transitionDuration: const Duration(milliseconds: 600),
+        transitionBuilder: (context, _animation, _secondaryAnimation, _child) {
+          return Animations.fromTop(_animation, _secondaryAnimation, _child);
+        },
+        pageBuilder: (_animation, _secondaryAnimation, _child) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Row(
@@ -280,7 +356,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                           label: "Nama Poliklinik",
                           hint: "Masukkan nama Poliklinik",
                           controller: _nama,
@@ -301,7 +377,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                           label: "Deskripsi Poliklinik",
                           hint: "Masukkan deskripsi Poliklinik",
                           controller: _desc,
@@ -322,17 +398,15 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                           label: "Rata - Rata Waktu Pelayanan",
                           hint: "Masukkan perkiraan durasi dalam satuan menit",
                           suffixIcon: Container(
                             decoration: BoxDecoration(
-                                color: ColorTheme.greenDark,
+                                color: AppColors.colorMap[800],
                                 borderRadius: BorderRadius.only(
                                     topRight: Radius.circular(16),
-                                    bottomRight: Radius.circular(16)
-                                )
-                            ),
+                                    bottomRight: Radius.circular(16))),
                             padding: EdgeInsets.symmetric(
                                 vertical: 15, horizontal: 10),
                             child: Text(
@@ -342,8 +416,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                           ),
                           controller: _rataRata,
                           formatter: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp(r'[0-9]')),
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                           ],
                           validatorFunc: (value) {
                             if (value.isEmpty) {
@@ -362,18 +435,17 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                           label: "Batas Hari Maksimal Booking",
-                          hint: "Masukkan batas hari maksimal booking dalam satuan hari",
+                          hint:
+                              "Masukkan batas hari maksimal booking dalam satuan hari",
                           controller: _batasBooking,
                           suffixIcon: Container(
                             decoration: BoxDecoration(
-                                color: ColorTheme.greenDark,
+                                color: AppColors.colorMap[800],
                                 borderRadius: BorderRadius.only(
                                     topRight: Radius.circular(16),
-                                    bottomRight: Radius.circular(16)
-                                )
-                            ),
+                                    bottomRight: Radius.circular(16))),
                             padding: EdgeInsets.symmetric(
                                 vertical: 15, horizontal: 10),
                             child: Text(
@@ -382,8 +454,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                             ),
                           ),
                           formatter: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp(r'[0-9]')),
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                           ],
                           validatorFunc: (value) {
                             if (value.isEmpty) {
@@ -423,7 +494,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               ),
                               Expanded(
                                 flex: 4,
-                                child: textFieldModified(
+                                child: TextFieldModified(
                                     controller: i.jamBukaBookingInput,
                                     label: "Buka",
                                     isEnabled: false),
@@ -433,15 +504,16 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                                 child: IconButton(
                                   icon: Icon(Icons.update),
                                   onPressed: () {
-                                    if(i.status){
-                                      _selectTimeOpen(context, i.jamBukaBookingInput);
+                                    if (i.status) {
+                                      _selectTimeOpen(
+                                          context, i.jamBukaBookingInput);
                                     }
                                   },
                                 ),
                               ),
                               Expanded(
                                 flex: 4,
-                                child: textFieldModified(
+                                child: TextFieldModified(
                                     controller: i.jamTutupBookingInput,
                                     label: "Tutup",
                                     isEnabled: false),
@@ -451,8 +523,9 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                                 child: IconButton(
                                   icon: Icon(Icons.update),
                                   onPressed: () {
-                                    if(i.status){
-                                      _selectTimeClose(context, i.jamTutupBookingInput);
+                                    if (i.status) {
+                                      _selectTimeClose(
+                                          context, i.jamTutupBookingInput);
                                     }
                                   },
                                 ),
@@ -465,31 +538,43 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                 ),
               ),
               actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: AppColors.primaryColor, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Tambah',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      submitPoliklinik();
+                    },
                   ),
-                  child: Text(
-                    'Tambah',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    submitPoliklinik();
-                  },
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.grey, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: Text(
-                    'Tidak',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 ),
               ],
             );
@@ -510,38 +595,22 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
     _batasBooking.text = poliklinik.batasBooking.toString();
 
     List<HariPelayanan> hariPelayanan = [
-      HariPelayanan(
-          status: false,
-          hari: "Senin",
-          kodeHari: Hari.SENIN),
-      HariPelayanan(
-          status: false,
-          hari: "Selasa",
-          kodeHari: Hari.SELASA),
-      HariPelayanan(
-          status: false,
-          hari: "Rabu",
-          kodeHari: Hari.RABU),
-      HariPelayanan(
-          status: false,
-          hari: "Kamis",
-          kodeHari: Hari.KAMIS),
-      HariPelayanan(
-          status: false,
-          hari: "Jumat",
-          kodeHari: Hari.JUMAT),
-      HariPelayanan(
-          status: false,
-          hari: "Sabtu",
-          kodeHari: Hari.SABTU),
+      HariPelayanan(status: false, hari: "Senin", kodeHari: Hari.SENIN),
+      HariPelayanan(status: false, hari: "Selasa", kodeHari: Hari.SELASA),
+      HariPelayanan(status: false, hari: "Rabu", kodeHari: Hari.RABU),
+      HariPelayanan(status: false, hari: "Kamis", kodeHari: Hari.KAMIS),
+      HariPelayanan(status: false, hari: "Jumat", kodeHari: Hari.JUMAT),
+      HariPelayanan(status: false, hari: "Sabtu", kodeHari: Hari.SABTU),
     ];
 
     for (var i = 0; i < poliklinik.jadwal.length; i++) {
-      for(var j = 0; j < hariPelayanan.length; j++){
-        if(poliklinik.jadwal[i].hari == hariPelayanan[j].kodeHari){
+      for (var j = 0; j < hariPelayanan.length; j++) {
+        if (poliklinik.jadwal[i].hari == hariPelayanan[j].kodeHari) {
           hariPelayanan[j].status = true;
-          hariPelayanan[j].jamBukaBookingInput.text = poliklinik.jadwal[i].jamBukaBooking;
-          hariPelayanan[j].jamTutupBookingInput.text = poliklinik.jadwal[i].jamTutupBooking;
+          hariPelayanan[j].jamBukaBookingInput.text =
+              poliklinik.jadwal[i].jamBukaBooking;
+          hariPelayanan[j].jamTutupBookingInput.text =
+              poliklinik.jadwal[i].jamTutupBooking;
         }
       }
     }
@@ -550,11 +619,12 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
       setState(() {
         isClickValidated = true;
       });
-      if(_formKey.currentState.validate()){
+      if (_formKey.currentState.validate()) {
         List<Jadwal> resultHari = [];
-        for(var i in hariPelayanan){
-          if(i.status){
-            resultHari.add(Jadwal(idPoli: 0,
+        for (var i in hariPelayanan) {
+          if (i.status) {
+            resultHari.add(Jadwal(
+                idPoli: 0,
                 hari: i.kodeHari,
                 jamBukaBooking: i.jamBukaBookingInput.text.toString(),
                 jamTutupBooking: i.jamTutupBookingInput.text.toString()));
@@ -574,9 +644,15 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
       }
     }
 
-    showDialog(
+    showGeneralDialog(
         context: context,
-        builder: (context) {
+        barrierLabel: '',
+        barrierDismissible: true,
+        transitionDuration: const Duration(milliseconds: 600),
+        transitionBuilder: (context, _animation, _secondaryAnimation, _child) {
+          return Animations.fromTop(_animation, _secondaryAnimation, _child);
+        },
+        pageBuilder: (_animation, _secondaryAnimation, _child) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Row(
@@ -604,7 +680,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                           label: "Nama Poliklinik",
                           hint: "Masukkan nama Poliklinik",
                           controller: _nama,
@@ -618,7 +694,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                           label: "Deskripsi Poliklinik",
                           hint: "Masukkan deskripsi Poliklinik",
                           controller: _deskripsi,
@@ -632,18 +708,16 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                           label: "Rata - Rata Waktu Pelayanan",
                           hint: "Masukkan perkiraan durasi dalam satuan menit",
                           controller: _ratarata,
                           suffixIcon: Container(
                             decoration: BoxDecoration(
-                                color: ColorTheme.greenDark,
+                                color: AppColors.colorMap[800],
                                 borderRadius: BorderRadius.only(
                                     topRight: Radius.circular(16),
-                                    bottomRight: Radius.circular(16)
-                                )
-                            ),
+                                    bottomRight: Radius.circular(16))),
                             padding: EdgeInsets.symmetric(
                                 vertical: 15, horizontal: 10),
                             child: Text(
@@ -661,18 +735,17 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: textFieldModified(
+                        child: TextFieldModified(
                           label: "Batas Hari Maksimal Booking",
-                          hint: "Masukkan batas hari maksimal booking dalam satuan hari",
+                          hint:
+                              "Masukkan batas hari maksimal booking dalam satuan hari",
                           controller: _batasBooking,
                           suffixIcon: Container(
                             decoration: BoxDecoration(
-                                color: ColorTheme.greenDark,
+                                color: AppColors.colorMap[800],
                                 borderRadius: BorderRadius.only(
                                     topRight: Radius.circular(16),
-                                    bottomRight: Radius.circular(16)
-                                )
-                            ),
+                                    bottomRight: Radius.circular(16))),
                             padding: EdgeInsets.symmetric(
                                 vertical: 15, horizontal: 10),
                             child: Text(
@@ -702,7 +775,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                                       onChanged: (value) {
                                         setState(() {
                                           i.status = value;
-                                          if(i.status == false){
+                                          if (i.status == false) {
                                             i.jamTutupBookingInput.clear();
                                             i.jamBukaBookingInput.clear();
                                           }
@@ -715,7 +788,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                               ),
                               Expanded(
                                 flex: 4,
-                                child: textFieldModified(
+                                child: TextFieldModified(
                                     controller: i.jamBukaBookingInput,
                                     label: "Buka",
                                     isEnabled: false),
@@ -725,15 +798,16 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                                 child: IconButton(
                                   icon: Icon(Icons.update),
                                   onPressed: () {
-                                    if(i.status){
-                                      _selectTimeOpen(context, i.jamBukaBookingInput);
+                                    if (i.status) {
+                                      _selectTimeOpen(
+                                          context, i.jamBukaBookingInput);
                                     }
                                   },
                                 ),
                               ),
                               Expanded(
                                 flex: 4,
-                                child: textFieldModified(
+                                child: TextFieldModified(
                                     controller: i.jamTutupBookingInput,
                                     label: "Tutup",
                                     isEnabled: false),
@@ -743,8 +817,9 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                                 child: IconButton(
                                   icon: Icon(Icons.update),
                                   onPressed: () {
-                                    if(i.status){
-                                      _selectTimeClose(context, i.jamTutupBookingInput);
+                                    if (i.status) {
+                                      _selectTimeClose(
+                                          context, i.jamTutupBookingInput);
                                     }
                                   },
                                 ),
@@ -757,31 +832,43 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                 ),
               ),
               actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: AppColors.primaryColor, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Ubah',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      submitPoliklinik();
+                    },
                   ),
-                  child: Text(
-                    'Ubah',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    submitPoliklinik();
-                  },
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.grey, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: Text(
-                    'Tidak',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 ),
               ],
             );
@@ -791,45 +878,35 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
 
   infoDialog(Poliklinik poliklinik) {
     List<HariPelayanan> hariPelayanan = [
-      HariPelayanan(
-          status: false,
-          hari: "Senin",
-          kodeHari: Hari.SENIN),
-      HariPelayanan(
-          status: false,
-          hari: "Selasa",
-          kodeHari: Hari.SELASA),
-      HariPelayanan(
-          status: false,
-          hari: "Rabu",
-          kodeHari: Hari.RABU),
-      HariPelayanan(
-          status: false,
-          hari: "Kamis",
-          kodeHari: Hari.KAMIS),
-      HariPelayanan(
-          status: false,
-          hari: "Jumat",
-          kodeHari: Hari.JUMAT),
-      HariPelayanan(
-          status: false,
-          hari: "Sabtu",
-          kodeHari: Hari.SABTU),
+      HariPelayanan(status: false, hari: "Senin", kodeHari: Hari.SENIN),
+      HariPelayanan(status: false, hari: "Selasa", kodeHari: Hari.SELASA),
+      HariPelayanan(status: false, hari: "Rabu", kodeHari: Hari.RABU),
+      HariPelayanan(status: false, hari: "Kamis", kodeHari: Hari.KAMIS),
+      HariPelayanan(status: false, hari: "Jumat", kodeHari: Hari.JUMAT),
+      HariPelayanan(status: false, hari: "Sabtu", kodeHari: Hari.SABTU),
     ];
 
     for (var i = 0; i < poliklinik.jadwal.length; i++) {
-      for(var j = 0; j < hariPelayanan.length; j++){
-        if(poliklinik.jadwal[i].hari == hariPelayanan[j].kodeHari){
+      for (var j = 0; j < hariPelayanan.length; j++) {
+        if (poliklinik.jadwal[i].hari == hariPelayanan[j].kodeHari) {
           hariPelayanan[j].status = true;
-          hariPelayanan[j].jamBukaBookingInput.text = poliklinik.jadwal[i].jamBukaBooking;
-          hariPelayanan[j].jamTutupBookingInput.text = poliklinik.jadwal[i].jamTutupBooking;
+          hariPelayanan[j].jamBukaBookingInput.text =
+              poliklinik.jadwal[i].jamBukaBooking;
+          hariPelayanan[j].jamTutupBookingInput.text =
+              poliklinik.jadwal[i].jamTutupBooking;
         }
       }
     }
 
-    showDialog(
+    showGeneralDialog(
         context: context,
-        builder: (context) {
+        barrierLabel: '',
+        barrierDismissible: true,
+        transitionDuration: const Duration(milliseconds: 600),
+        transitionBuilder: (context, _animation, _secondaryAnimation, _child) {
+          return Animations.fromTop(_animation, _secondaryAnimation, _child);
+        },
+        pageBuilder: (_animation, _secondaryAnimation, _child) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Row(
@@ -896,8 +973,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Text(poliklinik.batasBooking.toString() +
-                          " Hari"),
+                      child: Text(poliklinik.batasBooking.toString() + " Hari"),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -907,8 +983,9 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Text(
-                          (poliklinik.statusPoli == 1) ? "Aktif" : "Tidak Aktif"),
+                      child: Text((poliklinik.statusPoli == 1)
+                          ? "Aktif"
+                          : "Tidak Aktif"),
                     ),
                     for (var i in hariPelayanan)
                       Container(
@@ -929,20 +1006,24 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                             ),
                             Expanded(
                               flex: 4,
-                              child: textFieldModified(
+                              child: TextFieldModified(
                                   controller: i.jamBukaBookingInput,
                                   label: "Buka",
                                   isEnabled: false),
                             ),
-                            Spacer(flex: 1,),
+                            Spacer(
+                              flex: 1,
+                            ),
                             Expanded(
                               flex: 4,
-                              child: textFieldModified(
+                              child: TextFieldModified(
                                   controller: i.jamTutupBookingInput,
                                   label: "Tutup",
                                   isEnabled: false),
                             ),
-                            Spacer(flex: 1,),
+                            Spacer(
+                              flex: 1,
+                            ),
                           ],
                         ),
                       )
@@ -950,18 +1031,24 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                 ),
               ),
               actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: AppColors.primaryColor, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Tutup',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: Text(
-                    'Tutup',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 )
               ],
             );
@@ -971,55 +1058,47 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
 
   confirmDialog(Poliklinik poliklinik, bool isAdd) {
     List<HariPelayanan> hariPelayanan = [
-      HariPelayanan(
-          status: false,
-          hari: "Senin",
-          kodeHari: Hari.SENIN),
-      HariPelayanan(
-          status: false,
-          hari: "Selasa",
-          kodeHari: Hari.SELASA),
-      HariPelayanan(
-          status: false,
-          hari: "Rabu",
-          kodeHari: Hari.RABU),
-      HariPelayanan(
-          status: false,
-          hari: "Kamis",
-          kodeHari: Hari.KAMIS),
-      HariPelayanan(
-          status: false,
-          hari: "Jumat",
-          kodeHari: Hari.JUMAT),
-      HariPelayanan(
-          status: false,
-          hari: "Sabtu",
-          kodeHari: Hari.SABTU),
+      HariPelayanan(status: false, hari: "Senin", kodeHari: Hari.SENIN),
+      HariPelayanan(status: false, hari: "Selasa", kodeHari: Hari.SELASA),
+      HariPelayanan(status: false, hari: "Rabu", kodeHari: Hari.RABU),
+      HariPelayanan(status: false, hari: "Kamis", kodeHari: Hari.KAMIS),
+      HariPelayanan(status: false, hari: "Jumat", kodeHari: Hari.JUMAT),
+      HariPelayanan(status: false, hari: "Sabtu", kodeHari: Hari.SABTU),
     ];
 
     for (var i = 0; i < poliklinik.jadwal.length; i++) {
-      for(var j = 0; j < hariPelayanan.length; j++){
-        if(poliklinik.jadwal[i].hari == hariPelayanan[j].kodeHari){
+      for (var j = 0; j < hariPelayanan.length; j++) {
+        if (poliklinik.jadwal[i].hari == hariPelayanan[j].kodeHari) {
           hariPelayanan[j].status = true;
-          hariPelayanan[j].jamBukaBookingInput.text = poliklinik.jadwal[i].jamBukaBooking;
-          hariPelayanan[j].jamTutupBookingInput.text = poliklinik.jadwal[i].jamTutupBooking;
+          hariPelayanan[j].jamBukaBookingInput.text =
+              poliklinik.jadwal[i].jamBukaBooking;
+          hariPelayanan[j].jamTutupBookingInput.text =
+              poliklinik.jadwal[i].jamTutupBooking;
         }
       }
     }
 
     void submitPoliklinik() {
-      if(isAdd){
-        _poliklinikBloc.add(EventPoliklinikAddSubmitPoli(dataPoliklinik: poliklinik));
+      if (isAdd) {
+        _poliklinikBloc
+            .add(EventPoliklinikAddSubmitPoli(dataPoliklinik: poliklinik));
       } else {
-        _poliklinikBloc.add(EventPoliklinikEditSubmitPoli(dataPoliklinik: poliklinik));
+        _poliklinikBloc
+            .add(EventPoliklinikEditSubmitPoli(dataPoliklinik: poliklinik));
       }
       Navigator.pop(context);
       Navigator.pop(context);
     }
 
-    showDialog(
+    showGeneralDialog(
         context: context,
-        builder: (context) {
+        barrierLabel: '',
+        barrierDismissible: true,
+        transitionDuration: const Duration(milliseconds: 600),
+        transitionBuilder: (context, _animation, _secondaryAnimation, _child) {
+          return Animations.fromTop(_animation, _secondaryAnimation, _child);
+        },
+        pageBuilder: (_animation, _secondaryAnimation, _child) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Row(
@@ -1066,7 +1145,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: Text(poliklinik.rerataWaktuPelayanan.toString() +
-                          " Menit (${(60/int.parse(poliklinik.rerataWaktuPelayanan)).floor().toString()} Orang / Jam)."),
+                          " Menit (${(60 / int.parse(poliklinik.rerataWaktuPelayanan)).floor().toString()} Orang / Jam)."),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -1076,8 +1155,7 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Text(poliklinik.batasBooking.toString() +
-                          " Hari"),
+                      child: Text(poliklinik.batasBooking.toString() + " Hari"),
                     ),
                     for (var i in hariPelayanan)
                       Container(
@@ -1098,20 +1176,24 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                             ),
                             Expanded(
                               flex: 1,
-                              child: textFieldModified(
+                              child: TextFieldModified(
                                   controller: i.jamBukaBookingInput,
                                   label: "Buka",
                                   isEnabled: false),
                             ),
-                            Spacer(flex: 1,),
+                            Spacer(
+                              flex: 1,
+                            ),
                             Expanded(
                               flex: 1,
-                              child: textFieldModified(
+                              child: TextFieldModified(
                                   controller: i.jamTutupBookingInput,
                                   label: "Tutup",
                                   isEnabled: false),
                             ),
-                            Spacer(flex: 1,),
+                            Spacer(
+                              flex: 1,
+                            ),
                           ],
                         ),
                       )
@@ -1119,31 +1201,43 @@ class _PoliklinikScreenState extends State<PoliklinikScreen> {
                 ),
               ),
               actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: AppColors.primaryColor, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Tambah',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      submitPoliklinik();
+                    },
                   ),
-                  child: Text(
-                    'Tambah',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    submitPoliklinik();
-                  },
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey, // background
-                    onPrimary: Colors.white, // foreground
+                Container(
+                  margin: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.grey, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: Text(
-                    'Tidak',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 ),
               ],
             );
